@@ -1,6 +1,8 @@
-\documentclass[12pt]{report}
+\documentclass[12pt, oneside]{report}
 \usepackage{color}
 \usepackage{graphicx}
+%\usepackage[backend=biber]{biblatex}
+%\addbibresource{references.bib}
 \graphicspath{{images/}}
 \author{Jamie Mac Manus}
 
@@ -8,7 +10,7 @@
 
 \include{titlepage}
 
-\abstract{This is an example abstract}
+\include{abstract}
 
 \tableofcontents
 
@@ -16,9 +18,12 @@
 
 \include{chapters/background}
 
+\include{chapters/empirical}
+
 \include{chapters/conclusions}
 
-
+%Some claim\textcite{heinrich2016deep}
+%\printbibliography
 
 \end{document}
 
