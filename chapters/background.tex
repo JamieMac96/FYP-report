@@ -1,44 +1,69 @@
 \chapter{Background (18)}
 \label{ch:background}
 
+The aim of this chapter is to give the reader background information on the problem domain in order for them
+to understand the rest of the report.
+This will consist first of an introduction to machine learning.
+Then we will go into more detail on the areas of reinforcement learning and texas hold'em.
+Finally we will take a deeper dive on the literature surrounding how we can utilise reinforcement learning
+to tackle the problem of texas hold'em.
 
-\section{Introduction to Machine Learning (6) w5}
-\label{sec:introductionToMachineLearning}
+\section{Introduction to Machine Learning (1) w5}\label{sec:introductionToMachineLearning}
 
-\subsection{History of Machine Learning (1)}
-\label{subsec:mlHistory}
+Machine learning is an area of computer science that tackles how we construct computer programs that improve
+with experience\cite{mitchell1997machine}.
+The term was coined by Arthur Samuel in his 1959 paper where he discussed machine learning methods using
+checkers as his problem area.
+Since then there has been a great deal of advancement in the field.
+Some of the notable early contributions being the discovery of recurrent neural networks in 1982 and
+the advancement of reinforcement learning by the introduction of Q-Learning in 1989.
+Recently we have seen some of this early academic work culminate in more practical achievements such as
+Facebook's DeepFace system which, in 2014,  was shown to be able to recognise faces at a rate of 97.35\% accuracy,
+a rate that is comparable to that of humans.
+Another example of recent achievement is Google's AlphaGo program which, in 2016, became the first program to beat
+a professional human player.
 
-\subsection{Machine Learning Categories (3)}
-\label{subsec:mlCategories}
+It should be becoming clear that machine learning can be a solution to a wide scope of problems and as
+both hardware and software continue to improve this scope will only continue to widen.
+We are starting to see machine learning systems become a key component of many companies business model.
+Since certain machine learning techniques are great at prediction, machine learning has been widely used
+for content discovery by companies such as Google and Pinterest.
+Other business applications include the use of chatbots as a part of customer service, self-driving cars
+and even in the field of medical diagnostics.
 
-\subsubsection{Supervised Learning (1)}
-\subsubsection{Unsupervised Learning (1)}
-\subsubsection{Reinforcement Learning (1)}
-
-\subsection{Machine Learning Applications (2)}
-\label{subsec:mlApplications}
-
-
-\section{History of Reinforcement Learning (2) w5}
-\label{sec:rlhistory}
-
-
-\section{Applications of Reinforcement Learning (1) w5}
-\label{sec:rlApplications}
-
-
-\section{Reinforcement Learning Methods (9) w6}
-\label{sec:rlMethods}
-
-\subsection{Dynamic Programming (3)}
-\label{subsec:dp}
-
-\subsection{Monte Carlo (3)}
-\label{subsec:mc}
-
-\subsection{Temporal Difference Learning (3)}
-\label{subsec:td}
+Since there is such a large range of actual and potential applications for machine learning it would be good for
+us to understand how different methodologies can be applied to solve different types of problems.
+In the next we will discuss just that.
 
 
-\section{Reinforcement Learning In Large State Spaces (1) w7}
-\label{sec:rlLargeStateSpace}
+\section{Machine Learning Categories (3)}\label{sec:mlCategories}
+
+\subsubsection{Supervised Learning}
+Supervised learning involves an agent which observes some example input-output pairs and learns
+a function that maps from input to output.\cite{russell2016artificial}.
+This learned function can then be used on new input data, that wasn't used to train the agent and the
+agent should be able to give an accurate output.
+As such this learning task is a generalization problem.
+The agent must be able to identify general features of the input data and how they map to the output.
+
+
+
+\subsubsection{Unsupervised Learning}
+\subsubsection{Reinforcement Learning}
+
+\section{History of Reinforcement Learning (1) w5}\label{sec:rlhistory}
+
+
+\section{Applications of Reinforcement Learning (1) w5}\label{sec:rlApplications}
+
+
+\section{Reinforcement Learning Methods (9) w6}\label{sec:rlMethods}
+
+\subsection{Dynamic Programming (3)}\label{subsec:dp}
+
+\subsection{Monte Carlo (3)}\label{subsec:mc}
+
+\subsection{Temporal Difference Learning (3)}\label{subsec:td}
+
+
+\section{Reinforcement Learning In Large State Spaces (1) w7}\label{sec:rlLargeStateSpace}

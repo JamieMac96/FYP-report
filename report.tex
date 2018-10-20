@@ -1,29 +1,25 @@
 \documentclass[12pt, oneside]{report}
 \usepackage{color}
 \usepackage{graphicx}
-%\usepackage[backend=biber]{biblatex}
-%\addbibresource{references.bib}
 \graphicspath{{images/}}
 \author{Jamie Mac Manus}
 
 \begin{document}
 
 \include{titlepage}
-
 \include{abstract}
 
+\setcounter{tocdepth}{1}
 \tableofcontents
 
 \include{chapters/introduction}
-
 \include{chapters/background}
-
+\include{chapters/implementation}
 \include{chapters/empirical}
-
 \include{chapters/conclusions}
 
-%Some claim\textcite{heinrich2016deep}
-%\printbibliography
+\bibliography{references}
+\bibliographystyle{ieeetr}
 
 \end{document}
 
