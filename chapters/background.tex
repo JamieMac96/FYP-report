@@ -8,7 +8,42 @@ Then we will go into more detail on the areas of reinforcement learning and texa
 Finally we will take a deeper dive on the literature surrounding how we can utilise reinforcement learning
 to tackle the problem of texas hold'em.
 
-\section{Introduction to Machine Learning (1) w5}\label{sec:introductionToMachineLearning}
+\section{Introduction to Texas Hold'em}\label{sec:thIntro}
+Texas hold'em is one variant of the family of games called poker.
+Poker is a group of card games that combine gambling, strategy and skill.
+All poker variants have three core similarities.
+There is betting involved, there is imperfect information (ie cards remain hidden until the end of a hand)
+and the winner is determined by combinations of cards.
+We will now discuss texas hold'em poker in more detail.
+
+\subsection{Game Structure}\label{subsec:bettingRounds}
+Texas hold'em consists of four betting rounds.
+Initially each player is dealt two private cards.
+These remain face down and only the person who received these cards may view them.
+In the next three rounds five public cards are dealt face up on the table.
+The second round of dealing is called the flop, where three cards are dealt.
+The third round is called the turn where one additional public card is dealt.
+Finally in the fourth round another card is dealt which is called the river.
+
+At each round, after the cards are dealt, the players are given the opportunity to take a number of betting related actions.
+We will discuss the permitted actions in the next section.
+
+In order for players to be incentivized to continue playing in a wider array of situations, blinds are required.
+Blinds are a mandatory bet that must be posted by two of the players present at the game.
+These two bets are called the big blind and the small blind, the big blind being twice that of the small blind.
+As hands are played the big and small blinds are posted by different players in order to distribute the cost fairly.
+
+The big and small blind are the first two bets that contribute to what's called the pot.
+The pot is the collection of all of the current chips bet by the players.
+When a player wins a hand then what they receive in return is the pot.
+
+The final structural component of the game is player stacks.
+Each player will start the game with a certain amount of chips.
+If a player wins a pot then all of the chips in the pot are transferred to the winners stack.
+\subsection{Actions}\label{subsec:actions}
+\subsection{Hand Values}\label{subsec:handValues}
+
+\section{Introduction to Machine Learning (1) w6}\label{sec:introductionToMachineLearning}
 
 Machine learning is an area of computer science that tackles how we construct computer programs that improve
 with experience\cite{mitchell1997machine}.
@@ -36,7 +71,7 @@ us to understand how different methodologies can be applied to solve different t
 In the next we will discuss just that.
 
 
-\section{Machine Learning Categories (3)}\label{sec:mlCategories}
+\section{Machine Learning Categories (3) w6}\label{sec:mlCategories}
 
 \subsubsection{Supervised Learning}
 Supervised learning involves an agent which observes some example input-output pairs and learns
@@ -45,19 +80,17 @@ This learned function can then be used on new input data, that wasn't used to tr
 agent should be able to give an accurate output.
 As such this learning task is a generalization problem.
 The agent must be able to identify general features of the input data and how they map to the output.
-
+Common examples of 
 
 
 \subsubsection{Unsupervised Learning}
 \subsubsection{Reinforcement Learning}
 
-\section{History of Reinforcement Learning (1) w5}\label{sec:rlhistory}
+
+\section{Applications of Reinforcement Learning (1) w7}\label{sec:rlApplications}
 
 
-\section{Applications of Reinforcement Learning (1) w5}\label{sec:rlApplications}
-
-
-\section{Reinforcement Learning Methods (9) w6}\label{sec:rlMethods}
+\section{Reinforcement Learning Methods (9) w7}\label{sec:rlMethods}
 
 \subsection{Dynamic Programming (3)}\label{subsec:dp}
 

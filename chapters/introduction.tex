@@ -1,38 +1,56 @@
 \chapter{Introduction (10)}
 \label{ch:intro}
 In this section I will introduce the subject area of this Final year Project (FYP).
-I will then go on to establish some of the objectives for the project, give an overview of the report along with some of
+I will then go on to give an overview of the report, establish some goals for the project along with some of
 the motivations for choosing this subject area.
 
 
-\section{Overview (3) w5}
-\label{sec:overview}
+\section{Overview (3) w5}\label{sec:overview}
+Since the inception of machine learning, games have been a key problem area that has seen a lot of focus from
+top academics.
+Furthermore, the development of some machine learning strategies that can be applied to games has also lead to these
+strategies being applied in many different domains, many of which being very beneficial in practice.
+
+In
 
 
-\section{Objectives (2) w4}
-\label{sec:objectives}
-\subsection{Primary Objectives}
-\label{subsec:primaryObjectives}
+\section{Objectives (2) w4}\label{sec:objectives}
+\subsection{Primary Objectives}\label{subsec:primaryObjectives}
 \subsubsection{Leverage Deep Reinforcement Learning to Develop a Poker Playing Agent}
 In the past, methods such as counterfactual regret minimization (CFR) have been used to develop agents that can
-play no-limit texas holdem to a superhuman level.
+play no-limit texas hold'em to a superhuman level.
 There have also been attempts to solve the limit version of the game using reinforcement learning (RL).
-In this report we will explore the possibility of using reinforcement learning to tackle the larger problem of
-no-limit texas holdem.
+Throughout the course of this project I will be using an iterative approach to solving the problem.
+As such the first agent that I will develop will seek to tackle a simplified version of hold'em.
+Specifically I will be attempting to recreate the results outlined in\cite{dahl2001reinforcement}.
+This will be my initial objective with potential future iterations expanding upon this work to tackle a more complete
+version of the game.
 
 \subsubsection{Experiment with Different Reinforcement Learning Methodologies}
 Although all RL algorithms share certain core properties, there are a number of distinct approaches that we can take.
- In this project we will attempt to determine, through statistical analysis, which approach yields the most favourable results.
+In this project we will attempt to determine, through statistical analysis, which approach yields the most favourable results.
 
 \subsubsection{Develop a Web Interface For Users to Play Against the Agent}
 The focus of this report will largely be research.
- However it is also my goal to create a product that will be fun and useful for the general public.
- As such another objective will be to create a website that will allow users to play heads-up against the final product.
+However it is also my goal to create a product that will be fun and useful for the general public.
+As such another objective will be to create a website that will allow users to play heads-up against the final product.
 
-\subsubsection{Utilise Statistical Techniques to Prove the Efficacy of the AI Agent Produced}
 
-\subsection{Secondary Objectives}
-\label{subsec:secondaryObjectives}
+\subsubsection{Utilise Various Techniques to Prove the Efficacy of the AI Agent Produced}
+In order to prove the poker playing agent's ability I hope to leverage a number of techniques.
+As the first version of the poker playing agent will be based on\cite{dahl2001reinforcement} I will be using similar
+techniques as outlined in the paper to test the agent.
+This means that I will test the agent against a random player, a balanced player and an aggressive player.
+The random player will play in a completely random manner, the balanced player will play according to the minimax
+algorithm and finally the aggressive player will be a variation of the balanced player that folds less regularly.
+
+In my research thus far a prominent method of testing poker agents is to utilise previously established agents as
+a benchmark.
+This involves playing a number of games against these agents and recording the results in terms of winnings.
+An example of this is\cite{heinrich2016deep} that utilised some of the best current poker agents
+as established by the Annual Computer Poker Competition (ACPC).
+
+\subsection{Secondary Objectives}\label{subsec:secondaryObjectives}
 \subsubsection{Understanding Reinforcement Learning}
 As this project is very specific and academic, one of the larger challenges will be to gain a strong knowledge of the domain.
 This means learning the history of RL, the types of problems that it has been used to solve and the specific details of
@@ -48,13 +66,10 @@ the existing literature without simply replicating what has already been done.
 \subsubsection{Learn about Different Approaches to Implementing Poker Agents}
 
 
-\section{Contribution (1) w5}
-\label{sec:contribution}
+\section{Contribution (1) w5}\label{sec:contribution}
 
 
-\section{Project Plan (1) w5}
-\label{sec:projectPlan}
+\section{Project Plan (1) w5}\label{sec:projectPlan}
 
 
-\section{Motivation (2) w5}
-\label{sec:Motivation}
+\section{Motivation (2) w5}\label{sec:Motivation}
