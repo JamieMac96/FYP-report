@@ -85,16 +85,62 @@ Common examples of
 
 \subsubsection{Unsupervised Learning}
 \subsubsection{Reinforcement Learning}
+The third category of machine learning is reinforcement learning.
+
+\section{Explore-Exploit Dilemma}\label{sec:exploreExploit}
+\begin{center}
+    \includegraphics[scale=.25]{bandit.png}
+\end{center}
+When it comes to reinforcement learning one of the first questions that we have to ask is how we explore
+the state space.
+An example that is often used to conceptualize this problem is the multi armed bandit problem.
+Let's say an agent is in a room with a number of gambling machines.
+Each of these machines has an arm that, when pulled will return a reward of 0 or 1 based on some underlying
+probability\cite{kaelbling1996reinforcement}.
+The agent has a limited number of total pulls.
+So the question becomes how do we distributed these pulls in order to maximise return?
+Well, first we have to ensure that we explore enough that we find the machine with the best reward probability
+and second, we must then exploit this machine to the best of our abilities.
+
+There are a number of approaches that can be taken to solve this problem which we will now discuss.
+The first approach that we will discuss is the $\epsilon$-greedy approach.
 
 
-\section{Applications of Reinforcement Learning (1) w7}\label{sec:rlApplications}
+\section{Markov Decision Processes w7}\label{sec:mdp}
+Reinforcement learning problems are generally modelled according to what is called a markov decision process.
 
+\begin{itemize}
+    \item S - a set of states.
+    \item A - a set of actions.
+    \item P - a set of state transition probabilities
+    \item R - a set of rewards
+    \item $\gamma$ - a discount factor
+\end{itemize}
+
+\section{Reinforcement Learning Problems w7}\label{sec:rlProblems}
 
 \section{Reinforcement Learning Methods (9) w7}\label{sec:rlMethods}
+There are three primary categories of reinforcement learning algorithms.
+These are dynamic programming, monte carlo and temporal difference learning.
 
 \subsection{Dynamic Programming (3)}\label{subsec:dp}
+Dynamic programming (DP) refers to a collection of algorithms that can be used to compute optimal policies given a
+perfect model of the environment as a Markov decision process\cite{sutton1998reinforcement}.
+Dynamic programming provides a basis for many algorithms that are used in practical reinforcement learning applications.
+An example of such an algorithm is value iteration.
+This is where we alternate between policy evaluation and policy improvement in order to converge towards an optimal
+policy.
 
 \subsection{Monte Carlo (3)}\label{subsec:mc}
+In Monte Carlo, unlike dynamic programming, we do not assume complete knowledge of the environment.
+Monte Carlo methods require only experience-sample sequences of states, actions, and rewards from interaction with
+an environment \cite{sutton1998reinforcement}.
+Monte carlo evaluation is an episodic process this means that we only update our action values after an episode
+has completed.
+Policy evaluation: simply average many returns that start in the state.
+Policy improvement: estimate action values in order to avoid reliance on state transition dynamics.
+(simply choose the best action for the policy in a given state)
+
 
 \subsection{Temporal Difference Learning (3)}\label{subsec:td}
 

@@ -2,7 +2,9 @@
 *.dvi
 *.log
 *.toc
+*.sh
 chapters/*.log
 chapters/*.toc
 chapters/*.aux
 .idea/*
+build.sh
