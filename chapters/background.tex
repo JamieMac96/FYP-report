@@ -86,6 +86,7 @@ Common examples of
 \subsubsection{Unsupervised Learning}
 \subsubsection{Reinforcement Learning}
 The third category of machine learning is reinforcement learning.
+We will now discuss this area of machine learning in depth.
 
 \section{Explore-Exploit Dilemma}\label{sec:exploreExploit}
 \begin{center}
@@ -103,8 +104,30 @@ Well, first we have to ensure that we explore enough that we find the machine wi
 and second, we must then exploit this machine to the best of our abilities.
 
 There are a number of approaches that can be taken to solve this problem which we will now discuss.
-The first approach that we will discuss is the $\epsilon$-greedy approach.
 
+\subsection{$\epsilon$-Greedy Solutions}\label{subsec:eGreedy}
+The first approach that we will discuss is the $\epsilon$-greedy strategy.
+This approach was first proposed by Watkins\cite{watkins1989learning} and is a very simple and widely used method.
+The $\epsilon$-greedy strategy involves choosing a random lever some proportion $\epsilon$ of the time, and
+choosing the lever that has been established to give the highest reward the rest of the time.
+
+There are a number of variations of this method, the first being the $\epsilon$-first strategy.
+With this strategy we take all of our random choices first, allowing us to establish the best bandit,
+after which we exploit this bandit.
+However, as stated in\cite{vermorel2005multi} this simple approach is sub-optimal because asymptotically,
+the constant factor prevents the strategy from getting arbitrarily close to
+the optimal lever.
+
+This is where the $\epsilon$-decreasing strategy becomes useful.
+Here, the proportion of random lever pulls decreases with time.
+Generally if our initial epsilon value is $\epsilon_0$ then our epsilon value at time $t$ will be
+$\epsilon_t = \frac{\epsilon_0}{t}$.
+
+\subsection{Upper Confidence Bounds}\label{subsec:ucb}
+
+\subsection{Thompson Sampling}\label{subsec:thompsonSampling}
+
+\subsection{Comparative Analysis}\label{subsec:analysis}
 
 \section{Markov Decision Processes w7}\label{sec:mdp}
 Reinforcement learning problems are generally modelled according to what is called a markov decision process.
@@ -118,6 +141,7 @@ Reinforcement learning problems are generally modelled according to what is call
 \end{itemize}
 
 \section{Reinforcement Learning Problems w7}\label{sec:rlProblems}
+In reinforcement learning there are two
 
 \section{Reinforcement Learning Methods (9) w7}\label{sec:rlMethods}
 There are three primary categories of reinforcement learning algorithms.
@@ -134,12 +158,12 @@ policy.
 \subsection{Monte Carlo (3)}\label{subsec:mc}
 In Monte Carlo, unlike dynamic programming, we do not assume complete knowledge of the environment.
 Monte Carlo methods require only experience-sample sequences of states, actions, and rewards from interaction with
-an environment \cite{sutton1998reinforcement}.
+an environment\cite{sutton1998reinforcement}.
 Monte carlo evaluation is an episodic process this means that we only update our action values after an episode
 has completed.
-Policy evaluation: simply average many returns that start in the state.
-Policy improvement: estimate action values in order to avoid reliance on state transition dynamics.
-(simply choose the best action for the policy in a given state)
+%Policy evaluation: simply average many returns that start in the state.
+%Policy improvement: estimate action values in order to avoid reliance on state transition dynamics.
+%(simply choose the best action for the policy in a given state)
 
 
 \subsection{Temporal Difference Learning (3)}\label{subsec:td}
