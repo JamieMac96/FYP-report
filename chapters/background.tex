@@ -103,7 +103,8 @@ So the question becomes how do we distributed these pulls in order to maximise r
 Well, first we have to ensure that we explore enough that we find the machine with the best reward probability
 and second, we must then exploit this machine to the best of our abilities.
 
-There are a number of approaches that can be taken to solve this problem which we will now discuss.
+There are a number of approaches that can be taken to solve this problem, we will now briefly discuss two of these
+methods.
 
 \subsection{$\epsilon$-Greedy Solutions}\label{subsec:eGreedy}
 The first approach that we will discuss is the $\epsilon$-greedy strategy.
@@ -123,11 +124,17 @@ Here, the proportion of random lever pulls decreases with time.
 Generally if our initial epsilon value is $\epsilon_0$ then our epsilon value at time $t$ will be
 $\epsilon_t = \frac{\epsilon_0}{t}$.
 
-\subsection{Upper Confidence Bounds}\label{subsec:ucb}
+\subsection{Interval Estimation Strategy}\label{subsec:ucb}
+Another approach that can be used is called the interval estimation strategy.
+With this method we initially give an optimistic estimate of the reward to each bandit within a certain
+confidence interval.
+Then we simply take a greedy approach to our exploration.
+Less explored bandits will have a artificially higher reward estimate and thus they will be greedily chosen,
+thus allowing us to evaluate each of the bandits.
 
-\subsection{Thompson Sampling}\label{subsec:thompsonSampling}
+In the context of reinforcement learning, state space exploration through the $\epsilon$-greedy approach is
+generally sufficient.
 
-\subsection{Comparative Analysis}\label{subsec:analysis}
 
 \section{Markov Decision Processes w7}\label{sec:mdp}
 Reinforcement learning problems are generally modelled according to what is called a markov decision process.
