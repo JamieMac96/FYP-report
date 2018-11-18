@@ -3,52 +3,14 @@
 
 The aim of this chapter is to give the reader background information on the problem domain in order for them
 to understand the rest of the report.
-This will consist first of an introduction to machine learning.
-Then we will go into more detail on the areas of reinforcement learning and texas hold'em.
-Finally we will take a deeper dive on the literature surrounding how we can utilise reinforcement learning
-to tackle the problem of texas hold'em.
-
-\section{Introduction to Texas Hold'em}\label{sec:thIntro}
-Texas hold'em is one variant of the family of games called poker.
-Poker is a group of card games that combine gambling, strategy and skill.
-All poker variants have three core similarities.
-There is betting involved, there is imperfect information (ie cards remain hidden until the end of a hand)
-and the winner is determined by combinations of cards.
-We will now discuss texas hold'em poker in more detail.
-
-\subsection{Game Structure}\label{subsec:bettingRounds}
-Texas hold'em consists of four betting rounds.
-Initially each player is dealt two private cards.
-These remain face down and only the person who received these cards may view them.
-In the next three rounds five public cards are dealt face up on the table.
-The second round of dealing is called the flop, where three cards are dealt.
-The third round is called the turn where one additional public card is dealt.
-Finally in the fourth round another card is dealt which is called the river.
-
-At each round, after the cards are dealt, the players are given the opportunity to take a number of betting related actions.
-We will discuss the permitted actions in the next section.
-
-In order for players to be incentivized to continue playing in a wider array of situations, blinds are required.
-Blinds are a mandatory bet that must be posted by two of the players present at the game.
-These two bets are called the big blind and the small blind, the big blind being twice that of the small blind.
-As hands are played the big and small blinds are posted by different players in order to distribute the cost fairly.
-
-The big and small blind are the first two bets that contribute to what's called the pot.
-The pot is the collection of all of the current chips bet by the players.
-When a player wins a hand then what they receive in return is the pot.
-
-The final structural component of the game is player stacks.
-Each player will start the game with a certain amount of chips.
-If a player wins a pot then all of the chips in the pot are transferred to the winners stack.
-\subsection{Actions}\label{subsec:actions}
-\subsection{Hand Values}\label{subsec:handValues}
-
-\section{Introduction to Machine Learning (1) w6}\label{sec:introductionToMachineLearning}
+Then we will go into more detail on the areas of reinforcement learning, game theory and texas hold'em.
+However, this final year project is heavily based on machine learning so I think it is important for the reader to have
+some background on this area first.
 
 Machine learning is an area of computer science that tackles how we construct computer programs that improve
-with experience\cite{mitchell1997machine}.
+with experience\citep{mitchell1997machine}.
 The term was coined by Arthur Samuel in his 1959 paper where he discussed machine learning methods using
-checkers as his problem area.
+checkers.
 Since then there has been a great deal of advancement in the field.
 Some of the notable early contributions being the discovery of recurrent neural networks in 1982 and
 the advancement of reinforcement learning by the introduction of Q-Learning in 1989.
@@ -66,38 +28,41 @@ for content discovery by companies such as Google and Pinterest.
 Other business applications include the use of chatbots as a part of customer service, self-driving cars
 and even in the field of medical diagnostics.
 
-Since there is such a large range of actual and potential applications for machine learning it would be good for
-us to understand how different methodologies can be applied to solve different types of problems.
-In the next we will discuss just that.
 
+\section{Reinforcement Learning}\label{sec:reinforcementLearning}
+When I began to research the possibility of creating a texas hold'em playing agent using machine learning techniques it
+quickly became apparent that reinforcement learning would be the most suitable approach.
+Thus I began to research the area in order to gain an in-depth understanding of the area.
+This research included a Udemy course as well as reading in part Reinforcement Learning: An Introduction
+a book published in 1998 by Andrew Barto and Richard S. Sutton.
+In the following section I will outline the findings rendered by this research.
 
-\section{Machine Learning Categories (3) w6}\label{sec:mlCategories}
+Reinforcement learning is a way of programming agents by reward and punishment without needing to specify how the
+task is to be achieved\citep{kaelbling1996reinforcement}.
+As such the primary components of a reinforcement learning problem are an agent which exists in an environment.
+From a simplified perspective we can think of the environment as a set of states, actions and rewards.
+The objective for the agent is to maximise cumulative reward.
+This is done by developing a policy that will dictate which actions should be taken in each state.
+\begin{figure}
+    \includegraphics[scale=.5]{RL_illustration.png}
+    \caption{Reinforcement Learning}
+\end{figure}
 
-\subsubsection{Supervised Learning}
-Supervised learning involves an agent which observes some example input-output pairs and learns
-a function that maps from input to output.\cite{russell2016artificial}.
-This learned function can then be used on new input data, that wasn't used to train the agent and the
-agent should be able to give an accurate output.
-As such this learning task is a generalization problem.
-The agent must be able to identify general features of the input data and how they map to the output.
-Common examples of 
+\subsection{Policy Evaluation and Policy Improvement}\label{subsec:policyEvalPolicyImp}
+In reinforcement learning there are two primary problems that we must solve.
+The first is.
 
-
-\subsubsection{Unsupervised Learning}
-\subsubsection{Reinforcement Learning}
-The third category of machine learning is reinforcement learning.
-We will now discuss this area of machine learning in depth.
-
-\section{Explore-Exploit Dilemma}\label{sec:exploreExploit}
-\begin{center}
+\subsection{Explore-Exploit Dilemma}\label{subsec:exploreExploit}
+\begin{figure}
     \includegraphics[scale=.25]{bandit.png}
-\end{center}
+    \caption{Multi Armed Bandit}
+\end{figure}
 When it comes to reinforcement learning one of the first questions that we have to ask is how we explore
 the state space.
 An example that is often used to conceptualize this problem is the multi armed bandit problem.
 Let's say an agent is in a room with a number of gambling machines.
 Each of these machines has an arm that, when pulled will return a reward of 0 or 1 based on some underlying
-probability\cite{kaelbling1996reinforcement}.
+probability\citep{kaelbling1996reinforcement}.
 The agent has a limited number of total pulls.
 So the question becomes how do we distributed these pulls in order to maximise return?
 Well, first we have to ensure that we explore enough that we find the machine with the best reward probability
@@ -106,16 +71,16 @@ and second, we must then exploit this machine to the best of our abilities.
 There are a number of approaches that can be taken to solve this problem, we will now briefly discuss two of these
 methods.
 
-\subsection{$\epsilon$-Greedy Solutions}\label{subsec:eGreedy}
+\subsubsection{$\epsilon$-Greedy Solutions}\label{subsec:eGreedy}
 The first approach that we will discuss is the $\epsilon$-greedy strategy.
-This approach was first proposed by Watkins\cite{watkins1989learning} and is a very simple and widely used method.
+This approach was first proposed by Watkins\citep{watkins1989learning} and is a very simple and widely used method.
 The $\epsilon$-greedy strategy involves choosing a random lever some proportion $\epsilon$ of the time, and
 choosing the lever that has been established to give the highest reward the rest of the time.
 
 There are a number of variations of this method, the first being the $\epsilon$-first strategy.
 With this strategy we take all of our random choices first, allowing us to establish the best bandit,
 after which we exploit this bandit.
-However, as stated in\cite{vermorel2005multi} this simple approach is sub-optimal because asymptotically,
+However, as stated in\citep{vermorel2005multi} this simple approach is sub-optimal because asymptotically,
 the constant factor prevents the strategy from getting arbitrarily close to
 the optimal lever.
 
@@ -124,7 +89,7 @@ Here, the proportion of random lever pulls decreases with time.
 Generally if our initial epsilon value is $\epsilon_0$ then our epsilon value at time $t$ will be
 $\epsilon_t = \frac{\epsilon_0}{t}$.
 
-\subsection{Interval Estimation Strategy}\label{subsec:ucb}
+\subsubsection{Interval Estimation Strategy}
 Another approach that can be used is called the interval estimation strategy.
 With this method we initially give an optimistic estimate of the reward to each bandit within a certain
 confidence interval.
@@ -136,7 +101,7 @@ In the context of reinforcement learning, state space exploration through the $\
 generally sufficient.
 
 
-\section{Markov Decision Processes w7}\label{sec:mdp}
+\subsection{Markov Decision Processes}\label{subsec:mdp}
 Reinforcement learning problems are generally modelled according to what is called a markov decision process.
 
 \begin{itemize}
@@ -147,16 +112,9 @@ Reinforcement learning problems are generally modelled according to what is call
     \item $\gamma$ - a discount factor
 \end{itemize}
 
-\section{Reinforcement Learning Problems w7}\label{sec:rlProblems}
-In reinforcement learning there are two
-
-\section{Reinforcement Learning Methods (9) w7}\label{sec:rlMethods}
-There are three primary categories of reinforcement learning algorithms.
-These are dynamic programming, monte carlo and temporal difference learning.
-
 \subsection{Dynamic Programming (3)}\label{subsec:dp}
 Dynamic programming (DP) refers to a collection of algorithms that can be used to compute optimal policies given a
-perfect model of the environment as a Markov decision process\cite{sutton1998reinforcement}.
+perfect model of the environment as a Markov decision process\citep{sutton1998reinforcement}.
 Dynamic programming provides a basis for many algorithms that are used in practical reinforcement learning applications.
 An example of such an algorithm is value iteration.
 This is where we alternate between policy evaluation and policy improvement in order to converge towards an optimal
@@ -165,7 +123,7 @@ policy.
 \subsection{Monte Carlo (3)}\label{subsec:mc}
 In Monte Carlo, unlike dynamic programming, we do not assume complete knowledge of the environment.
 Monte Carlo methods require only experience-sample sequences of states, actions, and rewards from interaction with
-an environment\cite{sutton1998reinforcement}.
+an environment\citep{sutton1998reinforcement}.
 Monte carlo evaluation is an episodic process this means that we only update our action values after an episode
 has completed.
 %Policy evaluation: simply average many returns that start in the state.
@@ -176,4 +134,52 @@ has completed.
 \subsection{Temporal Difference Learning (3)}\label{subsec:td}
 
 
-\section{Reinforcement Learning In Large State Spaces (1) w7}\label{sec:rlLargeStateSpace}
+\section{Supervised Learning}\label{sec:supervisedLearning}
+Supervised learning involves an agent which observes some example input-output pairs and learns
+a function that maps from input to output.\citep{russell2016artificial}.
+This learned function can then be used on new input data, that wasn't used to train the agent and the
+agent should be able to give an accurate output.
+As such this learning task is a generalization problem.
+The agent must be able to identify general features of the input data and how they map to the output.
+Common examples of
+
+\section{Game Theory}\label{sec:gameTheory}
+
+\section{Texas Hold'em}\label{sec:thIntro}
+Texas hold'em is one variant of the family of games called poker.
+Poker is a group of card games that combine gambling, strategy and skill.
+All poker variants have three core similarities.
+There is betting involved, there is imperfect information (ie cards remain hidden until the end of a hand)
+and the winner is determined by combinations of cards.
+We will now discuss texas hold'em poker in more detail.
+
+\subsection{Game Structure}\label{subsec:bettingRounds}
+Texas hold'em consists of four betting rounds.
+Initially each player is dealt two private cards.
+These remain face down and only the person who received these cards may view them.
+In the next three rounds five public cards are dealt face up on the table.
+The second round of dealing is called the flop, where three cards are dealt.
+The third round is called the turn where one additional public card is dealt.
+Finally in the fourth round another card is dealt which is called the river.
+
+At each round, after the cards are dealt, the players are given the opportunity to take a number of betting
+related actions.
+We will discuss the permitted actions in the next section.
+
+In order for players to be incentivized to continue playing in a wider array of situations, blinds are required.
+Blinds are a mandatory bet that must be posted by two of the players present at the game.
+These two bets are called the big blind and the small blind, the big blind being twice that of the small blind.
+As hands are played the big and small blinds are posted by different players in order to distribute the cost fairly.
+
+The big and small blind are the first two bets that contribute to what's called the pot.
+The pot is the collection of all of the current chips bet by the players.
+When a player wins a hand then what they receive in return is the pot.
+
+The final structural component of the game is player stacks.
+Each player will start the game with a certain amount of chips.
+If a player wins a pot then all of the chips in the pot are transferred to the winners stack.
+
+\subsection{Actions}\label{subsec:actions}
+
+\subsection{Hand Values}\label{subsec:handValues}
+
