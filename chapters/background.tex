@@ -37,26 +37,19 @@ This research included a Udemy course as well as reading in part Reinforcement L
 a book published in 1998 by Andrew Barto and Richard S. Sutton.
 In the following section I will outline the findings rendered by this research.
 
+\begin{figure}[ht]
+    \includegraphics[scale=.5]{RL_illustration.png}
+    \caption{Reinforcement Learning}
+\end{figure}
+
 Reinforcement learning is a way of programming agents by reward and punishment without needing to specify how the
 task is to be achieved\citep{kaelbling1996reinforcement}.
 As such the primary components of a reinforcement learning problem are an agent which exists in an environment.
 From a simplified perspective we can think of the environment as a set of states, actions and rewards.
 The objective for the agent is to maximise cumulative reward.
 This is done by developing a policy that will dictate which actions should be taken in each state.
-\begin{figure}
-    \includegraphics[scale=.5]{RL_illustration.png}
-    \caption{Reinforcement Learning}
-\end{figure}
-
-\subsection{Policy Evaluation and Policy Improvement}\label{subsec:policyEvalPolicyImp}
-In reinforcement learning there are two primary problems that we must solve.
-The first is.
 
 \subsection{Explore-Exploit Dilemma}\label{subsec:exploreExploit}
-\begin{figure}
-    \includegraphics[scale=.25]{bandit.png}
-    \caption{Multi Armed Bandit}
-\end{figure}
 When it comes to reinforcement learning one of the first questions that we have to ask is how we explore
 the state space.
 An example that is often used to conceptualize this problem is the multi armed bandit problem.
@@ -67,6 +60,11 @@ The agent has a limited number of total pulls.
 So the question becomes how do we distributed these pulls in order to maximise return?
 Well, first we have to ensure that we explore enough that we find the machine with the best reward probability
 and second, we must then exploit this machine to the best of our abilities.
+
+\begin{figure}[ht]
+    \includegraphics[scale=.25]{bandit.png}
+    \caption{Multi Armed Bandit}
+\end{figure}
 
 There are a number of approaches that can be taken to solve this problem, we will now briefly discuss two of these
 methods.
@@ -100,7 +98,6 @@ thus allowing us to evaluate each of the bandits.
 In the context of reinforcement learning, state space exploration through the $\epsilon$-greedy approach is
 generally sufficient.
 
-
 \subsection{Markov Decision Processes}\label{subsec:mdp}
 Reinforcement learning problems are generally modelled according to what is called a markov decision process.
 
@@ -111,6 +108,31 @@ Reinforcement learning problems are generally modelled according to what is call
     \item R - a set of rewards
     \item $\gamma$ - a discount factor
 \end{itemize}
+
+\subsection{Policy Evaluation and Policy Improvement}\label{subsec:policyEvalPolicyImp}
+As mentioned above the primary focus of reinforcement learning is to find a policy (denoted by $\pi$) that allows
+the agent to take actions in states that lead to the maximum possible reward.
+There are two primary problems that we must solve in order to do so.
+
+The first is called the prediction problem, also known as policy evaluation.
+This involves computing the values of states given some arbitrary policy\citep{sutton1998reinforcement}.
+For example a state would have a high value if the reward for reaching that state was high.
+A state would also have a high value if we were only one action away, according to the supplied policy,
+from a state that renders a high reward.
+However a state would have a low value if, according to the policy, there was no path to a state that
+would return a positive reward in the foreseeable future.
+
+The second problem is known as the control problem, also known as policy improvement.
+This involves changing the policy in order to improve our cumulative reward.
+The policy improvement process can only occur when the we have performed policy evaluation.
+Let's say, after our evaluation step, we know the value of some state $s$.
+Note that this value is calculated with the condition that we take some action $a$ in state $s$.
+But, if we take some other action $a'$ would this render a higher value for $s$?
+If the answer is yes then we update the policy.
+
+These two operations can be seen as the core of reinforcement learning.
+In the next section we will discuss different reinforcement learning methodologies.
+Some of the main differences are in how method each approaches the prediction and control problems.
 
 \subsection{Dynamic Programming (3)}\label{subsec:dp}
 Dynamic programming (DP) refers to a collection of algorithms that can be used to compute optimal policies given a
