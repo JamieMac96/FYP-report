@@ -134,7 +134,7 @@ These two operations can be seen as the core of reinforcement learning.
 In the next section we will discuss different reinforcement learning methodologies.
 Some of the main differences are in how method each approaches the prediction and control problems.
 
-\subsection{Dynamic Programming (3)}\label{subsec:dp}
+\subsection{Dynamic Programming}\label{subsec:dp}
 Dynamic programming (DP) refers to a collection of algorithms that can be used to compute optimal policies given a
 perfect model of the environment as a Markov decision process\citep{sutton1998reinforcement}.
 Dynamic programming is not widely used in practical reinforcement learning applications due to its assumption
@@ -186,7 +186,7 @@ as outlined in the policy evaluation phase and choosing.
 Then the argmax function will select the action with the highest value.
 Finally we assign this action to be the one we will choose in state s, according to the new policy $\pi'$.
 
-\subsection{Monte Carlo (3)}\label{subsec:mc}
+\subsection{Monte Carlo}\label{subsec:mc}
 In Monte Carlo, unlike dynamic programming, we do not assume complete knowledge of the environment.
 Monte Carlo methods require only experience.
 We sample sequences of states, actions, and rewards from interaction with the
@@ -194,8 +194,20 @@ environment\citep{sutton1998reinforcement}.
 Monte carlo evaluation is an episodic process this means that we only update our action values after an episode
 has completed.
 
-\subsubsection{Monte Carlo Policy Evaluation}\label{subsec:monteCarloPrediction}
+\subsubsection{Monte Carlo Policy Evaluation}
+In Monte Carlo methods we take a fundamentally different approach to policy evaluation.
+As mentioned this method is focused on using episodic experience.
+As such, in order to evaluate a state we can simply average the rewards returned after visiting that state.
+As we observe more returns the average will converge to the actual expected value of the state.
 
+It is worth noting that a state $s$ could be visited more than once in an episode.
+As such we can either average the returns following the first visit to $s$ or we could average the returns
+after each visit to $s$.
+These two methods are called \textit{first-visit} and \textit{every-visit} respectively.
+
+\subsubsection{Monte Carlo Action Values}
+
+\subsubsection{Monte Carlo Policy Improvement}
 
 %Policy evaluation: simply average many returns that start in the state.
 %Policy improvement: estimate action values in order to avoid reliance on state transition dynamics.
