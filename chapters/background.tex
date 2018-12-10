@@ -3,17 +3,17 @@
 
 The aim of this chapter is to give the reader background information on the problem domain in order for them
 to understand the rest of the report.
-Then we will go into more detail on the areas of reinforcement learning, game theory and texas hold'em.
-However, this final year project is heavily based on machine learning so I think it is important for the reader to have
-some background on this area first.
+There will also be a in-depth discussion of existing literature that relates to machine learning in texas hold'em
+agents.
 
 Machine learning is an area of computer science that tackles how we construct computer programs that improve
 with experience\citep{mitchell1997machine}.
 The term was coined by Arthur Samuel in his 1959 paper where he discussed machine learning methods using
 checkers.
 Since then there has been a great deal of advancement in the field.
-Some of the notable early contributions being the discovery of recurrent neural networks in 1982 and
-the advancement of reinforcement learning by the introduction of Q-Learning in 1989.
+Some of the notable early contributions being the discovery of recurrent neural networks in 1982,
+the advancement of reinforcement learning by the introduction of Q-Learning in 1989 and the
+development of a backgammon-playing agent using neural networks and temporal difference learning\citep{tesauro1995td}.
 Recently we have seen some of this early academic work culminate in more practical achievements such as
 Facebook's DeepFace system which, in 2014,  was shown to be able to recognise faces at a rate of 97.35\% accuracy,
 a rate that is comparable to that of humans.
@@ -42,8 +42,8 @@ In the following section I will outline the findings rendered by this research.
     \caption{Reinforcement Learning}
 \end{figure}
 
-Reinforcement learning is a way of programming agents by reward and punishment without needing to specify how the
-task is to be achieved\citep{kaelbling1996reinforcement}.
+As mentioned in the introduction, reinforcement learning is a way of programming agents by reward and
+punishment without needing to specify how the task is to be achieved.
 As such the primary components of a reinforcement learning problem are an agent which exists in an environment.
 From a simplified perspective we can think of the environment as a set of states, actions and rewards.
 The objective for the agent is to maximise cumulative reward.

@@ -1,51 +1,64 @@
 \chapter{Introduction (10)}
 \label{ch:intro}
-In this section I will introduce the subject area of this Final year Project (FYP).
-I will then go on to give an overview of the report, establish some goals for the project along with some of
-the motivations for choosing this subject area.
-
 
 \section{Overview (3)}\label{sec:overview}
 Since the inception of machine learning, games have been a key problem area that has seen a lot of focus from
 top academics.
-Furthermore, the development of some machine learning strategies that can be applied to games has also lead to these
-strategies being applied in many different domains, many of which being very beneficial in practice.
+For decades games have been used as a platform to test and develop algorithms that have go on to provide invaluable
+services that are used peoples's everyday life.
+The ability to contribute to this great history was a large motivator when it came to choosing this project.
 
+Although this report will, to an extent, discuss machine learning and how it applies to games in general, the
+primary focus will be on machine learning techniques when applied to texas hold'em, or variations of it.
+In the past, methods such as Counterfactual Regret Minimization (CFR) have been used to develop agents that can
+play texas hold'em to a superhuman level.
+CFR is an algorithm that allows computation of a strategy through self-play.
+The metric used to update these strategies is called regret, which measures the difference between the
+game's outcome and the outcome that could have been achieved if some other action was taken.
+A large number of simulated games are played, with regret being calculated each time in order to compute a
+strategy that is optimal.
+One example of CFR being used was the 2018 annual computer poker competition champion, slumbot\citep{jackson2013slumbot}.
+
+There have also been attempts to tackle texas hold'em using a machine learning paradigm called reinforcement learning (RL).
+Reinforcement learning is a way of programming agents by reward and punishment without needing to specify how the
+task is to be achieved\citep{kaelbling1996reinforcement}.
+In one case RL was combined with techniques inspired by game theory\citep{heinrich2016deep}.
+In another linear programming techniques and RL were used in order to tackle a
+simplified version of the game\citep{dahl2001reinforcement}.
+
+These different approaches will be discussed in greater detail in the background section.
 
 \section{Objectives (2)}\label{sec:objectives}
-\subsection{Reinforcement Learning for Leduc Hold'em}\label{subsec:primaryObjectives}
-In the past, methods such as counterfactual regret minimization (CFR) have been used to develop agents that can
-play no-limit texas hold'em to a superhuman level.
-This includes the 2018 champion of the Annual Computer Poker Competition, slumbot\citep{jackson2013slumbot}.
-There have also been attempts to solve the limit version of the game using reinforcement learning
-(RL)\citep{heinrich2016deep}.
+\subsection{Primary Objectives}\label{subsec:primaryObjectives}
 
-Throughout the course of this project I will be using an iterative approach to solving the problem.
-As such the first agent that I will develop will seek to tackle a simplified version of hold'em.
-Specifically I will be attempting utilise the algorithm outlined in\citep{heinrich2015fictitious} to develop an agent
-that can play a simplified version of texas Hold'em called Leduc Hold'em.
+Although this project will be largely research based, the primary goal is to create a texas hold'em
+playing agent.
+Due to the fact that texas hold'em has an extremely large state space, combined with the fact that it
+is an imperfect information game, the initial goal will be to tackle a simplified version of the game.
+Specifically Leduc Hold'em will be used for this version of the project.
+This version of hold'em consists of a six card deck and only one private card, compared to two in texas hold'em.
 
-\subsection{Apply the Algorithm to a More Complex Poker Variant}\label{subsec:pokerPlayingAgent}
-When I have successfully applied the algorithm to Leduc Hold'em my goal is to then apply the same algorithm
-to a more complex game.
+If the success criteria for this simplified version of the game are met, we will then proceed to tackle
+a more complex version of the game.
+In this second iteration of the project we will tackle limit texas hold'em with the goal of recreating
+the results shown by Heinrich.
 
-\subsection{Web Interface to Facilitate Play Against the Agent}\label{subsec:webInterface}
-The focus of this report will largely be research.
-However it is also my goal to create a product that will be fun and useful for the general public.
+It is also my goal to create a product that will be fun and useful for the general public.
 As such another objective will be to create a website that will allow users to play heads-up against the final product.
 
-\subsection{Understanding Reinforcement Learning}\label{subsec:understandingRL}
+\subsection{Secondary Objectives}\label{subsec:secondaryObjectives}
 As this project is very specific and academic, one of the larger challenges will be to gain a strong knowledge
 of the domain.
 This means learning the history of RL, the types of problems that it has been used to solve and the specific details of
 different RL algorithms.
 
-\subsection{Understanding ML in Imperfect Information Games}\label{subsec:aiInImperfectinfo}
+The same can be said
+
 A successful project will require a high degree of knowledge from the broader domain of RL. However, it is also the case
 that I must become closely familiar with the existing academic literature in the area of RL with respect to imperfect
 information games.
-This will allow me to avoid taking approaches that have previously shown to fail and also allow me to contribute to
-the existing literature without simply replicating what has already been done.
+This will allow me to avoid taking approaches that have previously shown to fail as well as allow me to add value to
+the existing literature whether that be through literature review or through my own experimental findings.
 
 
 \section{Contribution (1)}\label{sec:contribution}
