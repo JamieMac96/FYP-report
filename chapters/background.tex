@@ -1,15 +1,15 @@
 \chapter{Background (18)}
 \label{ch:background}
 
-The aim of this chapter is to give the reader background information on the problem domain in order for them
-to understand the rest of the report.
+The aim of this chapter is to give the reader background information on certain areas of machine learning and
+game theory in order for them to understand the rest of the report.
 There will also be a in-depth discussion of existing literature that relates to machine learning in texas hold'em
 agents.
 
 Machine learning is an area of computer science that tackles how we construct computer programs that improve
 with experience\citep{mitchell1997machine}.
-The term was coined by Arthur Samuel in his 1959 paper where he discussed machine learning methods using
-checkers.
+The term was coined by Arthur Samuel in a paper in which he discussed machine learning methods using
+checkers\citep{samuel1959some}.
 Since then there has been a great deal of advancement in the field.
 Some of the notable early contributions being the discovery of recurrent neural networks in 1982,
 the advancement of reinforcement learning by the introduction of Q-Learning in 1989 and the
@@ -30,19 +30,19 @@ and even in the field of medical diagnostics.
 
 
 \section{Reinforcement Learning}\label{sec:reinforcementLearning}
-When I began to research the possibility of creating a texas hold'em playing agent using machine learning techniques it
-quickly became apparent that reinforcement learning would be the most suitable approach.
-Thus I began to research the area in order to gain an in-depth understanding of the area.
-This research included a Udemy course as well as reading in part Reinforcement Learning: An Introduction
-a book published in 1998 by Andrew Barto and Richard S. Sutton.
-In the following section I will outline the findings rendered by this research.
+The early research for this project yielded reinforcement learning as the most suitable machine learning
+paradigm for the problem of texas hold'em.
+However, in order to understand both reinforcement learning and how it would apply to the chosen problem,
+in depth research was required.
+This research included a Udemy course\citep{udemy2018rlpython} as well as reading in part the book
+Reinforcement Learning: An Introduction\citep{sutton1998reinforcement}.
 
 \begin{figure}[ht]
     \includegraphics[scale=.5]{RL_illustration.png}
     \caption{Reinforcement Learning}
 \end{figure}
 
-As mentioned in the introduction, reinforcement learning is a way of programming agents by reward and
+As mentioned in the introduction, reinforcement learning is a method of programming agents by reward and
 punishment without needing to specify how the task is to be achieved.
 As such the primary components of a reinforcement learning problem are an agent which exists in an environment.
 From a simplified perspective we can think of the environment as a set of states, actions and rewards.
@@ -99,15 +99,69 @@ In the context of reinforcement learning, state space exploration through the $\
 generally sufficient.
 
 \subsection{Markov Decision Processes}\label{subsec:mdp}
-Reinforcement learning problems are generally modelled according to what is called a markov decision process (MDP).
+In the last section we have established some methods that can be used to explore environments.
+We will now discuss in more detail how reinforcement learning environments, and their interaction
+with reinforcement learning agents, are modelled.
+Generally finite Markov decision processes (finite MDPs) are used.
+Markov decision processes provide a formal mathematical framework for sequential decision making,
+where actions influence immediate rewards as well as subsequent situations\citep{sutton1998reinforcement}.
+MDPs allow us to create an idealized model of reinforcement learning problems and thus we can make precise
+theoretical statements.
 
-\begin{itemize}
-    \item S - a set of states.
-    \item A - a set of actions.
-    \item P - a set of state transition probabilities
-    \item R - a set of rewards
-    \item $\gamma$ - a discount factor
-\end{itemize}
+\subsubsection{MDP Dynamics}
+
+As mentioned earlier, reinforcement learning problems consist of an agent and an environment interacting.
+Markov decision processes can be looked at in a similar way.
+However, there are a number of additional factors that we must consider in order to paint a complete picture.
+
+We can think of the problem as consisting of a set of discrete time steps.
+At each time step the environment supplies the agent some information about the state, $S_t$.
+Using this information the agent chooses an action, $A_t$.
+Then, as a result of the action, the environment will supply the agent with a reward, $R_t$, as well as a new state.
+As such the process of interaction between the agent and the environment can be seen as a trajectory of states,
+actions and rewards\citep{sutton1998reinforcement}:
+\begin{align}
+    S_0,A_0,R_1,S_1,A_1,R_2,S_2\dots
+\end{align}
+
+Thus far we understand that states, actions and rewards are related, however questions still exist as to
+the exact workings of this relationship.
+The answer is that finite MDPs contain a discrete probability distribution that determines the likelihood that we
+will reach the state $s'$ and receive reward $r$ at time $t$ based on the previous action $a$ and state $s$:
+\begin{align}
+    p(s',r|s,a) \doteq \Pr\{S_t=s',R_t=r|S_{t-1}=s,A_{t-1}=a\}
+\end{align}
+In simplified terms this means that for a given state-action pair $(s,a)$, the probability of us reaching some
+new state $s'$ and receiving reward $r$ is determined by the MDPs probability function $\Pr$.
+
+This four argument probability function completely characterizes the dynamics of the MDP and from it anything
+else we want to know about the environment\citep{sutton1998reinforcement}.
+
+\subsubsection{MDPs and Learning}
+The goal of the agent in an MDP is to learn how to maximise the cumulative reward received when traversing
+the environment.
+In some cases we will traverse the MDP until we reach some terminal state, $T$.
+This type of MDP reflects episodic tasks that will always terminate.
+In this case we can calculate the cumulative reward,$G_t$ as follows:
+\begin{align}
+    G_t = R_{t+1}+R_{t+2}+R_{t+3}+\dots+R_T
+\end{align}
+
+However, in other cases we will model continuous tasks.
+The problem here is that, if we use the same method of calculating $G_t$ as we do for
+episodic tasks then in this case $G_t$ will always eventually sum to infinity, regardless
+of whether we are taking good or bad actions.
+As such we must introduce the a new concept called discounting.
+With this approach the aim is to maximise the sum of future discounted rewards.
+Thus $\gamma$, a parameter with a value between 0 and 1, is introduced.
+As such, for continuous tasks modelled as MDPs our cumulative reward is as follows:
+\begin{align}
+    G_t = R_{t+1}+\gamma R_{t+2}+\gamma^{2}R_{t+1}+\dots
+\end{align}
+
+Based on our specified value of $\gamma$ we can alter the weighting of future rewards.
+For example if we have a low value for $\gamma$ (eg .5) then the value of rewards more than a
+few time steps in the future will be very low.
 
 \subsection{Policy Evaluation and Policy Improvement}\label{subsec:policyEvalPolicyImp}
 As mentioned above the primary focus of reinforcement learning is to find a policy (denoted by $\pi$) that allows
@@ -144,7 +198,7 @@ of important reinforcement learning concepts.
 Furthermore, it provides a basis for many algorithms that are used in practical reinforcement learning applications.
 
 \subsubsection{Policy Evaluation in Dynamic Programming}
-When discussion policy evaluation we talk about a state-value function a value function.
+When discussion policy evaluation we talk about a state-value function or a value function.
 This is simply the mapping of states to their corresponding values and is denoted by $v$.
 
 Since the environments's dynamics are completely known we can apply an iterative solution to finding
@@ -161,7 +215,6 @@ In order to produce each successive approximation of $v_{k+1}$ from $v_k$ we app
 state $s$.
 As shown above our new value for $s$ is based on a combination of the expected immediate rewards($R_{t+1}$),
 and the expected values of each of the states that we can transition to($S_{t+1}$) given policy $\pi$.
-This operation is applied to each $s$ for each iteration($k$) of the algorithm.
 It can be shown that as $k\rightarrow\infty$ $v_k$ will converge to $v_\pi$, the correct value function for policy
 $\pi$.
 This algorithm is called \textit{iterative policy evaluation}\citep{sutton1998reinforcement}.
@@ -182,9 +235,15 @@ We can thus denote our new greedy policy $\pi'$ as:
     \pi'(s) = argmax\EX_{\pi}\lbrack R_{t+1} + \gamma v_k(S_{t+1}) | S_t = s, A_t = a\rbrack
 \end{align}
 Essentially here we are determining the value of each available action in the current state, using the same operation
-as outlined in the policy evaluation phase and choosing.
+as outlined in the policy evaluation phase.
 Then the argmax function will select the action with the highest value.
 Finally we assign this action to be the one we will choose in state s, according to the new policy $\pi'$.
+
+Note that in this section we have outlined an algorithm with respect to deterministic policies,
+however a lot of times in reinforcement learning we deal with stochastic policies.
+This means that we take actions in states according to some probability distribution rather than always choosing
+the same action in a particular state.
+This is not a problem as the ideas mentioned apply equally well to stochastic policies.
 
 \subsection{Monte Carlo}\label{subsec:mc}
 In Monte Carlo, unlike dynamic programming, we do not assume complete knowledge of the environment.
@@ -216,6 +275,7 @@ These two methods are called \textit{first-visit} and \textit{every-visit} respe
 
 \subsection{Temporal Difference Learning (3)}\label{subsec:td}
 
+
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
 clear that a pure reinforcement learning approach would not be feasible.
@@ -236,6 +296,7 @@ In the following section I will discuss elements of game theory that are relevan
 \subsection{Nash Equilibria}\label{subsec:nashEquilibria}
 \subsection{Fictitious Play}\label{subsec:fictitiousPlay}
 
+
 \section{Supervised Learning}\label{sec:supervisedLearning}
 Supervised learning involves an agent which observes some example input-output pairs and learns
 a function that maps from input to output.\citep{russell2016artificial}.
@@ -244,6 +305,7 @@ agent should be able to give an accurate output.
 As such this learning task is a generalization problem.
 The agent must be able to identify general features of the input data and how they map to the output.
 Common examples of
+
 
 \section{Texas Hold'em}\label{sec:thIntro}
 Texas hold'em is one variant of the family of games called poker.
@@ -282,4 +344,10 @@ If a player wins a pot then all of the chips in the pot are transferred to the w
 \subsection{Actions}\label{subsec:actions}
 
 \subsection{Hand Values}\label{subsec:handValues}
+
+\subsection{Texas Hold'em Using Counterfactual Regret Minimization}\label{subsec:thCFR}
+
+\subsection{Texas Hold'em Using Reinforcement Learning}\label{subsec:thRL}
+
+\subsection{Texas Hold'em Using Neural Fictitious Self-Play}\label{subsec:thNFSP}
 

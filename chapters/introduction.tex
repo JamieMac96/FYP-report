@@ -15,11 +15,12 @@ play texas hold'em to a superhuman level.
 CFR is an algorithm that allows computation of a strategy through self-play.
 The metric used to update these strategies is called regret, which measures the difference between the
 game's outcome and the outcome that could have been achieved if some other action was taken.
-A large number of simulated games are played, with regret being calculated each time in order to compute a
-strategy that is optimal.
+A large number of simulated games are played, with regret being calculated each time and subsequently being used
+to compute a strategy that is optimal.
 One example of CFR being used was the 2018 annual computer poker competition champion, slumbot\citep{jackson2013slumbot}.
 
-There have also been attempts to tackle texas hold'em using a machine learning paradigm called reinforcement learning (RL).
+There have also been attempts to tackle texas hold'em using a machine learning paradigm called reinforcement
+learning (RL).
 Reinforcement learning is a way of programming agents by reward and punishment without needing to specify how the
 task is to be achieved\citep{kaelbling1996reinforcement}.
 In one case RL was combined with techniques inspired by game theory\citep{heinrich2016deep}.
