@@ -156,7 +156,7 @@ With this approach the aim is to maximise the sum of future discounted rewards.
 Thus $\gamma$, a parameter with a value between 0 and 1, is introduced.
 As such, for continuous tasks modelled as MDPs our cumulative reward is as follows:
 \begin{align}
-    G_t = R_{t+1}+\gamma R_{t+2}+\gamma^{2}R_{t+1}+\dots
+    G_t = R_{t+1}+\gamma R_{t+2}+\gamma^{2}R_{t+3}+\dots
 \end{align}
 
 Based on our specified value of $\gamma$ we can alter the weighting of future rewards.
@@ -268,11 +268,6 @@ These two methods are called \textit{first-visit} and \textit{every-visit} respe
 
 \subsubsection{Monte Carlo Policy Improvement}
 
-%Policy evaluation: simply average many returns that start in the state.
-%Policy improvement: estimate action values in order to avoid reliance on state transition dynamics.
-%(simply choose the best action for the policy in a given state)
-
-
 \subsection{Temporal Difference Learning (3)}\label{subsec:td}
 
 
@@ -288,9 +283,8 @@ are choosing.
 \end{quotation}
 As such it became apparent that some other techniques would have to be incorporated in order to create a competent
 texas hold'em agent.
-This is when I discovered\citep{heinrich2015fictitious} which utilises a game theoretic model, called
-fictitious self-play, as an inspiration for a machine learning based approach to imperfect information games.
-In the following section I will discuss elements of game theory that are relevant to this approach.
+Certain game theoretic concepts were pervasive in the texas hold'em implementations and as such a brief study
+of these concepts was conducted.
 
 \subsection{Extensive-form Games}\label{subsec:extensiveForm}
 \subsection{Nash Equilibria}\label{subsec:nashEquilibria}
@@ -313,7 +307,6 @@ Poker is a group of card games that combine gambling, strategy and skill.
 All poker variants have three core similarities.
 There is betting involved, there is imperfect information (ie cards remain hidden until the end of a hand)
 and the winner is determined by combinations of cards.
-We will now discuss texas hold'em poker in more detail.
 
 \subsection{Game Structure}\label{subsec:bettingRounds}
 Texas hold'em consists of four betting rounds.
@@ -344,6 +337,21 @@ If a player wins a pot then all of the chips in the pot are transferred to the w
 \subsection{Actions}\label{subsec:actions}
 
 \subsection{Hand Values}\label{subsec:handValues}
+In poker the best 5 cards available to the player can be played.
+This means any combination of his own private cards and the public cards can be used.
+There are 10 major poker hands.
+These are listed below in ascending order of value:
+\begin{enumerate}
+    \item \textbf{High Card:} None of the higher hand values achieved, highest card plays.
+    \item \textbf{Pair:} Any two cards of the same rank.
+    \item \textbf{Two Pair:} Two different pairs.
+    \item \textbf{Three of a kind:} Three cards of the same rank.
+    \item \textbf{Straight:} Five cards in a sequence.
+    \item \textbf{Flush:} Five cards of the same suit.
+    \item \textbf{Full House:} Three of a kind with a pair.
+    \item \textbf{Straight Flush:} Five cards in sequence, all of the same suit.
+    \item \textbf{Royal Flush:} A, K, Q, J, 10 - all of the same suit.
+\end{enumerate}
 
 \subsection{Texas Hold'em Using Counterfactual Regret Minimization}\label{subsec:thCFR}
 
