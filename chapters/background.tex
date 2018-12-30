@@ -265,11 +265,35 @@ after each visit to $s$.
 These two methods are called \textit{first-visit} and \textit{every-visit} respectively.
 
 \subsubsection{Monte Carlo Action Values}
+In Monte Carlo methods, the lack of a model means that we cannot use only state values in order to
+obtain a policy.
+Rather state-value pairs are generally evaluated.
+This mapping of state-action pairs to values is referred to as the $q$ function.
+In this case the evaluation problem for action values is to estimate $q_\pi(s, a)$, the expected return when
+starting in state s, taking action a, and thereafter following policy $\pi$\citep{sutton1998reinforcement}.
+
+The method for policy evaluation using state-action pairs is almost identical to that outlined above.
+The only difference being that instead of averaging rewards for each state, we average
+rewards for each action taken when a state is visited.
+There is one problem with this approach in the context of deterministic policies.
+The problem being that in following a deterministic policy we will only receive returns
+for a single action, thus only one action value estimate will be improved.
+In order to negate this problem we can specify that every episode begin in a state-action pair,
+with the probability of starting in each state-action pair being non-zero.
+This is called the \textit{exploring-starts} method.
+Another approach would be to ensure that we are using a stochastic policy with
+the probability of selecting each action being non-zero.
 
 \subsubsection{Monte Carlo Policy Improvement}
+\begin{figure}[ht]
+    \includegraphics[scale=.5]{MC_control.png}
+    \caption{Monte Carlo Policy Improvement}
+\end{figure}
 
 \subsection{Temporal Difference Learning}\label{subsec:td}
-
+\subsubsection{TD Learning Policy Evaluation}
+\subsubsection{TD Learning Improvement - SARSA}
+\subsubsection{TD Learning Improvement - Q-Learning}
 
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
