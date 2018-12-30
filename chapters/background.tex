@@ -191,7 +191,7 @@ Some of the main differences are in how method each approaches the prediction an
 \subsection{Dynamic Programming}\label{subsec:dp}
 Dynamic programming (DP) refers to a collection of algorithms that can be used to compute optimal policies given a
 perfect model of the environment as a Markov decision process\citep{sutton1998reinforcement}.
-Dynamic programming is not widely used in practical reinforcement learning applications due to its assumption
+DP is not widely used in practical reinforcement learning applications due to its assumption
 of a perfect MDP and it's high computational requirements.
 Despite this it is very important from a theoretical standpoint as it serves as an introduction to a number
 of important reinforcement learning concepts.
@@ -285,15 +285,59 @@ Another approach would be to ensure that we are using a stochastic policy with
 the probability of selecting each action being non-zero.
 
 \subsubsection{Monte Carlo Policy Improvement}
+In Monte Carlo methods, the overall policy improvement algorithm is the same as outlined in the dynamic
+programming section.
+That is, we alternate between modifying the value function to more closely approximate the current policy,
+and using the value function to improve the policy.
 \begin{figure}[ht]
     \includegraphics[scale=.5]{MC_control.png}
     \caption{Monte Carlo Policy Improvement}
 \end{figure}
 
 \subsection{Temporal Difference Learning}\label{subsec:td}
+The final reinforcement learning method we will discuss is the Temporal Difference(TD) learning method.
+TD learning combines dynamic programming(DP) and and Monte Carlo(MC) ideas\citep{sutton1998reinforcement}.
+Like MC, we can learn directly from experience, without a model of the environment's dynamics.
+However, like DP we update state value estimates based on other learned estimates, without needing to wait for an
+episode to complete and the return of some final outcome.
+
+The selective use of different aspects of these reinforcement learning methodologies by TD learning has \
+a number of advantages.
+Obviously the fact that a model of the environment is not needed makes it easier to implement TD methods
+compared to DP .
+TD methods are also conducive to solving problems with long episodes or even continuous tasks with no
+episodes at all due to the fully online nature of this learning algorithm.
+
 \subsubsection{TD Learning Policy Evaluation}
-\subsubsection{TD Learning Improvement - SARSA}
-\subsubsection{TD Learning Improvement - Q-Learning}
+Unlike MC, with TD learning we need only wait until the next time step in order to update the value function.
+This is exemplified by the \textit{TD(0)} or \textit{one-step TD} method in which we make the
+update immediately on transition from state $s_t$ to state $S_{t+1}$.
+The more general case of this method is the \textit{TD($\lambda$)} or \textit{n-step TD}.
+With \textit{TD(0)} the update rule is as follows:
+
+\begin{align}
+    V(S_t) \leftarrow V(S_t) + \alpha \lbrack R_{t+1} + \gamma V(S_{t+1}) - V(S_t) \rbrack
+\end{align}
+
+As such the new value for some state $S_t$ is dependant on the previous value of the state($V(S_t)$),
+along with the reward($R_{t+1}$) gained from transitioning to state $S_{t+1}$ plus the discounted($\gamma$)
+estimated value that state.
+The sum of the latter is multiplied by $\alpha$ which is a small positive fraction that influences the
+learning rate.
+
+This rule is applied for each state visited in an episode and for each episode.
+
+\subsubsection{TD Learning Policy Improvement - SARSA}
+At this point it is worth noting that there are two distinct methods of handling policy improvement.
+The first is on-policy and the second is off-policy.
+On-policy reinforcement learning is when the policy being evaluated or improved is the same policy that is used
+to make decisions.
+In off-policy reinforcement learning the policy being used to generate behavior is not the same as the policy
+being evaluated or improved.
+
+SARSA is an example of an on-policy algorithm.
+
+\subsubsection{TD Learning Policy Improvement - Q-Learning}
 
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
