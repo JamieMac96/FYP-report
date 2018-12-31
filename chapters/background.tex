@@ -168,7 +168,7 @@ As mentioned above the primary focus of reinforcement learning is to find a poli
 the agent to take actions in states that lead to the maximum possible reward.
 There are two primary problems that we must solve in order to do so.
 
-The first is called the prediction problem, also known as policy evaluation.
+The first is called the prediction problem, or policy evaluation.
 This involves computing the values of states given some arbitrary policy\citep{sutton1998reinforcement}.
 For example a state would have a high value if the reward for reaching that state was high.
 A state would also have a high value if we were only one action away, according to the supplied policy,
@@ -176,7 +176,7 @@ from a state that renders a high reward.
 However a state would have a low value if, according to the policy, there was no path to a state that
 would return a positive reward in the foreseeable future.
 
-The second problem is known as the control problem, also known as policy improvement.
+The second problem is known as the control problem, or policy improvement.
 This involves changing the policy in order to improve our cumulative reward.
 The policy improvement process can only occur when the we have performed policy evaluation.
 Let's say, after our evaluation step, we know the value of some state $s$.
@@ -250,13 +250,14 @@ In Monte Carlo, unlike dynamic programming, we do not assume complete knowledge 
 Monte Carlo methods require only experience.
 We sample sequences of states, actions, and rewards from interaction with the
 environment\citep{sutton1998reinforcement}.
+These sequences are called episodes.
 Monte carlo evaluation is an episodic process this means that we only update our action values after an episode
 has completed.
 
 \subsubsection{Monte Carlo Policy Evaluation}
 In Monte Carlo methods we take a fundamentally different approach to policy evaluation.
 As mentioned this method is focused on using episodic experience.
-As such, in order to evaluate a state we can simply average the rewards returned after visiting that state.
+In order to evaluate a state we can simply average the rewards returned after visiting that state.
 As we observe more returns the average will converge to the actual expected value of the state.
 
 It is worth noting that a state $s$ could be visited more than once in an episode.
@@ -267,8 +268,8 @@ These two methods are called \textit{first-visit} and \textit{every-visit} respe
 \subsubsection{Monte Carlo Action Values}
 In Monte Carlo methods, the lack of a model means that we cannot use only state values in order to
 obtain a policy.
-Rather state-value pairs are generally evaluated.
-This mapping of state-action pairs to values is referred to as the $q$ function.
+Rather state-action pairs are generally evaluated.
+This mapping of state-action pairs to values is referred to as the $q$ function or the action value function.
 In this case the evaluation problem for action values is to estimate $q_\pi(s, a)$, the expected return when
 starting in state s, taking action a, and thereafter following policy $\pi$\citep{sutton1998reinforcement}.
 
@@ -301,7 +302,7 @@ Like MC, we can learn directly from experience, without a model of the environme
 However, like DP we update state value estimates based on other learned estimates, without needing to wait for an
 episode to complete and the return of some final outcome.
 
-The selective use of different aspects of these reinforcement learning methodologies by TD learning has \
+The selective use of different aspects of these reinforcement learning methodologies by TD learning has
 a number of advantages.
 Obviously the fact that a model of the environment is not needed makes it easier to implement TD methods
 compared to DP .
@@ -311,17 +312,15 @@ episodes at all due to the fully online nature of this learning algorithm.
 \subsubsection{TD Learning Policy Evaluation}
 Unlike MC, with TD learning we need only wait until the next time step in order to update the value function.
 This is exemplified by the \textit{TD(0)} or \textit{one-step TD} method in which we make the
-update immediately on transition from state $s_t$ to state $S_{t+1}$.
+update immediately on transition from state $S_t$ to state $S_{t+1}$.
 The more general case of this method is the \textit{TD($\lambda$)} or \textit{n-step TD}.
 With \textit{TD(0)} the update rule is as follows:
-
 \begin{align}
-    V(S_t) \leftarrow V(S_t) + \alpha \lbrack R_{t+1} + \gamma V(S_{t+1}) - V(S_t) \rbrack
+    V(S_t) \leftarrow V(S_t) + \alpha \lbrack R_{t+1} + \gamma V(S_{t+1}) - V(S_t) \rbrack.
 \end{align}
-
 As such the new value for some state $S_t$ is dependant on the previous value of the state($V(S_t)$),
 along with the reward($R_{t+1}$) gained from transitioning to state $S_{t+1}$ plus the discounted($\gamma$)
-estimated value that state.
+estimated value of that state($V(S_{t+1})$).
 The sum of the latter is multiplied by $\alpha$ which is a small positive fraction that influences the
 learning rate.
 
@@ -336,8 +335,27 @@ In off-policy reinforcement learning the policy being used to generate behavior 
 being evaluated or improved.
 
 SARSA is an example of an on-policy algorithm.
+The policy improvement mechanism is the same here as outlined in the previous sections.
+With SARSA, like in Monte Carlo we utilise the action-value function($q_{\pi}(s, a)$) rather
+than the state-value function.
+Thus the policy evaluation step is slightly modified as follows:
+\begin{align}
+    Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \lbrack R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \rbrack.
+\end{align}
+This update utilises the quintuple of events, ($S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1}$), which is where the
+name SARSA originates.
+
 
 \subsubsection{TD Learning Policy Improvement - Q-Learning}
+Q-Learning is an off-policy control algorithm.
+This was one of the early breakthroughs in reinforcement learning as it allows the direct approximation of
+the optimal action value function independent of the policy being followed.
+The update rule is as follows:
+\begin{align}
+    Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \lbrack R_{t+1} + \gamma maxQ(S_{t+1}, a) - Q(S_t, A_t) \rbrack.
+\end{align}
+Here our update rule is similar to that of SARSA apart from the fact that we use the value of the best
+action available ($maxQ(S_{t+1}, a)$) when updating our action value.
 
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
@@ -354,20 +372,61 @@ texas hold'em agent.
 Certain game theoretic concepts were pervasive in the texas hold'em implementations and as such a brief study
 of these concepts was conducted.
 
-\subsection{Extensive-form Games}\label{subsec:extensiveForm}
+\subsection{Modelling Games}\label{subsec:modellingGames}
+When we attempt to solve a game, we must first understand how we are to model that game.
+We must also carefully consider how we define a form or structure of the model\citep{myerson2013game}.
+In this section we will discuss three important forms that games can take and the varying utility
+of each in different scenarios.
+
+\subsubsection{Extensive Form Games}
+Extensive form games are a model of players sequential interaction, with explicit representation of a
+number of key aspects of the game.
+They were formally defined in\citep{kuhn2016extensive} as consisting of the following components:
+\begin{itemize}
+    \item \textit{N} - a set of players.
+    \item \textit{S} - a set of states that represent the nodes of a rooted game tree.
+    \item \textit{A(s)} - a set of actions for each state representing the edges to the following states.
+    \item \textit{U} - a set of information states (one for each player).
+    \item \textit{Player Function} - determines who is to act at a given state.
+    \item \textit{Information Function} - determines which states are indistinguishable for the player by mapping them to the same information state.
+    \item \textit{Return Function} - maps terminal states to each player's return/payoff.
+\end{itemize}
+
+Extensive form games allow us to richly describe game situations.
+This allows us to uncover characteristic differences between games and the structural features which
+determine these differences\citep{kuhn2016extensive}.
+
+We can also define behavioral strategies for players, which consist of a probability distribution over actions
+given information states\citep{heinrich2017reinforcement}.
+
+\subsubsection{Normal Form Games}
+Normal form games are represented by way of a matrix.
+Although some information is lost in comparison to extensive form games, normal forms are
+better suited to the derivation of generalized theorems\citep{kuhn2016extensive} and thus have their own utility.
+
+An extensive-form game can induce an equivalent normal form of the same game.
+This can be done through the generation of a set of deterministic behavioral strategies for each player
+called pure strategies.
+Each pure strategy is a full game plan that will determine an action for each situation the player may encounter.
+We can also create mixed strategies which define a probability distribution over the players pure strategies.
+
+\subsubsection{Sequence Form Games}
+
 \subsection{Nash Equilibria}\label{subsec:nashEquilibria}
 \subsection{Fictitious Play}\label{subsec:fictitiousPlay}
 
 
 \section{Supervised Learning}\label{sec:supervisedLearning}
+Supervised learning was also a common theme in the RL based texas hold'em implementations so once again a
+brief study of this area was conducted.
+
 Supervised learning involves an agent which observes some example input-output pairs and learns
 a function that maps from input to output.\citep{russell2016artificial}.
 This learned function can then be used on new input data, that wasn't used to train the agent and the
 agent should be able to give an accurate output.
-As such this learning task is a generalization problem.
 The agent must be able to identify general features of the input data and how they map to the output.
-Common examples of
-
+Common applications of supervised learning include computer vision, speech and pattern recognition as well as
+spam detection.
 
 \section{Texas Hold'em}\label{sec:thIntro}
 Texas hold'em is one variant of the family of games called poker.
@@ -421,9 +480,17 @@ These are listed below in ascending order of value:
     \item \textbf{Royal Flush:} A, K, Q, J, 10 - all of the same suit.
 \end{enumerate}
 
-\subsection{Texas Hold'em Using Counterfactual Regret Minimization}\label{subsec:thCFR}
+\subsection{Leduc Hold'em}\label{subsec:leducHoldem}
 
-\subsection{Texas Hold'em Using Reinforcement Learning}\label{subsec:thRL}
+\section{Texas Hold'em Agent Implementations}\label{sec:thImplementations}
+Thus we far we have laid a foundation for what will be the theoretical basis for the implementation of a
+texas hold'em agent using reinforcement learning.
+Now we will discuss in detail some of the previous approaches that were studied.
 
-\subsection{Texas Hold'em Using Neural Fictitious Self-Play}\label{subsec:thNFSP}
+\subsection{Counterfactual Regret Minimization}\label{subsec:thCFR}
+
+
+\subsection{Lagging Anchor Algorithm}\label{subsec:thRL}
+
+\subsection{Neural Fictitious Self-Play}\label{subsec:thNFSP}
 

@@ -5,7 +5,7 @@
 Since the inception of machine learning, games have been a key problem area that has seen a lot of focus from
 top academics.
 For decades games have been used as a platform to test and develop algorithms that have gone on to provide invaluable
-services that are used peoples's everyday life.
+services that are used in peoples everyday lives.
 The ability to contribute to this great history was a large motivator when it came to choosing this project.
 
 Although this report will, to an extent, discuss machine learning and how it applies to games in general, the
@@ -17,12 +17,12 @@ The metric used to update these strategies is called regret, which measures the 
 game's outcome and the outcome that could have been achieved if some other action was taken.
 A large number of simulated games are played, with regret being calculated each time and subsequently being used
 to compute a strategy that is optimal.
-One example of CFR being used was the 2018 annual computer poker competition (ACPC) champion, slumbot\citep{jackson2013slumbot}.
+One example of CFR being used was the 2018 Annual Computer Poker Competition (ACPC) champion, slumbot\citep{jackson2013slumbot}.
 
 When applied to large imperfect information games such as texas hold'em CFR generally relies on the
 creation of abstractions of the game.
 The CFR algorithm is applied to these abstractions, generating a strategy.
-Finally we can apply the generated strategy to the full version of the game and, if the
+The generated strategy is then applied to the full version of the game and, if the
 original abstraction was accurate, our strategy will work well.
 This obviously requires a high degree of knowledge of the game in order to create an accurate abstraction.
 
@@ -51,7 +51,7 @@ In another RL was combined with techniques inspired by game theory\citep{heinric
 This latter approach will be the basis for our texas hold'em agent as we attempt to replicate and
 build upon the results outlined in this paper.
 
-These different approaches will be discussed in greater detail in the background section.
+The different approaches will be discussed in greater detail in the background section.
 
 \section{Objectives}\label{sec:objectives}
 \subsection{Primary Objectives}\label{subsec:primaryObjectives}
@@ -66,7 +66,7 @@ This version of hold'em consists usually of a six card deck and only one private
 In\citep{heinrich2015fictitious} a metric called exploitability was used.
 This is a measure of how the agent's strategy fares against the best responses to that strategy.
 For Leduc Hold'em, with a 6 card deck and 300 seconds of training time the initial exploitability was slightly
-over 1.2 and descended and converged to under .5.
+over 1.2 and descended to under .5.
 When the deck size increased to 60 cards the exploitability began at over 5.5 and converged to roughly 1.2 in
 the same period of time.
 As such the success criteria for our initial iteration of the game is to replicate these results, with an
@@ -78,7 +78,7 @@ In this second iteration of the project we will tackle limit texas hold'em with 
 the results shown by Heinrich in his second paper on the matter\citep{heinrich2016deep}.
 In this paper, rather than using exploitability as an evaluation method, the agent was simply compared
 against the best hold'em agents from the ACPC of the previous year.
-Thus win rate was used as a the evaluation mechanism.
+Thus win rate was used as the evaluation metric.
 More specifically the measure used was mbb/h or milli big-blinds per hand.
 This is a measure of the number of big blinds won or lost per thousand hands.
 Note that the big blind is the larger of the two mandatory bets required at the beginning of each hand.
@@ -99,8 +99,6 @@ of the domain.
 This means learning the history of RL, the types of problems that it has been used to solve and the specific details of
 different RL algorithms.
 
-The same can be said
-
 A successful project will require a high degree of knowledge from the broader domain of RL. However, it is also the case
 that I must become closely familiar with the existing academic literature in the area of RL with respect to imperfect
 information games.
@@ -113,3 +111,23 @@ the existing literature whether that be through literature review or through my 
 \section{Methodology}\label{sec:methodology}
 
 \section{Motivation}\label{sec:Motivation}
+For the last number of years I have played poker recreationally with friends or online.
+It became more of an interest of mine as I started to explore the mathematical basis for the game and how
+players could use their knowledge, intelligence and temperament in order to gain an advantage in a game that,
+on the face of it, seemed to be largely based on chance.
+I spent some of my free time researching different aspects of the game.
+This included gaining some basic knowledge like the probability of making drawing hands as well as learning more
+technical aspects of the game such as how to calculate expected value of hands,
+or how to narrow down one's opponent's range of possible hands.
+
+Concurrent with the development of this interest I was also becoming more and more interested in the area
+of machine learning.
+Machine learning and the development of artificial intelligence is possibly the most glamourized area
+of computer science.
+However, this is probably for good reason because there is something intrinsically interesting
+about machines that can learn to solve a problem on their own, without direct instructions from a human.
+The fact that machine learning has made so many strides in recent years was another cause of interest in
+this area of computer science, especially as the practical viability of ML as means of tackling a wide array
+of problems in industry continues to increase.
+
+As a result the merging of these two interests as the basis for my final year project seemed like an obvious choice.
