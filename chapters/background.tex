@@ -398,6 +398,10 @@ determine these differences\citep{kuhn2016extensive}.
 
 We can also define behavioral strategies for players, which consist of a probability distribution over actions
 given information states\citep{heinrich2017reinforcement}.
+This is denoted by $\pi^i(a|u^i)$.
+If we have a collection of strategies for all players in the game then this is called a strategy profile, $\pi$.
+$\pi^{-i}$ is the set of strategies in $\pi$ not including $\pi^i$.
+This will be discussed later when we discuss Heinrich's implementation in more depth.
 
 \subsubsection{Normal Form Games}
 Normal form games are represented by way of a matrix.
@@ -412,7 +416,22 @@ We can also create mixed strategies which define a probability distribution over
 
 \subsubsection{Sequence Form Games}
 
+
 \subsection{Nash Equilibria}\label{subsec:nashEquilibria}
+A Nash's equilibrium is a state in which each player in a game has chosen a strategy and
+none of the players can benefit from changing their strategies, if the other player's strategies remain unchanged.
+As such, if we reach a strategy that induces a Nash's equilibrium our strategy can no longer be exploited.
+
+In the context of extensive form games the concept of best responses is related to that of Nash's equilibria.
+If the opponent's strategies are denoted by $\pi^{-i}$ then the set of best responses are denoted by
+$BR^i(\pi^{-i})$.
+Note that if we have a strategy profile $\pi$ such that $\pi^i\in BR^i(\pi^{-i})$ for every $i\in N$ (i.e
+for every player) then that game constitutes a Nash equilibrium\cite{heinrich2017reinforcement}.
+Heinrich also discusses the concept of $\varepsilon$-best responses.
+This is the set of strategies that are within a certain tolerance $\varepsilon$ of the best responses.
+As such we can define an $\varepsilon$-Nash equilibrium as a strategy profile $\pi$ such that
+$\pi^i \in BR^i_\varepsilon (\pi^{-i})$
+
 \subsection{Fictitious Play}\label{subsec:fictitiousPlay}
 
 
