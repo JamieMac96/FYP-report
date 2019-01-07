@@ -369,8 +369,8 @@ are choosing.
 \end{quotation}
 As such it became apparent that some other techniques would have to be incorporated in order to create a competent
 texas hold'em agent.
-Certain game theoretic concepts were pervasive in the texas hold'em implementations and as such a brief study
-of these concepts was conducted.
+Since our implementation will be following the method discussed by\citep{heinrich2017reinforcement}
+the following section will give the requisite background in order to facilitate later discussion of this method.
 
 \subsection{Modelling Games}\label{subsec:modellingGames}
 When we attempt to solve a game, we must first understand how we are to model that game.
@@ -386,7 +386,7 @@ They were formally defined in\citep{kuhn2016extensive} as consisting of the foll
     \item \textit{N} - a set of players.
     \item \textit{S} - a set of states that represent the nodes of a rooted game tree.
     \item \textit{A(s)} - a set of actions for each state representing the edges to the following states.
-    \item \textit{U} - a set of information states (one for each player).
+    \item \textit{U} - a set of information states (one set for each player).
     \item \textit{Player Function} - determines who is to act at a given state.
     \item \textit{Information Function} - determines which states are indistinguishable for the player by mapping them to the same information state.
     \item \textit{Return Function} - maps terminal states to each player's return/payoff.
@@ -413,9 +413,26 @@ This can be done through the generation of a set of deterministic behavioral str
 called pure strategies.
 Each pure strategy is a full game plan that will determine an action for each situation the player may encounter.
 We can also create mixed strategies which define a probability distribution over the players pure strategies.
+We can denote a mixed strategy for player $i$ as $\Pi^i$.
+When we restrict the extensive-form return function to normal-form we yield an expected return function.
+The expected return function for some mixed strategy profile $\Pi$ is $R^i(\Pi)$\citep{heinrich2017reinforcement}.
 
 \subsubsection{Sequence Form Games}
+In order to compute a Nash equilibrium for an extensive form game we can convert the game to a normal form,
+however normal forms tend to produce very large game trees.
+The sequence form is an efficient method of representing extensive form games\citep{koller1996efficient}.
+This representation is described as a linear-sized strategic description of the game.
+It decomposes players strategies into sequences of actions and probabilities of realizing those sequences.
 
+In sequence form games, for every player $i\in N$, each of their information states $u^i\in U^i$
+uniquely define a \textbf{sequence} $\sigma_{u^i}$ of actions that a player must take in order to reach
+that information state.
+These sequences are then mapped to realization probabilities through what is called a realization plan,
+denoted by $x$.
+When two or more strategies have the same realization plan we consider these strategies to be
+realization equivalent\citep{von1996efficient}.
+This can apply across different types of strategies for example extensive-form, behavioral strategies
+and normal-form, mixed strategies\citep{kuhn2016extensive}.
 
 \subsection{Nash Equilibria}\label{subsec:nashEquilibria}
 A Nash's equilibrium is a state in which each player in a game has chosen a strategy and
@@ -426,14 +443,28 @@ In the context of extensive form games the concept of best responses is related 
 If the opponent's strategies are denoted by $\pi^{-i}$ then the set of best responses are denoted by
 $BR^i(\pi^{-i})$.
 Note that if we have a strategy profile $\pi$ such that $\pi^i\in BR^i(\pi^{-i})$ for every $i\in N$ (i.e
-for every player) then that game constitutes a Nash equilibrium\cite{heinrich2017reinforcement}.
+for every player) then that game constitutes a Nash equilibrium\citep{heinrich2017reinforcement}.
 Heinrich also discusses the concept of $\varepsilon$-best responses.
 This is the set of strategies that are within a certain tolerance $\varepsilon$ of the best responses.
 As such we can define an $\varepsilon$-Nash equilibrium as a strategy profile $\pi$ such that
-$\pi^i \in BR^i_\varepsilon (\pi^{-i})$
+$\pi^i \in BR^i_\varepsilon (\pi^{-i})$ for all $i\in N$.
 
 \subsection{Fictitious Play}\label{subsec:fictitiousPlay}
+Fictitious play(FP) is a game-theoretic model of learning through self-play.
+At each iteration players choose the best responses to their opponents average
+strategies\citep{heinrich2017reinforcement}.
+These strategies converge to Nash equilibria in certain classes of games, including two-player, zero sum games.
 
+Generalised weakened fictitious self-play (GWFSP) is a method that is built on FP but allows for approximations
+in players strategies\citep{leslie2006generalised}.
+Thus it is more suitable for machine learning.
+GWFSP allows for a certain error at each iteration of the algorithm and relies on the fact that this
+error rate will tend towards zero as time progresses.
+In the the research done by Leslie and Collins normal form games were studied.
+There has also been research done into the applicability of FP to extensive form games however,
+before Heinrich there was no method shown to converge for imperfect information games such as poker.
+In later sections we will discuss how Heinrich utilised GWFSP as a basis for neural fictitious self-ply,
+a method that has shown success in games of imperfect information.
 
 \section{Supervised Learning}\label{sec:supervisedLearning}
 Supervised learning was also a common theme in the RL based texas hold'em implementations so once again a
@@ -448,7 +479,7 @@ Common applications of supervised learning include computer vision, speech and p
 spam detection.
 
 \section{Texas Hold'em}\label{sec:thIntro}
-Texas hold'em is one variant of the family of games called poker.
+Texas hold'em is one variant in a family of games called poker.
 Poker is a group of card games that combine gambling, strategy and skill.
 All poker variants have three core similarities.
 There is betting involved, there is imperfect information (ie cards remain hidden until the end of a hand)
@@ -459,9 +490,9 @@ Texas hold'em consists of four betting rounds.
 Initially each player is dealt two private cards.
 These remain face down and only the person who received these cards may view them.
 In the next three rounds five public cards are dealt face up on the table.
-The second round of dealing is called the flop, where three cards are dealt.
+The second round of dealing is called the flop, where three public cards are dealt.
 The third round is called the turn where one additional public card is dealt.
-Finally in the fourth round another card is dealt which is called the river.
+Finally in the fourth round another public card is dealt which is called the river.
 
 At each round, after the cards are dealt, the players are given the opportunity to take a number of betting
 related actions.
@@ -481,6 +512,13 @@ Each player will start the game with a certain amount of chips.
 If a player wins a pot then all of the chips in the pot are transferred to the winners stack.
 
 \subsection{Actions}\label{subsec:actions}
+As mentioned in the previous section, after cards are dealt players are permitted to take a number of actions.
+If a player is the first to act the they may either check or bet a chosen amount.
+If a player is not first to act and the previous player has made a bet then they may choose
+to either fold and forfeit the pot, call the bet by adding the same amount to the pot, or raise by
+adding the amount previously bet plus some additional chips.
+Players can go back and forth with bets until they run out of chips in which case they are
+considered to be "all in".
 
 \subsection{Hand Values}\label{subsec:handValues}
 In poker the best 5 cards available to the player can be played.
