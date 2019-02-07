@@ -163,6 +163,22 @@ Based on our specified value of $\gamma$ we can alter the weighting of future re
 For example if we have a low value for $\gamma$ (eg .5) then the value of rewards more than a
 few time steps in the future will be very low.
 
+\subsubsection{Partially Observable Markov Decision Processes}
+A partially observable Markov decision Process (POMDP) is used to model environments that are not
+fully observable\citep{kaelbling1996reinforcement}.
+POMDPs extend MDPs by including a set of observations, $O$.
+There is also an observation function, $P(O_t=o|S_t=s)$, that determines the probability of making a certain observation
+in a certain state.
+Hold'em can be modelled as a POMDP due to the fact that is an imperfect information game.
+
+However, it is possible that an agent in a POMDP environment can remember the sequence of observations
+and actions that lead to the current state.
+This is a sufficient statistic of it's experience and can thus define a complete information
+state\citep{heinrich2017reinforcement}.
+As such we can reduce the POMDP to it's underlying MDP by using these full history information
+states and also extending the relevant transition and reward functions.
+
+
 \subsection{Policy Evaluation and Policy Improvement}\label{subsec:policyEvalPolicyImp}
 As mentioned above the primary focus of reinforcement learning is to find a policy (denoted by $\pi$) that allows
 the agent to take actions in states that lead to the maximum possible reward.
@@ -540,11 +556,12 @@ These are listed below in ascending order of value:
 \subsection{Leduc Hold'em}\label{subsec:leducHoldem}
 Leduc Hold'em is a simplified version of Hold'em that was first introduced in\citep{southey2012bayes}.
 In Leduc Hold'em the deck is reduced to six cards with two suits and three ranks in each suit.
-Rather than four rounds there are ony two.
+Rather than four rounds there are only two.
 In the first round a single private card is dealt to each player.
 In the second round a single board card is revealed.
-In the first round both players have a mandatory bet of one and a raise of 2 is allowed.
-In the second round players can raise by at most 4.
+In the first round both players have a mandatory bet of one and a raise of two is allowed.
+In the second round players can raise by four.
+Each round allows for at most two bets.
 
 \section{Texas Hold'em Agent Implementations}\label{sec:thImplementations}
 Thus we far we have laid a foundation for what will be the theoretical basis for the implementation of a
@@ -552,7 +569,6 @@ texas hold'em agent using reinforcement learning.
 Now we will discuss in detail some of the previous approaches that were studied.
 
 \subsection{Counterfactual Regret Minimization}\label{subsec:thCFR}
-
 
 \subsection{Lagging Anchor Algorithm}\label{subsec:thRL}
 
