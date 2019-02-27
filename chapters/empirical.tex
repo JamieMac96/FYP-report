@@ -9,28 +9,96 @@
 \section{Overview}\label{sec:empOverview}
 In this chapter we will cover a number of experiments that were conducted in order to investigate
 the performance of the different algorithms implemented in order to tackle Leduc Hold'em.
+We will begin with a simplified version of MCTS for POMDPs and will incrementally add to this
+method in order to see how the performance of our agent evolves.
 In the table below we have listed the template that we will follow when conduction these experiments.
-
 
 \begin{tabular}{ | p{2cm} | p{10cm} | }
     \hline
     \textbf{Section} & \textbf{Rationale} \\
     \hline
-    Objective & cell3 \\
+    Objective & This section will contain an explanation of the purpose of the experiment along with
+    how it was carried out \\
     \hline
-    Algorithm and Coding & cell6 \\
+    Algorithm and Coding & This section will go into the details of the algorithm used to produce results \\
     \hline
-    Results & cell9 \\
+    Results & This section will detail the results acquired from the experiments conducted \\
     \hline
-    Analysis & cell10 \\
+    Analysis & In this section we will examine our results and try to provide insight into the
+    reasoning behind these results \\
     \hline
 \end{tabular}
 
-\section{Experiment 1}\label{sec:expmeriment1}
+\section{Experiment 1 - MCTS versus random player}\label{sec:expmeriment1}
+The first experiment conducted involved a simplified version of the algorithm outlined in\citep{silver2010monte}.
+We set an initial goal of using a random player as our benchmark opponent in order to demonstrate how
+this algorithm could exploit such a player's strategic inefficiencies.
+
+\subsection{Objective}\label{subsec:objective1}
+The goal of this experiment is to implement MCTS for Leduc Hold'em.
+As mentioned we will be following Silver's 2010 implementation.
+This ticks the box of being applicable to POMDPs like poker however this implementation
+\subsection{Algorithm and Coding}\label{subsec:algAndCoding1}
+
+
+\begin{figure}
+    \includegraphics[scale=.8]{POMCTs_algorithm.png}
+    \caption{Partially Observable Monte Carlo Tree Search}
+\end{figure}
+
+\lstset{language=Python}
+\lstset{frame=lines}
+\lstset{caption={Insert code directly in your document}}
+\lstset{label={lst:code_direct}}
+\lstset{basicstyle=\footnotesize}
+\begin{lstlisting}
+    from brg.datastructures import Mesh
+
+    mesh = Mesh.from_obj('faces.obj')
+    mesh.draw()
+\end{lstlisting}
+
+\subsection{Results}\label{subsec:results1}
+The first metric that we used in order to analyse the results of this experiment is cumulative reward.
+This is simply the sum of the output of the reward function over time.
+In our case the function directly corresponds to the size of the pot won or lost in the game,
+thus we can have either a positive or negative reward.
+In figure 4.2 we see the reward over time increasing.
+In order to obtain these results we ran the algorithm for 1000 iterations and repeated this process 100 times.
+We then averaged our cumulative rewards at each iteration across these 100 repetitions to give the graph shown.
+
+\begin{figure}
+    \includegraphics[scale=.5]{images/cumulative_reward_mcts_vs_random.png}
+    \caption{MCTS cumulative reward over time vs random player}
+\end{figure}
+
+The second metric used to produce results was exploitability.
+This is a measure of the reward that can be gained by playing a best response strategy
+against the agent.
+In order to calculate the best response strategy, and hence the exploitability we must
+take our agent's action selections and insert them into the game tree\citep{heinrich2017reinforcement}.
+In other words, wherever the agent must take an action in the game tree, we choose the best action
+based on our MCTS estimations.
+The result of doing this is a single-player MDP .
+We can then solve this MDP using one of our previously defined RL techniques eg Dynamic Programming.
+This will generate an optimal policy which is equivalent to the best response strategy.
+
+\subsection{Analysis}\label{subsec:analysis1}
+
 
 \section{Experiment 2} \label{sec:experiment2}
 
+\subsection{Objective}\label{subsec:objective2}
+\subsection{Algorithm and Coding}\label{subsec:algAndCoding2}
+\subsection{Results}\label{subsec:results2}
+\subsection{Analysis}\label{subsec:analysis2}
+
 \section{Experiment 3}\label{sec:experiment3}
+
+\subsection{Objective}\label{subsec:objective3}
+\subsection{Algorithm and Coding}\label{subsec:algAndCoding3}
+\subsection{Results}\label{subsec:results3}
+\subsection{Analysis}\label{subsec:analysis3}
 
 \section{Experiment 4} \label{sec:experiment4}
 

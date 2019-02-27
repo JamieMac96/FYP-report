@@ -373,6 +373,15 @@ The update rule is as follows:
 Here our update rule is similar to that of SARSA apart from the fact that we use the value of the best
 action available ($maxQ(S_{t+1}, a)$) when updating our action value.
 
+\subsection{Monte Carlo Tree Search}\label{subsec:mcts}
+In this section we will discuss Monte Carlo Tree Search(MCTS), a decision time planning algorithm.
+This algorithm uses tree search combined with value estimations from MC simulations in order to
+efficiently solve very large MDPs.
+One application of this algorithm was in DeepMind's AlphaGo which became the first computer
+program to beat a highly ranked Go champion\citep{silver2016mastering}.
+
+
+
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
 clear that a pure reinforcement learning approach would not be feasible.
