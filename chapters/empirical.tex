@@ -36,26 +36,41 @@ this algorithm could exploit such a player's strategic inefficiencies.
 
 \subsection{Objective}\label{subsec:objective1}
 The goal of this experiment is to implement MCTS for Leduc Hold'em.
-As mentioned we will be following Silver's 2010 implementation.
-This ticks the box of being applicable to POMDPs like poker however this implementation
+The MCTS agent will play against a random player and learn a strategy to exploit this player for
+maximal reward.
+Although we are interested in the results gained from playing against the random player we treat the
+outcome of this experiment as a baseline for our subsequent results.
+The reasoning for this is that the difficulty in finding a winning strategy against a random player
+is not high.
+Thus we expect that the exploitability of the resultant agent will be relatively high due to the
+fact that it will not have learned all of the strategic intricacies of the game.
+Rather, it will simply know how to beat a 'dumb' random player.
+This will give us a platform to build a more sophisticated agent through different mechanisms such as
+self-play in the subsequent experiments.
+
 \subsection{Algorithm and Coding}\label{subsec:algAndCoding1}
+As mentioned we will be following Silver's 2010 implementation.
+The pseudocode for this algorithm can be seen below.
+This algorithm ticks the box of being applicable to POMDPs like poker.
+The one deviation from Silver's implementation is that we do not include the use of belief states.
+Belief states are used in order to avoid the difficulty of learning a function with unbounded
+input\citep{thrun2000monte}.
+In our case we are learning values associated with histories of actions and observations that occur in the game.
+Due to the nature of Leduc Hold'em these histories are limited in their length and thus belief states are
+not required.
 
-
-\begin{figure}
+\begin{figure}[ht]
     \includegraphics[scale=.8]{POMCTs_algorithm.png}
-    \caption{Partially Observable Monte Carlo Tree Search}
+    \caption{Partially Observable Monte Carlo Planning}
 \end{figure}
 
 \lstset{language=Python}
 \lstset{frame=lines}
-\lstset{caption={Insert code directly in your document}}
+\lstset{caption={Code will go here}}
 \lstset{label={lst:code_direct}}
 \lstset{basicstyle=\footnotesize}
 \begin{lstlisting}
-    from brg.datastructures import Mesh
-
-    mesh = Mesh.from_obj('faces.obj')
-    mesh.draw()
+    import numpy as np
 \end{lstlisting}
 
 \subsection{Results}\label{subsec:results1}
@@ -67,7 +82,7 @@ In figure 4.2 we see the reward over time increasing.
 In order to obtain these results we ran the algorithm for 1000 iterations and repeated this process 100 times.
 We then averaged our cumulative rewards at each iteration across these 100 repetitions to give the graph shown.
 
-\begin{figure}
+\begin{figure}[ht]
     \includegraphics[scale=.5]{images/cumulative_reward_mcts_vs_random.png}
     \caption{MCTS cumulative reward over time vs random player}
 \end{figure}
@@ -82,9 +97,19 @@ based on our MCTS estimations.
 The result of doing this is a single-player MDP .
 We can then solve this MDP using one of our previously defined RL techniques eg Dynamic Programming.
 This will generate an optimal policy which is equivalent to the best response strategy.
+Then, based on the reward gained from the applying the best response strategy we can
+calculate the exploitability of our original MCTS agent.
 
 \subsection{Analysis}\label{subsec:analysis1}
-
+We will first analyse our results from the cumulative reward metric.
+As shown by figure 4.2 we see that initially there is a gradual increase in cumulative reward,
+with the slope growing until it reaches a constant rate of increase.
+This demonstrates that during the initial phase of the algorithm we have not yet uncovered
+the most beneficial action selection for all states and the exploration phase is still in effect.
+However, after 400 iterations, the increase in cumulative reward stabilises which indicates
+that a concrete strategy that can exploit the random play has been established.
+We also conducted this same experiment for a larger number of iterations and saw that the increase
+in cumulative reward did in fact continue at this constant rate even past 1000000 iterations.
 
 \section{Experiment 2} \label{sec:experiment2}
 
