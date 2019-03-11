@@ -572,7 +572,79 @@ In the first round both players have a mandatory bet of one and a raise of two i
 In the second round players can raise by four.
 Each round allows for at most two bets.
 
-\section{Texas Hold'em Agent Implementations}\label{sec:thImplementations}
+
+\section{Variations of MCTS applied to poker}\label{mctsPoker}
+As mentioned MCTS has been shown to be a very powerful method for solving large perfect-information
+games such as Go.
+However if we wish to apply this algorithm to imperfect information games like poker then 
+a number of modifications must be applied.
+Such an approach was outlined in \citep{heinrich2017reinforcement} in which a variation of 
+MCTS called smooth UCT was implemented to tackle both leduc hold'em and limit hold'em.
+
+One of the subtleties of poker is that player information is asymmetric.
+In other words each player has access to their own private card 
+information but not to their opponents private cards.
+This means that we cannot represent the search tree as a single, collective 
+entity\citep{heinrich2017reinforcement}, rather two search trees must be available 
+to accommodate self-play.
+The method used by Heinrich to accomplish this goal was the creation of 
+an information function $I^i(s)$. 
+This function will return the information state $u^i$ of the current player ($i$) given
+the current state $s$ from the overall game tree.
+Note that the overall game tree will have separate nodes for any variation 
+in either players cards.
+However, player 1's game tree will not have separate nodes where the only 
+differentiating factor is player 2's private cards\cite{johanson2011accelerating} 
+due to the fact that this information is not available.
+This means that a number of nodes that are separate in the overall game tree will 
+be grouped in either players individual game trees.
+
+In order to understand smooth UCT we must first explain the meaning of UCT.
+The abbreviation UCT refers to upper confidence bound(UCB) applied to trees.
+This means that in the action selection portion of the algorithm a UCB approach 
+is taken, where less explored nodes in the tree are given a positive bias in value.
+This means that unexplored nodes will be explored which ensures that we discover 
+the best actions at each position in the tree.
+The value of an action is denoted as follows:
+
+\begin{align}
+Q(u^i, a) + c \sqrt{\log N(u^i) / N(u^i, a)} 
+\end{align}
+
+In this expression the $Q$ function denotes the current value estimates for each action $a$ 
+in information state $u^i$.
+$N(u^i)$ and $N(u^i, a)$ denote the current visitation count of the information state $u^i$
+and the subsequent information state after action $a$ has been taken.
+
+Smooth UCT is a modification of UCT that is inspired by fictitious play\cite{heinrich2017reinforcement}.
+As described in the last section the action selection in UCT is purely deterministic. 
+Smooth UCT changes this by utilizing the average strategy a certain proportion 
+of the time. 
+In order to calculate the average strategy for a particular state we create a 
+probability distribution based on the visitation counts of the actions 
+available at that state.
+For example we could have an information state $u^i$ that has been visited 100 times 
+and has three available actions, $a_1, a_2, a_3$.
+Then it would be possible that $a_1$ has been visited 50 times, $a_2$ 35 times 
+and $a_3$ 15 times.
+According to the average strategy we would then select $a_1$ 50\% of the time, 
+$a_2$ 35\% of the time and $a_3$ 15\% of the time.
+In order to determine when the average strategy should be used compared to the 
+UCB approach Heinrich describes a sequence $\eta_k$. 
+This sequence decays to 0 as $\lim_{k \to \infty}$ and is expressed as follows:
+
+\begin{align}
+\eta_k = max(\gamma, (1 + d * \sqrt{N_k})^-1)
+\end{align}
+
+Here $N_k$ is the total number of plays and $\gamma$ is a lower limit on $\eta_k$ 
+and $d$ is a constant that parameterises the rate of decay.
+
+The overall algorithm described by Heinrich for smooth UCT is listed in figure 2.4.
+
+\textbf{INSERT ALGORITHM FOR SMOOTH UCT HERE}
+
+\section{Other Approaches}\label{sec:thImplementations}
 Thus we far we have laid a foundation for what will be the theoretical basis for the implementation of a
 texas hold'em agent using reinforcement learning.
 Now we will discuss in detail some of the previous approaches that were studied.
