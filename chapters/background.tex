@@ -643,15 +643,45 @@ and $d$ is a constant that parameterises the rate of decay.
 The overall algorithm described by Heinrich for smooth UCT is listed in figure 2.4.
 
 \textbf{INSERT ALGORITHM FOR SMOOTH UCT HERE}
+ 
 
 \section{Other Approaches}\label{sec:thImplementations}
-Thus we far we have laid a foundation for what will be the theoretical basis for the implementation of a
-texas hold'em agent using reinforcement learning.
-Now we will discuss in detail some of the previous approaches that were studied.
+Although we have already mentioned that we will be focusing on MCTS
+it's worth discussing some other notable methods for creating poker 
+agents before we continue.
+Currently the premier method for tackling full-scale texas hold'em is counterfactual 
+regret minimization.
+This is the method that has dominated the Annual Computer Poker Competition(ACPC) for the 
+last number of years, however recently some new methods have been outlined 
+which look promising and thus we will discuss these methods as well.
+
 
 \subsection{Counterfactual Regret Minimization}\label{subsec:thCFR}
+Counterfactual regret minimization(CFR) is a method for finding approximate Nash
+equilibria in imperfect information games and was first outlined in \citep{zinkevich2008regret}.
+Regret is a measure of the difference in utility between following some strategy 
+$\sigma$ compared to another strategy.
+Zinkevich introduced counterfactual regret which is regret applied to a 
+single information set ie a single extensive form game state.
+It was found that by calculating and minimizing regret on an individual
+state basis that there were performance benefits as well as an improvement 
+in accuracy of the calculated approximate Nash equilibria.
 
-\subsection{Lagging Anchor Algorithm}\label{subsec:thRL}
+One implementation of CFR is outlined in \citep{jackson2013slumbot}.
+This paper outlines the implementation used for Slumbot, the 2018 ACPC champion 
+in no-limit hold'em.
+Jackson describes his use of CFR in order to generate a static strategy that approximates
+a Nash's equilibrium.
+At each iteration a strategy would be computed and when the process had ended an 
+average of these strategies would be used.
+Jackson also mentions using an abstraction of the game in order to reduce no-limit's 
+massive state space (roughly $10^164$ with stack sizes of 100 big blinds)\citep{johanson2013measuring}.
+This is done through techniques like grouping similar hand values into buckets and 
+treating them as strategically equal or splitting the game up into it's individual rounds 
+and solving the rounds separately.
+These techniques allow for a dramatic reduction in state space and if handled correctly, 
+should allow for a strategy that can transfer to the full version of the game successfully.
+
 
 \subsection{Neural Fictitious Self-Play}\label{subsec:thNFSP}
 
