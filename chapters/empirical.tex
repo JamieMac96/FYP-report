@@ -29,7 +29,7 @@ In the table below we have listed the template that we will follow when conducti
     \hline
 \end{tabular}
 
-\section{Experiment 1 - MCTS versus random player}\label{sec:expmeriment1}
+\section{Experiment 1 - UCT Versus Random Player}\label{sec:expmeriment1}
 The first experiment conducted involved a simplified version of the algorithm outlined in\citep{silver2010monte}.
 We set an initial goal of using a random player as our benchmark opponent in order to demonstrate how
 this algorithm could exploit such a player's strategic inefficiencies.
@@ -98,18 +98,9 @@ repeated this process 10 times, averaging the results.
 The second metric used to produce results was exploitability.
 This is a measure of the reward that can be gained by playing a best response strategy
 against the agent.
-In order to calculate the best response strategy, and hence the exploitability we must
-take our agent's action selections and insert them into the game tree\citep{heinrich2017reinforcement}.
-In other words, wherever the agent must take an action in the game tree, we choose the best action
-based on our MCTS estimations.
-The result of doing this is a single-player MDP .
-We can then solve this MDP using one of our previously defined RL techniques eg Dynamic Programming.
-This will generate an optimal policy which is equivalent to the best response strategy.
-Then, based on the reward gained from the applying the best response strategy we can
-calculate the exploitability of our original MCTS agent.
 
 \begin{figure}[ht]
-    \includegraphics[scale=.8]{images/exploitability_vs_random_player2.PNG}
+    \includegraphics[scale=.8]{images/exploitability_vs_random_player.PNG}
     \caption{MCTS exploitability over time vs random player - 200000 Iterations}
 \end{figure}
 
@@ -125,7 +116,16 @@ the random play has been established.
 This hypothesis is further supported by figure 4.3 as we see a dramatic upswing
 in the rate of increase of cumulative reward followed by a levelling of the graph.
 
-\section{Experiment 2} \label{sec:experiment2}
+In figure 4.4 we see that the exploitabilty of the of the strategy generated begins
+at roughly 1.8 and declines over time to less than 1.1 after 100,000 iterations.
+This once again demonstrates that the agent is developing an intelligent strategy over time.
+However the fact that we do not observe the exploitability value continue to converge towards
+0 demonstrates that the strategy developed does not closely resemble a Nash's equilibrium
+inducing strategy.
+This is most likely explained by the fact that we are not playing against a rational player.
+As such our strategy is strong when it comes to maximally exploiting an irrational, random player
+but if we then substitute this irrational player for a rational player, the results will not be favourable.
+\section{Experiment 2 - UCT Self-Play} \label{sec:experiment2}
 
 \subsection{Objective}\label{subsec:objective2}
 \subsection{Algorithm and Coding}\label{subsec:algAndCoding2}
