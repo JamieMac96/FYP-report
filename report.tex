@@ -25,6 +25,36 @@ citecolor=black,
 \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{MyFrame}{frame=tb}
+\lstdefinestyle{numbers} {numbers=left, stepnumber=1, numberstyle=\tiny, numbersep=10pt}
+
+
+\lstdefinestyle{Python} {
+language=Python,
+style=numbers,
+style=MyFrame,
+frame=none,
+backgroundcolor={},
+aboveskip=3mm,
+belowskip=3mm,
+showstringspaces=false,
+columns=flexible,
+numberstyle=\tiny\color{gray},
+keywordstyle=\color{blue},
+commentstyle=\color{dkgreen},
+stringstyle=\color{mauve},
+breaklines=true,
+breakatwhitespace=true,
+tabsize=3
+}
+
+\lstset{language=Python,frame=lines}
+
+
 \begin{document}
 
 \input{titlepage}

@@ -48,3 +48,50 @@ This process will now be explained in detail with coding examples.
 
 \subsection{Propagating Terminal Values}\label{subsec:propagateTerminals}
 \subsection{Exploitability}\label{subsec:exploitability}
+
+\section{Prototype Application}\label{sec:prototypeApp}
+In order to give visual evidence of the work done and the agent developed, a user interface(UI) was created
+that allowed human interaction with the trained bot.
+In order to facilitate the development of this interface in a short period of time the Qt framework was used.
+Qt is a open-source widget toolkit for creating graphical user interfaces and applications.
+Specifically Qt Designer was used in order to generate a UI template.
+Qt Designer is a what-you-see-is-what-you-get (WYSIWYG) UI generation tool that accompanies Qt.
+PyQt5 was then used to generate python code from this UI template and connect the functional component of the game.
+In this section we will briefly outline the process involved in creating this prototype application
+and highlight some key code snippets.
+
+In order to elicit requirements for this application I applied brainstorming as well as analysing a number
+of online UIs that served a similar purpose to mine.
+This process rendered the following functional requirements:
+\begin{itemize}
+    \item Display list of available actions.
+    \item Allow user to take action.
+    \item Display relevant cards to player.
+    \item Annotate the sequence of events that occur in the game.
+    \item Display the current pot size.
+    \item Allow player to play multiple rounds.
+    \item Keep track of cumulative winnings across multiple rounds.
+\end{itemize}
+
+\subsection{UI Screen}\label{subsec:UiScreen}
+The first step towards achieving these functional requirements was to generate a UI screen.
+This was achieved through Qt designer using drag and drop with the end result being as shown below.
+
+\begin{figure}[ht]
+    \includegraphics[scale=.4]{images/UI_screenshot.png}
+    \caption{Game UI}
+\end{figure}
+
+\subsection{Event Handling and UI Manipulation}\label{subsec:eventHandling}
+
+
+\subsection{Game Model}\label{subsec:gameModel}
+
+\subsection{Agent Representation}\label{subsec:agent}
+
+\begin{lstlisting}[style=Python]
+    class Agent:
+        def __init__(self, strategy_file):
+            self.strategy = self.load_strategy(strategy_file)
+\end{lstlisting}
+
