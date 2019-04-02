@@ -262,6 +262,17 @@ the same action in a particular state.
 This is not a problem as the ideas mentioned apply equally well to stochastic policies.
 
 \subsection{Monte Carlo}\label{subsec:mc}
+Monte Carlo(MC) methods are a wide range of algorithms that rely on random sampling in order to obtain results.
+We could apply such a method in the case of having an array of 1 trillion elements that could be
+either 1 or 0.
+If we wished to calculate the number of 1s in such an array through iterating the array it would
+be very computationally costly.
+However, we could randomly generate indices and maintain a count of both the number of 1s found at these indices
+and the number of indices generated.
+Based on these figures it would be possible to estimate the total number of 1s in the array.
+Over time as we sampled more and more our estimate would converge towards the true value.
+
+Monte Carlo based reinforcement learning techniques apply this method in the policy evaluation step.
 In Monte Carlo, unlike dynamic programming, we do not assume complete knowledge of the environment.
 Monte Carlo methods require only experience.
 We sample sequences of states, actions, and rewards from interaction with the
@@ -380,8 +391,24 @@ efficiently solve very large MDPs.
 One application of this algorithm was in DeepMind's AlphaGo\citep{silver2016mastering} which became the
 first computer program to beat a highly ranked Go champion.
 
-There are four key steps involved in the MCTS algorithm.
-These are
+MCTS is an episodic process and there are four key steps involved in each of these episodes.
+The first step is \textbf{selection}.
+We begin at the root of the tree and use the tree policy, based on action values associated with the edges
+of the tree, in order to select a child node at each level\citep{sutton1998reinforcement}.
+The second step is \textbf{expansion}.
+When we reach a leaf node in the tree we may add one or more child nodes based on
+the actions available at that point.
+The third step is \textbf{simulation}
+When we have exited the tree we then switch to using the rollout policy (eg a random policy) in
+order to reach a terminal node in the tree from which we can obtain a reward.
+The final step is \textbf{backup}.
+This step is uses the reward obtained to update the values of the tree nodes that were visited
+during the episode.
+
+In summary this algorithm uses the simulation step in order to efficiently sample rewards which
+are then propagated back to nodes of the tree.
+In later iterations and based on these values the tree policy selects which areas of the tree to
+explore and expand.
 
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
@@ -579,7 +606,7 @@ As mentioned MCTS has been shown to be a very powerful method for solving large 
 games such as Go.
 However if we wish to apply this algorithm to imperfect information games like poker then 
 a number of modifications must be applied.
-Such an approach was outlined in \citep{heinrich2017reinforcement} in which a variation of 
+Such an approach was outlined in\citep{heinrich2017reinforcement} in which a variation of
 MCTS called smooth UCT was implemented to tackle both leduc hold'em and limit hold'em.
 
 One of the subtleties of poker is that player information is asymmetric.
@@ -589,7 +616,7 @@ This means that we cannot represent the search tree as a single, collective
 entity\citep{heinrich2017reinforcement}, rather two search trees must be available 
 to accommodate self-play.
 The method used by Heinrich to accomplish this goal was the creation of 
-an information function $I^i(s)$. 
+an information function $I^i(s)$.
 This function will return the information state $u^i$ of the current player ($i$) given
 the current state $s$ from the overall game tree.
 Note that the overall game tree will have separate nodes for any variation 
@@ -600,7 +627,14 @@ due to the fact that this information is not available.
 This means that a number of nodes that are separate in the overall game tree will 
 be grouped in either players individual game trees.
 
-In order to understand smooth UCT we must first explain the meaning of UCT.
+In figure 2.4 we have shown Heinrich's algorithm for extensive form MCTS .
+
+\begin{figure}[!ht]
+    \includegraphics[scale=.6]{images/extensive_form_mcts.png}
+    \caption{Extensive Form MCTS - Johannes Heinrich 2017 PhD Thesis}
+\end{figure}
+
+In order to understand smooth UCT we must first explain the meaning of UCT .
 The abbreviation UCT refers to upper confidence bound(UCB) applied to trees.
 This means that in the action selection portion of the algorithm a UCB approach 
 is taken, where less explored nodes in the tree are given a positive bias in value.
@@ -617,10 +651,16 @@ in information state $u^i$.
 $N(u^i)$ and $N(u^i, a)$ denote the current visitation count of the information state $u^i$
 and the subsequent information state after action $a$ has been taken.
 
-Smooth UCT is a modification of UCT that is inspired by fictitious play\cite{heinrich2017reinforcement}.
-As described in the last section the action selection in UCT is purely deterministic. 
-Smooth UCT changes this by utilizing the average strategy a certain proportion 
-of the time. 
+This extension of the extensive form MCTS algorithm is shown in figure 2.5.
+
+\begin{figure}[!ht]
+    \includegraphics[scale=.6]{images/uct.png}
+    \caption{UCT - Johannes Heinrich 2017 PhD Thesis}
+\end{figure}
+
+Smooth UCT is a modification of UCT that is inspired by fictitious play\citep{heinrich2017reinforcement}.
+As described in the last section the action selection in UCT is purely deterministic.
+Smooth UCT changes this by utilizing the average strategy a certain proportion of the time.
 In order to calculate the average strategy for a particular state we create a 
 probability distribution based on the visitation counts of the actions 
 available at that state.
@@ -631,7 +671,7 @@ and $a_3$ 15 times.
 According to the average strategy we would then select $a_1$ 50\% of the time, 
 $a_2$ 35\% of the time and $a_3$ 15\% of the time.
 In order to determine when the average strategy should be used compared to the 
-UCB approach Heinrich describes a sequence $\eta_k$. 
+UCB approach Heinrich describes a sequence $\eta_k$.
 This sequence decays to 0 as $\lim_{k \to \infty}$ and is expressed as follows:
 
 \begin{align}
@@ -641,9 +681,12 @@ This sequence decays to 0 as $\lim_{k \to \infty}$ and is expressed as follows:
 Here $N_k$ is the total number of plays and $\gamma$ is a lower limit on $\eta_k$ 
 and $d$ is a constant that parameterises the rate of decay.
 
-The overall algorithm described by Heinrich for smooth UCT is listed in figure 2.4.
+This final modification of the algorithm is shown in figure 2.6.
 
-\textbf{INSERT ALGORITHM FOR SMOOTH UCT HERE}
+\begin{figure}[!ht]
+    \includegraphics[scale=.6]{images/smooth_uct.png}
+    \caption{Smooth UCT - Johannes Heinrich 2017 PhD Thesis}
+\end{figure}
  
 
 \section{Other Approaches}\label{sec:thImplementations}
@@ -659,7 +702,7 @@ which look promising and thus we will discuss these methods as well.
 
 \subsection{Counterfactual Regret Minimization}\label{subsec:thCFR}
 Counterfactual regret minimization(CFR) is a method for finding approximate Nash
-equilibria in imperfect information games and was first outlined in \citep{zinkevich2008regret}.
+equilibria in imperfect information games and was first outlined in\citep{zinkevich2008regret}.
 Regret is a measure of the difference in utility between following some strategy 
 $\sigma$ compared to another strategy.
 Zinkevich introduced counterfactual regret which is regret applied to a 
@@ -668,7 +711,7 @@ It was found that by calculating and minimizing regret on an individual
 state basis that there were performance benefits as well as an improvement 
 in accuracy of the calculated approximate Nash equilibria.
 
-One implementation of CFR is outlined in \citep{jackson2013slumbot}.
+One implementation of CFR is outlined in\citep{jackson2013slumbot}.
 This paper outlines the implementation used for Slumbot, the 2018 ACPC champion 
 in no-limit hold'em.
 Jackson describes his use of CFR in order to generate a static strategy that approximates
@@ -676,7 +719,7 @@ a Nash's equilibrium.
 At each iteration a strategy would be computed and when the process had ended an 
 average of these strategies would be used.
 Jackson also mentions using an abstraction of the game in order to reduce no-limit's 
-massive state space (roughly $10^164$ with stack sizes of 100 big blinds)\citep{johanson2013measuring}.
+massive state space (roughly $10^{164}$ with stack sizes of 100 big blinds)\citep{johanson2013measuring}.
 This is done through techniques like grouping similar hand values into buckets and 
 treating them as strategically equal or splitting the game up into it's individual rounds 
 and solving the rounds separately.
