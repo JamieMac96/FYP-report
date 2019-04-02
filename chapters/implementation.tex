@@ -19,24 +19,24 @@
 \subsection{Smooth UCT}\label{subsec:smoothUCT}
 
 \section{Best Response Computation}\label{sec:bestResponseComputation}
-In order to evaluate the performance of our agent we utilised exploitability as our primary metric.
+In order to evaluate the performance of our agent exploitability was utilised as the primary metric.
 Exploitability is a measure of how well our agent would fare against an opponent responding
 optimally to our strategy.
 Exploitability is related to the concept of Nash equilibria in that a Nash equilibrium
 is induced by a strategy that cannot be exploited.
 
-To calculate the exploitability of a strategy we must determine the best responses
-to that strategy.
+To calculate the exploitability of a strategy the best responses to that strategy must be
+determined.
 The first step in calculating the best response strategy involves
 taking our agent's action selections and inserting them into the game tree\citep{heinrich2017reinforcement}.
-In other words, wherever the agent must take an action in the game tree, we choose the best action
+In other words, wherever the agent must take an action in the game tree, the best action is chosen
 based on our MCTS estimations.
 As such the resultant tree will consist of the MCTS player's decision nodes which will have
 a single child node along with the second player's decision nodes and chance nodes
 which will both have multiple children.
-We can then evaluate the terminal states and propagate values back up the tree, with the highest
-child value being propagated when we reach a decision node for player two and the average child
-value being propagated for chance nodes.
+Terminal states can then be evaluated followed by propagation of values back up the tree, with the highest
+child value being propagated when a decision node for player two is reached.
+The average child value is propagated for chance nodes.
 This process will now be explained in detail with coding examples.
 
 \subsection{Generating Best Response Tree}\label{subsec:applyMCTS}
@@ -57,8 +57,8 @@ Qt is a open-source widget toolkit for creating graphical user interfaces and ap
 Specifically Qt Designer was used in order to generate a UI template.
 Qt Designer is a what-you-see-is-what-you-get (WYSIWYG) UI generation tool that accompanies Qt.
 PyQt5 was then used to generate python code from this UI template and connect the functional component of the game.
-In this section we will briefly outline the process involved in creating this prototype application
-and highlight some key code snippets.
+In this section the process involved in creating this prototype application will be outlined
+and some key code snippets will be highlighted.
 
 In order to elicit requirements for this application I applied brainstorming as well as analysing a number
 of online UIs that served a similar purpose to mine.
@@ -76,22 +76,93 @@ This process rendered the following functional requirements:
 \subsection{UI Screen}\label{subsec:UiScreen}
 The first step towards achieving these functional requirements was to generate a UI screen.
 This was achieved through Qt designer using drag and drop with the end result being as shown below.
+Due to the fact that a number of images had to be displayed for the available cards in the
+game a Qt resource file was also created to store and locate those images.
 
 \begin{figure}[ht]
     \includegraphics[scale=.4]{images/UI_screenshot.png}
     \caption{Game UI}
 \end{figure}
 
-\subsection{Event Handling and UI Manipulation}\label{subsec:eventHandling}
+Qt designer generates a .ui file that stores the UI template as well as a .qrc resource file.
+The following commands were used to convert these two files into python format in order for them
+to be compatible with the rest of the program:
+\begin{lstlisting}[language=bash]
+$ pyuic4 -x ui.ui -o screen.py
+$ pyrcc4 -o cards_resource.py cards/cards_resource.qrc
+\end{lstlisting}
 
-
-\subsection{Game Model}\label{subsec:gameModel}
-
-\subsection{Agent Representation}\label{subsec:agent}
+In order to create a visible screen the following code was used:
 
 \begin{lstlisting}[style=Python]
-    class Agent:
-        def __init__(self, strategy_file):
-            self.strategy = self.load_strategy(strategy_file)
+def setup_screen(self):
+    self.main_window = QMainWindow()
+    self.ui_screen = screen.Ui_MainWindow()
+    self.ui_screen.setupUi(self.main_window)
+    self.main_window.show()
+    sys.exit(self.application.exec_())
 \end{lstlisting}
+
+\subsection{Event Handling and UI Manipulation}\label{subsec:eventHandling}
+When the UI screen had been implemented it was then time to attach the screen to the
+functional aspect of the game.
+This was done through the creation of a python class called Controller that extends the QWidget
+class from the PyQt framework.
+
+In order to handle events callback methods were registered with the buttons that required their events to be handled.
+The code below demonstrated this process:
+\begin{lstlisting}[style=Python]
+def setup_event_handlers(self):
+    self.ui_screen.take_action_button.clicked.connect(self.take_action)
+    self.ui_screen.new_game_button.clicked.connect(self.new_game)
+\end{lstlisting}
+
+Along with event handling the Controller class also had the responsibility of updating the
+UI based on the information that it gained from the game model, which will be discussed in the next section.
+This primarily involved calling the setText() method of a number of the screen's widgets.
+
+\subsection{Game Model}\label{subsec:gameModel}
+The third component of our game was the game model.
+This was instantiated through a python class named Model that had the responsibility of feeding
+the correct data to the Controller class at any point in the game.
+Due to the fact there was already significant functionality built around the concept of histories,
+it was decided that the state of the game would be tracked through the use of histories.
+From the history the majority of the information about the game could be deciphered.
+This included the available actions, the cards in play and the pot.
+In order to fully satisfy our functional requirements the Model class also kept track of annotation messages
+that were generated based on game events, along with the cumulative winnings of the player over time.
+This data was returned to the Controller class in the
+form of a python dictionary.
+
+The most significant method in this class was the update\_game\_state method.
+This method handled the player taking actions, the agent responding to those actions and the state being
+updated.
+Below the code for this method is listed.
+
+\begin{lstlisting}[style=Python]
+def update_game_state(self, action, player):
+    self.history += action
+    self.display_text += PLAYER_NAMES[player] + ACTION_MESSAGES[action]
+
+    # Handle the game being over
+    if util.is_terminal(self.history):
+        winner = evaluator.get_winner(self.history)
+        winnings = -evaluator.calculate_reward_full_info(self.history)
+        self.total_winnings += winnings
+        self.display_text += "Game over. " + PLAYER_NAMES[winner] + "won: " + str(abs(winnings))
+
+    # If the next player is the bot, allow it to take its action
+    elif util.player(self.history) == 1:
+        self.update_game_state(self.agent.get_action(self.history), 1)
+
+    # If the we need cards to be dealt, deal the cards.
+    elif util.player(self.history) == 0:
+        self.pub_card = random.choice(util.get_available_cards(self.history))
+        self.update_game_state(self.pub_card, 0)
+\end{lstlisting}
+
+\subsection{Agent Representation}\label{subsec:agent}
+In the case of this prototype game the agent is merely an instantiation of a pre-defined strategy.
+As such when we call agent.get\_action(history) in the previous code block we are either stochastically
+or deterministically selecting an action based the aforementioned strategy.
 
