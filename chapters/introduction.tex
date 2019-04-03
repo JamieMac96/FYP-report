@@ -28,7 +28,7 @@ This obviously requires a high degree of knowledge of the game in order to creat
 
 There have also been attempts to tackle texas hold'em using a machine learning paradigm called reinforcement
 learning (RL).
-The great advantage of these approaches is that they do not require game abstractions or the associated
+The great appeal of these approaches is that they may not require game abstractions or the associated
 domain knowledge.
 
 RL is a way of programming agents by reward and punishment without needing to specify how the
@@ -47,8 +47,9 @@ This makes pure reinforcement learning strategies impractical for these types of
 However, there has been some success when more custom reinforcement learning methods have been implemented.
 In one case linear programming techniques and RL were used in order to tackle a
 simplified version of the game\citep{dahl2001reinforcement}.
-In another RL was combined with techniques inspired by game theory\citep{heinrich2015fictitious}.
-This latter approach will be the basis for our texas hold'em agent as we attempt to replicate and
+RL was combined with techniques inspired by game theory\citep{heinrich2015fictitious}.
+An RL related search algorithm called MCTS was also applied to a number of poker variations\citep{heinrich2017reinforcement}
+This latter approach will be the basis for our leduc hold'em agent as we attempt to replicate and
 build upon the results outlined in this paper.
 
 The different approaches will be discussed in greater detail in the background section.
@@ -63,35 +64,33 @@ is an imperfect information game, the initial goal will be to tackle a simplifie
 Specifically Leduc Hold'em will be used for this version of the project.
 This version of hold'em consists usually of a six card deck and only one private card, compared to two in texas hold'em.
 
-In\citep{heinrich2015fictitious} a metric called exploitability was used.
+In\citep{heinrich2015smooth} a metric called exploitability was used.
 This is a measure of how the agent's strategy fares against the best responses to that strategy.
-For Leduc Hold'em, with a 6 card deck and 300 seconds of training time the initial exploitability was slightly
-over 1.2 and descended to under .5.
-When the deck size increased to 60 cards the exploitability began at over 5.5 and converged to roughly 1.2 in
-the same period of time.
+For Leduc Hold'em, with a 6 card deck and 500,000,000 iterations the initial exploitability was 2 and converged
+to .0223.
 As such the success criteria for our initial iteration of the game is to replicate these results, with an
 allowance for hardware differences that may impact computational speed.
 
 If the success criteria for this simplified version of the game are met, we will then proceed to tackle
 a more complex version of the game.
 In this second iteration of the project we will tackle limit texas hold'em with the end goal of recreating
-the results shown by Heinrich in his second paper on the matter\citep{heinrich2016deep}.
-In this paper, rather than using exploitability as an evaluation method, the agent was simply compared
-against the best hold'em agents from the ACPC of the previous year.
+the results shown by Heinrich in his PhD thesis\citep{heinrich2017reinforcement}.
+In this experiment, rather than using exploitability as an evaluation method, the agent was simply compared
+against a number of hold'em agents from the ACPC of the previous year.
 Thus win rate was used as the evaluation metric.
 More specifically the measure used was mbb/h or milli big-blinds per hand.
 This is a measure of the number of big blinds won or lost per thousand hands.
 Note that the big blind is the larger of the two mandatory bets required at the beginning of each hand.
-Against the top three competitors in the ACPC, the fully trained agent achieved a win rate of between
--50 and -15 mbb/h.
-This score is consistent with that of a player that is slightly inferior but still competitive with
-these superhuman poker agents.
-As such, if the second iteration of our project is completed the goal will be to have a win rate of -200mbb/h
+Against the top five competitors in the ACPC, the fully trained agent achieved a win rate of between
+-25 and 28 mbb/h.
+This score is consistent with that of a player that is competitive with the best poker agents from that
+year's competition.
+As such, if the second iteration of our project is completed the goal will be to have a win rate of -100mbb/h
 or better against these same agents.
 Again we give an allowance for the difference in hardware used to train the agent as well our limited time.
 
 It is also my goal to create a product that will be fun and useful for the general public.
-As such another objective will be to create a website that will allow users to play heads-up against the final product.
+As such another objective will be to create an application that will allow users to play heads-up against the final product.
 
 \subsection{Secondary Objectives}\label{subsec:secondaryObjectives}
 As this project is very specific and academic, one of the larger challenges will be to gain a strong knowledge
