@@ -518,7 +518,7 @@ GWFSP allows for a certain error at each iteration of the algorithm and relies o
 error rate will tend towards zero as time progresses.
 In the the research done by Leslie and Collins normal form games were studied.
 There has also been research done into the applicability of FP to extensive form games however,
-before Heinrich there was no method shown to converge for imperfect information games such as poker.
+before\citep{heinrich2016deep} there was no method shown to converge for imperfect information games such as poker.
 In later sections we will discuss how Heinrich utilised GWFSP as a basis for neural fictitious self-ply,
 a method that has shown success in games of imperfect information.
 
@@ -731,4 +731,59 @@ should allow for a strategy that can transfer to the full version of the game su
 
 
 \subsection{Neural Fictitious Self-Play}\label{subsec:thNFSP}
+As mentioned earlier Fictitious Play(FP) is a game theoretic model that allows learning through self-play.
+This model was then extended a number of times until generalised weakened fictitious play(GWFP) was developed as a
+method of self-play that was applicable to machine learning techniques.
+Heinrich then utilised this method to develop Fictitious Self-Play(FSP)\cite{heinrich2015fictitious}.
+This is a machine learning framework that implements fictitious play.
+This method was shown to successfully generate approximate Nash's equilibria in imperfect information games
+such as Leduc Hold'em.
 
+Neural Fictitious Self-Play(NFSP) develops upon these methods through the use of neural
+networks in order to facilitate the larger state spaces of games such as limit texas hold'em.
+This method was outlined in\cite{heinrich2016deep}.
+
+\subsubsection{Algorithm}
+NSFP agents learn through self play ie interaction with other instances of the agent.
+As this process is happening the agents store experience of their play in two memories
+named $M_{RL}$ and $M_{SL}$.
+These memories are subsequently used to for as data sources for the reinforcement learning and
+supervised classification portions of the algorithm respectively.
+
+This algorithm trains two neural networks which are in-turn used to generate two strategies.
+The first neural network $Q(s,a|\theta^{Q})$ is trained to predict action values from data
+in $M_{RL}$ using off-policy reinforcement learning.
+The second neural network $\Pi(s, a | \theta^\Pi)$ is used to imitate it's own past best-response behavior
+using supervised classification on the data gathered in $M_{SL}$.
+The resultant strategies are the best-response strategy $\beta=\epsilon-greedy(Q)$, which
+uses the previously mentioned $\epsilon$-greedy method for balancing exploration and exploitation,
+and the average strategy $\pi=\Pi$.
+
+\begin{figure}[!ht]
+    \includegraphics[scale=.8]{images/NFSP_algorithm.png}
+    \caption{Neural Fictitious Self-Play\citep{heinrich2016deep}}
+\end{figure}
+
+As shown in figure 2.7 at each iteration the policy is selected first.
+Next an action $a_t$ is sampled from that policy and by taking that action we generate a reward
+and subsequent state.
+This information is stored in $M_{RL}$ and conditionally in $M_{SL}$ based on the policy selected.
+After this stochastic gradient descent is used to update $\theta^\Pi$ and $\theta^Q$ who's new values
+are periodically applied to our neural networks.
+Over time the action value and average-policy networks will improve their
+accuracy as each player gains experience and learns.
+This culminates in an approximate Nash equilibrium as players develop better and better strategies.
+
+
+\subsubsection{Convergence and Empirical Results}
+This algorithm was applied to both Leduc Hold'em and Limit Texas Hold'em with variation in a number
+of parameters such as number of hidden layers and neurons in the neural networks.
+
+The best results achieved for Leduc Hold'em used a single hidden layer neural network with 128 hidden neurons.
+This instantiation of the algorithm developed a strategy reached exploitability levels of less that .1, with
+a starting value of 1.5.
+
+The Limit Texas Hold'em instantiation of the algorithm was tested against the top 3 competitors of
+the 2014 ACPC using win rate as the evaluation metric in milli big-blinds per hand (mbb/h).
+This saw a trained win rate of between -13 and -52mbb/h against these agents with the initial win rate being
+roughly -700mbb/h.
