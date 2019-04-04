@@ -87,8 +87,8 @@ Here, the proportion of random lever pulls decreases with time.
 Generally if our initial epsilon value is $\epsilon_0$ then our epsilon value at time $t$ will be
 $\epsilon_t = \frac{\epsilon_0}{t}$.
 
-\subsubsection{Interval Estimation Strategy}
-Another approach that can be used is called the interval estimation strategy.
+\subsubsection{Upper Confidence Bounds}
+Another approach that can be used is called the upper confidence bound(UCB) method.
 With this method we initially give an optimistic estimate of the reward to each bandit within a certain
 confidence interval.
 Then we simply take a greedy approach to our exploration.
@@ -267,7 +267,7 @@ We could apply such a method in the case of having an array of 1 trillion elemen
 either 1 or 0.
 If we wished to calculate the number of 1s in such an array through iterating the array it would
 be very computationally costly.
-However, we could randomly generate indices and maintain a count of both the number of 1s found at these indices
+However, we could randomly generate indices and maintain a count of both the number of 1s found
 and the number of indices generated.
 Based on these figures it would be possible to estimate the total number of 1s in the array.
 Over time as we sampled more and more our estimate would converge towards the true value.
@@ -422,8 +422,11 @@ are choosing.
 \end{quotation}
 As such it became apparent that some other techniques would have to be incorporated in order to create a competent
 texas hold'em agent.
-Since our implementation will be following the method discussed by\citep{heinrich2017reinforcement}
-the following section will give the requisite background in order to facilitate later discussion of this method.
+After discovering\citep{heinrich2016deep} and\citep{heinrich2017reinforcement} the initial goal
+was to utilise his Neural Fictitious Self-Play(NFSP) method as a basis for our agent.
+Eventually, it was decided that MCTS would be used as the basis for our agent implementation.
+NFSP is based heavily on the game theoretic concepts that are outlined in this section, however,
+MCTS also utilises a number of these concepts so it was decided that this research would be fully documented.
 
 \subsection{Modelling Games}\label{subsec:modellingGames}
 When we attempt to solve a game, we must first understand how we are to model that game.

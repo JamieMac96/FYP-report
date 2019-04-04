@@ -48,7 +48,8 @@ However, there has been some success when more custom reinforcement learning met
 In one case linear programming techniques and RL were used in order to tackle a
 simplified version of the game\citep{dahl2001reinforcement}.
 RL was combined with techniques inspired by game theory\citep{heinrich2015fictitious}.
-An RL related search algorithm called MCTS was also applied to a number of poker variations\citep{heinrich2017reinforcement}
+An RL related search algorithm called Monte Carlo Tree Search (MCTS) was also applied to a
+number of poker variations\citep{heinrich2017reinforcement}.
 This latter approach will be the basis for our leduc hold'em agent as we attempt to replicate and
 build upon the results outlined in this paper.
 
@@ -66,6 +67,9 @@ This version of hold'em consists usually of a six card deck and only one private
 
 In\citep{heinrich2015smooth} a metric called exploitability was used.
 This is a measure of how the agent's strategy fares against the best responses to that strategy.
+In other words, if the opponent knows our strategy, and can take the best possible action
+in every state in order to maximise their potential gain in reward, exploitability is the
+average amount that they would gain from doing so.
 For Leduc Hold'em, with a 6 card deck and 500,000,000 iterations the initial exploitability was 2 and converged
 to .0223.
 As such the success criteria for our initial iteration of the game is to replicate these results, with an
