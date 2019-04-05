@@ -57,16 +57,19 @@ tabsize=3
 
 
 \begin{document}
-
 \input{titlepage}
 \input{abstract}
+
+\newpage
+\pagenumbering{Roman}
 \input{chapters/acknowledgement.tex}
 \setcounter{tocdepth}{2}
 \setcounter{figure}{49}
-
 \tableofcontents
 \listoffigures
+\clearpage
 
+\pagenumbering{arabic}
 \input{chapters/introduction}
 \input{chapters/background}
 \input{chapters/implementation}
