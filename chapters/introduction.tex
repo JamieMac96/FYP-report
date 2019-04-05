@@ -2,58 +2,62 @@
 \label{ch:intro}
 
 \section{Overview}\label{sec:overview}
-Since the inception of machine learning, games have been a key problem area that has seen a lot of focus from
-top academics.
+Since the inception of machine learning(ML), games have been a key problem area that has seen a lot of focus
+in academia.
 For decades games have been used as a platform to test and develop algorithms that have gone on to provide invaluable
 services that are used in peoples everyday lives.
+For example\citep{tesauro1995td} demonstrated the value of the reinforcement learning techniques
+with his backgammon application.
+Today we see these techniques starting to permeate complex industry domains such as vehicle
+automation\citep{desjardins2011cooperative}.
 The ability to contribute to this great history was a large motivator when it came to choosing this project.
 
-Although this report will, to an extent, discuss machine learning and how it applies to games in general, the
-primary focus will be on machine learning techniques when applied to texas hold'em, or variations of it.
-In the past, methods such as Counterfactual Regret Minimization (CFR) have been used to develop agents that can
-play texas hold'em to a superhuman level.
+Although this report will, to an extent, discuss ML and how it applies to games in general, the
+primary focus will be on ML techniques when applied to texas hold'em, or variations of it.
+For the past number of years, a method called Counterfactual Regret Minimization (CFR) has dominated the
+top spots in the Annual Computer Poker Competition(ACPC).
 CFR is an algorithm that allows computation of a strategy through self-play.
-The metric used to update these strategies is called regret, which measures the difference between the
-game's outcome and the outcome that could have been achieved if some other action was taken.
-A large number of simulated games are played, with regret being calculated each time and subsequently being used
-to compute a strategy that is optimal.
-One example of CFR being used was the 2018 Annual Computer Poker Competition (ACPC) champion, slumbot\citep{jackson2013slumbot}.
-
 When applied to large imperfect information games such as texas hold'em CFR generally relies on the
 creation of abstractions of the game.
-The CFR algorithm is applied to these abstractions, generating a strategy.
-The generated strategy is then applied to the full version of the game and, if the
-original abstraction was accurate, our strategy will work well.
-This obviously requires a high degree of knowledge of the game in order to create an accurate abstraction.
+These abstractions are used to reduce the size of the state space of the game.
+CFR is then applied to these abstractions in order to learn a strategy for the game.
+It is thus critically important that these abstractions accurately represent the full game's mechanics.
+This requires a high degree of knowledge of the game in order to create an accurate abstraction.
 
-There have also been attempts to tackle texas hold'em using a machine learning paradigm called reinforcement
+There have also been attempts to tackle texas hold'em using a ML paradigm called reinforcement
 learning (RL).
-The great appeal of these approaches is that they may not require game abstractions or the associated
-domain knowledge.
+The great appeal of these approaches is that they do not require us to generate custom abstractions of the game.
+As a result of this, it was decided that this project would utilise RL techniques to tackle the problem.
 
 RL is a way of programming agents by reward and punishment without needing to specify how the
 task is to be achieved\citep{kaelbling1996reinforcement}.
-RL problems consist of an agent in an environment.
-The environment consists of a number of states and rewards.
-The agent is allowed to take certain actions, in certain states.
-The overall goal is to learn a strategy that will maximise the cumulative reward.
-On the surface this seems like a perfectly reasonable methodology for solving games such as texas hold'em.
+On a surface level RL seems like a perfectly reasonable methodology for solving games such as texas hold'em.
 However, texas hold'em is an imperfect information game.
 This means that we do not know the entirety of the state information at any given time
-i.e we do not know the values of the opponents cards.
+i.e we do not know the values of the opponent's cards.
 Thus, from a RL perspective, we do not know the actual state from which we are choosing actions.
 This makes pure reinforcement learning strategies impractical for these types of games.
 
 However, there has been some success when more custom reinforcement learning methods have been implemented.
 In one case linear programming techniques and RL were used in order to tackle a
 simplified version of the game\citep{dahl2001reinforcement}.
-RL was combined with techniques inspired by game theory\citep{heinrich2015fictitious}.
-An RL related search algorithm called Monte Carlo Tree Search (MCTS) was also applied to a
-number of poker variations\citep{heinrich2017reinforcement}.
-This latter approach will be the basis for our leduc hold'em agent as we attempt to replicate and
-build upon the results outlined in this paper.
+In another case RL was combined with supervised learning(SL) and game theoretic
+techniques\citep{heinrich2016deep} to develop an algorithm called Neural Fictitious Self-Play(NFSP).
+This method became the focus of the project for a period of time before a decision was made
+that the broad range of techniques involved would add too much risk to the project.
+When it was discovered that the same researcher, Johannes Heinrich had applied an RL related search
+algorithm called Monte Carlo Tree Search (MCTS) to a number of variations of poker\citep{heinrich2015smooth}
+this algorithm became the primary focus of the project.
+This algorithm was of great interest for a number of reasons.
+Firstly, this relatively new technique had been the basis for the tremendous improvement
+in performance of computer Go programs over the last decade.
+The culmination of which was the AlphaGo project that defeated the highest ranked human Go player
+in the world\citep{silver2016mastering}.
+Secondly, this approach had shown the best results of any of Heinrich's documented approaches
+with the developed agent placing second in the 2014 ACPC .
+Finally, the lead researcher of the AlphaGo project, David Silver had collaborated on Heinrich's
+research thus adding significant weight to the research.
 
-The different approaches will be discussed in greater detail in the background section.
 
 \section{Objectives}\label{sec:objectives}
 \subsection{Primary Objectives}\label{subsec:primaryObjectives}
@@ -75,24 +79,6 @@ to .0223.
 As such the success criteria for our initial iteration of the game is to replicate these results, with an
 allowance for hardware differences that may impact computational speed.
 
-If the success criteria for this simplified version of the game are met, we will then proceed to tackle
-a more complex version of the game.
-In this second iteration of the project we will tackle limit texas hold'em with the end goal of recreating
-the results shown by Heinrich in his PhD thesis\citep{heinrich2017reinforcement}.
-In this experiment, rather than using exploitability as an evaluation method, the agent was simply compared
-against a number of hold'em agents from the ACPC of the previous year.
-Thus win rate was used as the evaluation metric.
-More specifically the measure used was mbb/h or milli big-blinds per hand.
-This is a measure of the number of big blinds won or lost per thousand hands.
-Note that the big blind is the larger of the two mandatory bets required at the beginning of each hand.
-Against the top five competitors in the ACPC, the fully trained agent achieved a win rate of between
--25 and 28 mbb/h.
-This score is consistent with that of a player that is competitive with the best poker agents from that
-year's competition.
-As such, if the second iteration of our project is completed the goal will be to have a win rate of -100mbb/h
-or better against these same agents.
-Again we give an allowance for the difference in hardware used to train the agent as well our limited time.
-
 It is also my goal to create a product that will be fun and useful for the general public.
 As such another objective will be to create an application that will allow users to play heads-up against the final product.
 
@@ -107,6 +93,19 @@ that I must become closely familiar with the existing academic literature in the
 information games.
 This will allow me to avoid taking approaches that have previously shown to fail as well as allow me to add value to
 the existing literature whether that be through literature review or through my own experimental findings.
+
+
+\section{Methodology}\label{sec:methodology}
+
+\textbf{Identify Research Objectives}:
+
+\textbf{Approximation of Systematic Literature Review}:
+
+\textbf{Design and Implement Prototype}:
+
+\textbf{Empirical Studies}:
+
+\section{Overview of the Report}\label{sec:reportOverview}
 
 
 \section{Contribution}\label{sec:contribution}
@@ -131,12 +130,12 @@ technical aspects of the game such as how to calculate expected value of hands,
 or how to narrow down one's opponent's range of possible hands.
 
 Concurrent with the development of this interest I was also becoming more and more interested in the area
-of machine learning.
-Machine learning and the development of artificial intelligence is possibly the most glamourized area
+of ML.
+ML and the development of artificial intelligence is possibly the most glamourized area
 of computer science.
 However, this is probably for good reason because there is something intrinsically interesting
 about machines that can learn to solve a problem on their own, without direct instructions from a human.
-The fact that machine learning has made so many strides in recent years was another cause of interest in
+The fact that ML has made so many strides in recent years was another cause of interest in
 this area of computer science, especially as the practical viability of ML as means of tackling a wide array
 of problems in industry continues to increase.
 
