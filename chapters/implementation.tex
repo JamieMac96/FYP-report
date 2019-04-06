@@ -137,36 +137,136 @@ def update(tree, history, new_history, running_reward):
     tree[new_history].value += (running_reward - tree[new_history].value) / tree[new_history].visitation_count
 \end{lstlisting}
 
-\section{Best Response Computation}\label{sec:bestResponseComputation}
+\section{Exploitability Computation}\label{sec:bestResponseComputation}
 In order to evaluate the performance of our agent exploitability was utilised as the primary metric.
 Exploitability is a measure of how well our agent would fare against an opponent responding
-optimally to our strategy.
+optimally to our strategy, ie an opponent using a best response strategy.
 Exploitability is related to the concept of Nash equilibria in that a Nash equilibrium
 is induced by a strategy that cannot be exploited.
-
-To calculate the exploitability of a strategy the best responses to that strategy must be
-determined.
-The first step in calculating the best response strategy involves
-taking our agent's action selections and inserting them into the game tree\citep{heinrich2017reinforcement}.
-In other words, wherever the agent must take an action in the game tree, the best action is chosen
-based on our MCTS estimations.
-As such the resultant tree will consist of the MCTS player's decision nodes which will have
-a single child node along with the second player's decision nodes and chance nodes
-which will both have multiple children.
-Terminal states can then be evaluated followed by propagation of values back up the tree, with the highest
-child value being propagated when a decision node for player two is reached.
-The average child value is propagated for chance nodes.
-This process will now be explained in detail with coding examples.
+In this section we will discuss the process of calculating exploitability step by step and giving coding examples.
+In order to do so we will refer to three player's that are related to the process.
+These are the best response(BR) player, the MCTS player and the chance player.
+The BR player is the player who's strategy we are attempting to establish through computation
+of the best response strategy.
+The MCTS player is the player whose strategy has already been established through execution of the MCTS algorithm.
+The chance player is the player who is responsible for the chance actions of the game ie dealing cards.
 
 \subsection{Generating Best Response Tree}\label{subsec:applyMCTS}
+To calculate the exploitability of a strategy the best responses to that strategy must be
+determined.
+In other words the best response strategy must be established.
 
-\begin{figure}[ht]
+There are two steps involved in this process.
+The first step involves generating a full game tree.
+This can be implemented as relatively trivial recursive function in which we begin at the root of the
+tree and at each level add every possible child node until a terminal node is reached.
+It is worth noting that the tree generated is a full game tree.
+This means that all of the game information is represented in the tree.
+As a result if we wish to view the nodes or histories in the tree from either player's perspective we must apply
+the information function in order to remove the opponents private information from view.
+
+The code is listed below.
+
+\begin{lstlisting}[style=Python]
+def build_tree(history, tree):
+    tree[history] = potree.PoNode()
+
+    if not util.is_terminal(history):
+        actions = util.get_available_actions(history)
+        for action in actions:
+            child = history + action
+            tree[child] = potree.PoNode()
+            tree[child].parent = history
+            tree[history].children.add(child)
+            build_tree(child, tree)
+
+    return tree
+\end{lstlisting}
+
+The second step in generating the best response tree involves taking the MCTS player's action
+selections and inserting them into the full game tree\citep{heinrich2017reinforcement}.
+In other words, wherever the MCTS player must take an action in the game tree, the best action is chosen
+based on their MCTS estimations.
+As such in the resultant tree the MCTS player's decision nodes will have
+a single child node.
+This is essentially a pruning process in which the child nodes that the MCTS player has
+not selected in their strategy are removed.
+The code is listed below.
+
+\begin{lstlisting}[style=Python]
+def apply_mcts_strategy(mcts_tree, best_response_tree, current_history):
+    if current_history not in best_response_tree:
+        return best_response_tree
+
+    # Have we reached a decision node for the MCTS player?
+    if util.player(current_history) == 1:
+        player_history = util.information_function(current_history, 1)
+        action = util.get_best_action(mcts_tree, player_history)
+        best_response_tree[current_history].children = set(current_history + action)
+
+    for history in best_response_tree[current_history].children:
+        apply_mcts_strategy(mcts_tree, best_response_tree, history)
+
+    return best_response_tree
+\end{lstlisting}
+
+As shown in the algorithm the function takes the tree that was evaluated
+through execution of the MCTS algorithm, the best response tree and the current history being processed.
+In a recursive manner we traverse down through the tree applying the MCTS player's
+strategy to each child node until we leave the tree.
+The player function is used to check if a decision node for the MCTS player has been reached.
+If so we first apply the information function to remove the opponents private information from current history.
+Next, the best action according to the MCTS player is obtained.
+This action is then concatenated with the original history producing our desired child node.
+This child node is then assigned as the single child of the current history being processed.
+Figure 3.? gives a visual representation of this pruning process.
+In this diagram we assume that in the MCTS tree, betting has a higher associated value than folding.
+
+\begin{figure}[!ht]
     \includegraphics[scale=1]{images/best_response_tree_vs_full_tree.PNG}
     \caption{Generation of Best Response Tree}
 \end{figure}
 
-\subsection{Propagating Terminal Values}\label{subsec:propagateTerminals}
+\subsection{Terminal Node Evaluation}\label{subsec:terminalNodeEvaluation}
+
+\begin{lstlisting}[style=Python]
+def evaluate_terminals(best_response_tree, terminals):
+    for history in terminals:
+        if history.endswith("f"):
+            best_response_tree[history].value = evaluator.calculate_reward_full_info(history)
+        else:
+            eq_nodes = util.get_information_equivalent_nodes(best_response_tree, history, -1)
+            avg = evaluator.average_reward(eq_nodes)
+            best_response_tree[history].value = avg
+\end{lstlisting}
+
+\subsection{Propagating Node Values}\label{subsec:propagateTerminals}
+The final step of this process involves the propagation of values back up the tree, with the highest
+child value being propagated when a decision node for the BR player is reached.
+The average child value is propagated for chance nodes.
+Since the MCTS player will only have a single child node for each history, that node's value is
+propagated each time.
+The code is listed below.
+
+\begin{lstlisting}[style=Python]
+def propagate_rewards_recursive(best_response_tree, history):
+    parent = best_response_tree[history].parent
+
+    if util.player(parent) == 0:
+        value_to_propagate = util.get_average_child_value(best_response_tree, parent)
+    elif util.player(parent) == 1:
+        value_to_propagate = best_response_tree[next(iter(best_response_tree[parent].children))].value
+    else:
+        best_sibling = util.get_best_child(best_response_tree, parent, -1)
+        value_to_propagate = best_response_tree[best_sibling].value
+
+    best_response_tree[parent].value = value_to_propagate
+    propagate_rewards_recursive(best_response_tree, parent)
+\end{lstlisting}
+
 \subsection{Exploitability}\label{subsec:exploitability}
+When this process is outlined is complete the value that is propogated back to the
+root node is our exploitability value.
 
 \section{Prototype Application}\label{sec:prototypeApp}
 In order to give visual evidence of the work done and the agent developed, a user interface(UI) was created
