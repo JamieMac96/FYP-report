@@ -386,10 +386,15 @@ action available ($maxQ(S_{t+1}, a)$) when updating our action value.
 
 \subsection{Monte Carlo Tree Search}\label{subsec:mcts}
 In this section we will discuss Monte Carlo Tree Search(MCTS), a decision time planning algorithm.
-This algorithm uses tree search combined with value estimations from MC simulations in order to
+This iterative algorithm uses tree search combined with value estimations from MC simulations in order to
 efficiently solve very large MDPs.
 One application of this algorithm was in DeepMind's AlphaGo\citep{silver2016mastering} which became the
 first computer program to beat a highly ranked Go champion.
+
+\begin{figure}[!ht]
+    \includegraphics[scale=.8]{images/MCTS.png}
+    \caption{MCTS adapted from\citep{lim2016field}}
+\end{figure}
 
 MCTS is an episodic process and there are four key steps involved in each of these episodes.
 The first step is \textbf{selection}.
@@ -398,10 +403,11 @@ of the tree, in order to select a child node at each level\citep{sutton1998reinf
 The second step is \textbf{expansion}.
 When we reach a leaf node in the tree we may add one or more child nodes based on
 the actions available at that point.
-The third step is \textbf{simulation}
-When we have exited the tree we then switch to using the rollout policy (eg a random policy) in
-order to reach a terminal node in the tree from which we can obtain a reward.
-The final step is \textbf{backup}.
+The third step is \textbf{simulation}.
+When the tree has been exited then we switch to using the rollout policy in
+order to provide default behavior outside of the tree and ultimately reach a
+terminal node from which we can obtain a reward.
+The final step is \textbf{backpropagation}.
 This step is uses the reward obtained to update the values of the tree nodes that were visited
 during the episode.
 
@@ -593,44 +599,107 @@ Each round allows for at most two bets.
 
 
 \section{Variations of MCTS applied to poker}\label{sec:mctsPoker}
-As mentioned MCTS has been shown to be a very powerful method for solving large perfect-information
-games such as Go.
+As mentioned in section 2.1.7 MCTS has been shown to be a very powerful method for solving large
+perfect-information games such as Go.
 However if we wish to apply this algorithm to imperfect information games like poker then 
 a number of modifications must be applied.
 Such an approach was outlined in\citep{heinrich2017reinforcement} in which a variation of
 MCTS called smooth UCT was implemented to tackle both leduc hold'em and limit hold'em.
 
+\subsection{Extensive Form MCTS}\label{subsec:extensiveMCTS}
 One of the subtleties of poker is that player information is asymmetric.
 In other words each player has access to their own private card 
 information but not to their opponents private cards.
 This means that we cannot represent the search tree as a single, collective 
 entity\citep{heinrich2017reinforcement}, rather two search trees must be available 
 to accommodate self-play.
-The method used by Heinrich to accomplish this goal was the creation of 
-an information function $I^i(s)$.
+The method that can be used to accomplish this goal is the creation of
+an information function $I^i(s)$, a concept from game theory(see section 2.2.1).
 This function will return the information state $u^i$ of the current player ($i$) given
-the current state $s$ from the overall game tree.
-Note that the overall game tree will have separate nodes for any variation 
-in either players cards.
+the current state $s$ from the full game tree.
+Note that the full game tree will have separate nodes for any variation
+in either player's cards.
 However, player 1's game tree will not have separate nodes where the only 
 differentiating factor is player 2's private cards\citep{johanson2011accelerating} 
 due to the fact that this information is not available.
-This means that a number of nodes that are separate in the overall game tree will 
-be grouped in either players individual game trees.
+For example let's say that state $s$ is in the full game tree and contains the information
+that player 1 has an ace, player 2 has a king and there has been a single bet so far in the game.
+If this state is passed to player 1's information function the returned information
+state,$u^i$, will only contain the information that player 1 has an ace and there has been a single bet thus far.
+Algorithm 1 shows Heinrich's extensive form MCTS .
 
-In figure 2.4 we have shown Heinrich's algorithm for extensive form MCTS .
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \LinesNumbered
+    \SetKwFunction{FSearch}{SEARCH}
+    \SetKwFunction{FRollout}{ROLLOUT}
+    \SetKwFunction{FSimulate}{SIMULATE}
+    \SetKwProg{Fn}{Function}{:}{}
+    \Fn{\FSearch{}}{
+        \While{Within computational budget}{
+        SIMULATE($s_0$)\;
+        }
+        \KwRet $\pi_{tree}$ \;
+    }
+    \Fn{\FRollout{$s$}}{
+        $a \sim \pi_{rollout}(s)$\;
+        $s' \sim G(s,a)$\;
+        \KwRet SIMULATE($s'$)\;
+    }
+    \Fn{\FSimulate{$s$}}{
+        \If{ISTERMINAL($s$)}{
+            \KwRet $r \sim R(s)$
+        }
+        $i = $ PLAYER($s$)\;
+        \If{OUT-OF-TREE($i$)}{
+            \KwRet ROLLOUT($s$)
+        }
+        $u^i = I^i$($s$)\;
+        \eIf{$u^i \notin T^i$}{
+            EXPANDTREE($T^i$,$u^i$)\;
+            $a \sim \pi_{rollout}$($s$)\;
+            OUT-OF-TREE($i$) $\leftarrow$ \textbf{true}
+        }{
+            $a$ = SELECT($u^i$)
+        }
+        $s' \sim G(s,a)$\;
+        $r \leftarrow $ SIMULATE($s0$)\;
+        UPDATE($u^i$,$a$,$r^i$)\;
+        \KwRet $r$
+    }
+    \caption{Extensive Form Monte Carlo Tree Search}
+\end{algorithm}
 
-\begin{figure}[!ht]
-    \includegraphics[scale=.6]{images/extensive_form_mcts.png}
-    \caption{Extensive Form MCTS - Johannes Heinrich 2017 PhD Thesis}
-\end{figure}
+Aside from the differences mentioned, extensive form MCTS remains essentially the same as generic MCTS .
+On lines 6 to 9 we see the rollout function.
+Here an action is sampled using the rollout policy which is then used to generate a subsequent
+state through invocation of the state transition function $G$.
 
+The SIMULATE function is the core recursive driver behind the MCTS algorithm.
+Initially we check if we have reached a terminal state, if so the reward function,
+$R$, is utilised to calculate this reward which is then returned.
+Next, on line 14, the PLAYER function is used to determine which player is next to move.
+Then we check a data structure called OUT-OF-TREE that keeps track of which player has
+left the scope of their search tree in the current episode\citep{heinrich2017reinforcement}.
+If we are outside the scope of the tree then we utilise the ROLLOUT function.
+Lines 19 to 22 handle the case in which the current information state, $u^i$ is
+not in player $i$'s tree, $T^i$.
+In this case, this node is added to the tree using the EXPANDTREE function, and we begin
+to use the rollout policy to generate behavior.
+On line 24 we have the contrary case in which we continue to use the tree policy by
+invoking the SELECT function.
+Finally on lines 26 to 29 the next state is generated, the SIMULATE function is recursively
+called and when this recursion ends the UPDATE function is called in order to update the
+value and visitation count of $u^{i}$ and it's child node.
+
+
+\subsection{UCT}\label{subsec:UCT}
 In order to understand smooth UCT we must first explain the meaning of UCT .
 The abbreviation UCT refers to upper confidence bound(UCB) applied to trees.
 This means that in the action selection portion of the algorithm a UCB approach 
 is taken, where less explored nodes in the tree are given a positive bias in value.
-This means that unexplored nodes will be explored which ensures that we discover 
-the best actions at each position in the tree.
+This means that unexplored nodes will be explored which ensures that
+the best actions at each position in the tree are discovered.
 The value of an action is denoted as follows:
 
 \begin{align}
@@ -641,44 +710,78 @@ In this expression the $Q$ function denotes the current value estimates for each
 in information state $u^i$.
 $N(u^i)$ and $N(u^i, a)$ denote the current visitation count of the information state $u^i$
 and the subsequent information state after action $a$ has been taken.
+Additionally, $c$ is the exploration constant.
+This constant can be used to control the level of exploration during the execution of the algorithm,
+with a value of 0 resulting in a purely greedy approach.
+This extension of the extensive form MCTS algorithm is shown in Algorithm 2.
 
-This extension of the extensive form MCTS algorithm is shown in figure 2.5.
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \LinesNumbered
+    \SetKwFunction{FSelect}{SElECT}
+    \SetKwFunction{FUpdate}{UPDATE}
+    \SetKwProg{Fn}{Function}{:}{}
+    SEARCH, SIMULATE, and ROLLOUT as in Algorithm 1\;
+    \Fn{\FSelect{}}{
+    \KwRet $argmax_a Q(u^i,a) + c\sqrt{\dfrac{\log{N(u^i)}}{N(u^i,a)}}$ \;
+    }
+    \Fn{\FUpdate{$u^i$,$a$,$r^i$}}{
+    $N(u^i) \leftarrow N(u^i) + 1$\;
+    $N(u^i,a) \leftarrow N(u^i,a) + 1$\;
+    $Q(u^i,a) \leftarrow Q(u^i,a) + \dfrac{r^i-Q(u^i,a)}{N(u^i,a)}$
+    }
+    \caption{UCT}
+\end{algorithm}
 
-\begin{figure}[!ht]
-    \includegraphics[scale=.6]{images/uct.png}
-    \caption{UCT - Johannes Heinrich 2017 PhD Thesis}
-\end{figure}
-
+\subsection{Smooth UCT}\label{subsec:smoothUCT}
 Smooth UCT is a modification of UCT that is inspired by fictitious play\citep{heinrich2017reinforcement}.
 As described in the last section the action selection in UCT is purely deterministic.
 Smooth UCT changes this by utilizing the average strategy a certain proportion of the time.
 In order to calculate the average strategy for a particular state we create a 
 probability distribution based on the visitation counts of the actions 
 available at that state.
-For example we could have an information state $u^i$ that has been visited 100 times 
+For example, we could have an information state $u^i$ that has been visited 100 times
 and has three available actions, $a_1, a_2, a_3$.
 Then it would be possible that $a_1$ has been visited 50 times, $a_2$ 35 times 
 and $a_3$ 15 times.
 According to the average strategy we would then select $a_1$ 50\% of the time, 
 $a_2$ 35\% of the time and $a_3$ 15\% of the time.
+This process can be seen on line 9 and 10 of Algorithm 3.
+Here, for each available action $a$ at information state $u^i$ we set the
+probability of selecting that action to be the visitation count of the child node ($N(u^i,a)$)
+divided by the visitation count of the parent ($N(u^i)$).
 In order to determine when the average strategy should be used compared to the 
 UCB approach Heinrich describes a sequence $\eta_k$.
 This sequence decays to 0 as $\lim_{k \to \infty}$ and is expressed as follows:
 
 \begin{align}
-\eta_k = max(\gamma, (1 + d * \sqrt{N_k})^-1)
+\eta_k = max(\gamma, (1 + d * \sqrt{N_k})^{-1})
 \end{align}
 
-Here $N_k$ is the total number of plays and $\gamma$ is a lower limit on $\eta_k$ 
-and $d$ is a constant that parameterises the rate of decay.
+Here $N_k$ is the total number of plays, $\gamma$ is a lower limit on $\eta_k$
+and $d$ is a constant that parametrises the rate of decay.
+This is calculated on line 4 of Algorithm 3.
 
-This final modification of the algorithm is shown in figure 2.6.
-
-\begin{figure}[!ht]
-    \includegraphics[scale=.6]{images/smooth_uct.png}
-    \caption{Smooth UCT - Johannes Heinrich 2017 PhD Thesis}
-\end{figure}
- 
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \LinesNumbered
+    \SetKwFunction{FSelect}{SELECT}
+    \SetKwProg{Fn}{Function}{:}{}
+    SEARCH, SIMULATE and ROLLOUT as in Algorithm 1\;
+    UPDATE as in Algorithm 2\;
+    \Fn{\FSelect{}}{
+    $\eta \leftarrow max\left(\gamma, \left(1 + d * \sqrt{N_k}\right)^{-1}\right)$\;
+    $z \sim U[0,1]$\;
+    \eIf{$z < \eta$}{
+    \KwRet $argmax_a Q(u^i,a) + c\sqrt{\dfrac{\log{N(u^i)}}{N(u^i,a)}}$ \;
+    }{
+    $\forall_a \in A(u^i):p(a) \leftarrow \dfrac{N(u^i,a)}{N(u^i)}$\;
+    \KwRet $a \sim p$
+    }
+    \KwRet $\pi_{tree}$ \;
+    }
+    \caption{Smooth UCT}
+\end{algorithm}
 
 \section{Other Approaches}\label{sec:thImplementations}
 Although we have already mentioned that we will be focusing on MCTS
