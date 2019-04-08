@@ -80,6 +80,27 @@ class PoNode:
 tree = {"": PoNode()}
 \end{lstlisting}
 
+\subsubsection{Strategies}
+In the rest of the chapter different types of strategies are discussed.
+Specifically, we refer to deterministic and stochastic strategies.
+
+When referring to deterministic strategies we mean strategies that have a single
+action associated with each state or history.
+This means that whenever that history is reached the same action will be selected each time.
+In the implementation these strategies are derived by analysing the values of nodes in the game tree.
+The action that is taken at any given history is the action that will lead us to the child whose
+value is highest.
+
+Stochastic strategies are strategies that provide a probability distribution across the available actions
+at a given state or history.
+This means that each action may be taken at a particular history but,  there is a different probability
+of taking each action.
+These strategies are derived as a direct result of the average strategy used by the agent.
+In other words, the visitation counts of nodes during the MCTS training.
+Due to the fact that MCTS samples states at a biased rate based on the expected value of the state we
+can use this information to induce stochastic strategies.
+This process is outlined in more detail in section 2.4.3.
+
 \subsubsection{Utility Functions}\label{subsec:utility}
 The first utility function is the util.terminal function.
 This function corresponds to the TERMINAL function listed in Algorithm 1 and

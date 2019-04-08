@@ -413,8 +413,9 @@ during the episode.
 
 In summary this algorithm uses the simulation step in order to efficiently sample rewards which
 are then propagated back to nodes of the tree.
-In later iterations and based on these values the tree policy selects which areas of the tree to
-explore and expand.
+In later iterations the tree policy selects which areas of the tree to
+explore based on these propagated values.
+In section 2.4 we will discuss how this method can be applied to imperfect information games such as poker.
 
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
@@ -428,11 +429,11 @@ are choosing.
 \end{quotation}
 As such it became apparent that some other techniques would have to be incorporated in order to create a competent
 texas hold'em agent.
-After discovering\citep{heinrich2016deep} and\citep{heinrich2017reinforcement} the initial goal
-was to utilise his Neural Fictitious Self-Play(NFSP) method as a basis for our agent.
-Eventually, it was decided that MCTS would be used as the basis for our agent implementation.
+After discovering the following two key papers\citep{heinrich2016deep} and\citep{heinrich2017reinforcement},
+the initial goal was to utilise the Neural Fictitious Self-Play(NFSP) method as a basis for our agent.
+Eventually, instead it was decided that MCTS would be used as the basis for our agent implementation.
 NFSP is based heavily on the game theoretic concepts that are outlined in this section, however,
-MCTS also utilises a number of these concepts so it was decided that this research would be fully documented.
+the MCTS implementation that is discussed later will rely on a number of these concepts.
 
 \subsection{Modelling Games}\label{subsec:modellingGames}
 When we attempt to solve a game, we must first understand how we are to model that game.
@@ -443,7 +444,7 @@ of each in different scenarios.
 \subsubsection{Extensive Form Games}
 Extensive form games are a model of players sequential interaction, with explicit representation of a
 number of key aspects of the game.
-They were formally defined in\citep{kuhn2016extensive} as consisting of the following components:
+\citep{kuhn2016extensive} formally defined extensive form games as consisting of the following components:
 \begin{itemize}
     \item \textit{N} - a set of players.
     \item \textit{S} - a set of states that represent the nodes of a rooted game tree.
@@ -529,6 +530,10 @@ In later sections we will discuss how Heinrich utilised GWFSP as a basis for neu
 a method that has shown success in games of imperfect information.
 
 \section{Texas Hold'em}\label{sec:thIntro}
+Although it was decided that a full scale implementation for Texas hold'em would be beyond the
+scope of this project, this was the target game at the inception of the project.
+As such we will now discuss the mechanics of this game.
+The reader may choose to skip to section 2.3.4 in order to only learn about the game of Leduc Hold'em.
 Texas hold'em is one variant in a family of games called poker.
 Poker is a group of card games that combine gambling, strategy and skill.
 All poker variants have three core similarities.
