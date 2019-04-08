@@ -282,6 +282,7 @@ in figure 3.1.
     \caption{Full Game Tree vs Player Information Set - adapted from\citep{johanson2011accelerating}}
 \end{figure}
 
+The build\_tree function is parameterised by a history and the tree being built.
 The code is listed below.
 
 \begin{lstlisting}[style=Python]
@@ -456,7 +457,7 @@ This was achieved through Qt designer using drag and drop with the end result be
 Due to the fact that a number of images had to be displayed for the available cards in the
 game a Qt resource file was also created to store and locate those images.
 
-\begin{figure}[ht]
+\begin{figure}[!ht]
     \includegraphics[scale=.4]{images/UI_screenshot.png}
     \caption{Game UI Screenshot}
 \end{figure}
@@ -464,10 +465,6 @@ game a Qt resource file was also created to store and locate those images.
 Qt designer generates a .ui file that stores the UI template as well as a .qrc resource file.
 The following commands were used to convert these two files into python format in order for them
 to be compatible with the rest of the program:
-\begin{lstlisting}[language=bash]
-$ pyuic4 -x ui.ui -o screen.py
-$ pyrcc4 -o cards_resource.py cards/cards_resource.qrc
-\end{lstlisting}
 
 In order to create a visible screen the code listed below was used:
 \begin{lstlisting}[style=Python]
@@ -477,6 +474,11 @@ def setup_screen(self):
     self.ui_screen.setupUi(self.main_window)
     self.main_window.show()
     sys.exit(self.application.exec_())
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash]
+    $ pyuic4 -x ui.ui -o screen.py
+    $ pyrcc4 -o cards_resource.py cards/cards_resource.qrc
 \end{lstlisting}
 
 \subsection{Event Handling and UI Manipulation}\label{subsec:eventHandling}
@@ -489,6 +491,7 @@ In order to handle events, callback methods were registered with the buttons tha
 The code listed below demonstrates this process:
 
 \begin{lstlisting}[style=Python]
+
 def setup_event_handlers(self):
     self.ui_screen.take_action_button.clicked.connect(self.take_action)
     self.ui_screen.new_game_button.clicked.connect(self.new_game)
@@ -499,6 +502,29 @@ UI based on the information that it gained from the game model, which will be di
 This primarily involved calling the setText() method of a number of the screen's widgets.
 
 \subsection{Game Model}\label{subsec:gameModel}
+
+\begin{lstlisting}[style=Python]
+    def update_game_state(self, action, player):
+    self.history += action
+    self.display_text += PLAYER_NAMES[player] + ACTION_MESSAGES[action]
+
+    # Handle the game being over
+    if util.terminal(self.history):
+    winner = evaluator.get_winner(self.history)
+    winnings = -evaluator.calculate_reward(self.history)
+    self.total_winnings += winnings
+    self.display_text += "Game over. " + PLAYER_NAMES[winner] + "won: " + str(abs(winnings))
+
+    # If the next player is the bot, allow it to take its action
+    elif util.player(self.history) == 1:
+    self.update_game_state(self.agent.get_action(self.history), 1)
+
+    # If the we need cards to be dealt, deal the cards.
+    elif util.player(self.history) == 0:
+    self.pub_card = random.choice(util.get_available_cards(self.history))
+    self.update_game_state(self.pub_card, 0)
+\end{lstlisting}
+
 The third component of our game was the game model.
 This was instantiated through a python class named Model that had the responsibility of feeding
 the correct data to the Controller class at any point in the game.
@@ -514,29 +540,8 @@ form of a python dictionary.
 The most significant method in this class was the update\_game\_state method.
 This method handled the player taking actions, the agent responding to those actions and the state being
 updated.
-The code for this method is listed below.
+The code for this method is listed above.
 
-\begin{lstlisting}[style=Python]
-def update_game_state(self, action, player):
-    self.history += action
-    self.display_text += PLAYER_NAMES[player] + ACTION_MESSAGES[action]
-
-    # Handle the game being over
-    if util.terminal(self.history):
-        winner = evaluator.get_winner(self.history)
-        winnings = -evaluator.calculate_reward(self.history)
-        self.total_winnings += winnings
-        self.display_text += "Game over. " + PLAYER_NAMES[winner] + "won: " + str(abs(winnings))
-
-    # If the next player is the bot, allow it to take its action
-    elif util.player(self.history) == 1:
-        self.update_game_state(self.agent.get_action(self.history), 1)
-
-    # If the we need cards to be dealt, deal the cards.
-    elif util.player(self.history) == 0:
-        self.pub_card = random.choice(util.get_available_cards(self.history))
-        self.update_game_state(self.pub_card, 0)
-\end{lstlisting}
 
 \subsection{Agent Representation}\label{subsec:agent}
 In the case of this prototype game, the agent is merely an instantiation of a pre-defined strategy.
