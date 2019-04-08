@@ -3,10 +3,10 @@
 
 The aim of this chapter is to give the reader background information on certain areas of machine learning and
 game theory in order for them to understand the rest of the report.
-There will also be a in-depth discussion of existing literature that relates to machine learning in texas hold'em
+There will also be an in-depth discussion of existing literature that relates to machine learning in texas hold'em
 agents.
 
-Machine learning is an area of computer science that tackles how we construct computer programs that improve
+Machine learning is an area of computer science that tackles the construction of computer programs that improve
 with experience\citep{mitchell1997machine}.
 The term was coined by Arthur Samuel in a paper in which he discussed machine learning methods using
 checkers\citep{samuel1959some}.
@@ -14,15 +14,15 @@ Since then there has been a great deal of advancement in the field.
 Some of the notable early contributions being the discovery of recurrent neural networks in 1982,
 the advancement of reinforcement learning by the introduction of Q-Learning in 1989 and the
 development of a backgammon-playing agent using neural networks and temporal difference learning\citep{tesauro1995td}.
-Recently we have seen some of this early academic work culminate in more practical achievements such as
+Recently some of this early academic work has culminated in more practical achievements such as
 Facebook's DeepFace system which, in 2014,  was shown to be able to recognise faces at a rate of 97.35\% accuracy,
 a rate that is comparable to that of humans.
 Another example of recent achievement is Google's AlphaGo program which, in 2016, became the first program to beat
 a professional human player.
 
 It should be becoming clear that machine learning can be a solution to a wide array of problems and as
-both hardware and software continue to improve it's reach will only continue to grow.
-We are starting to see machine learning systems become a key component of many companies business model.
+both hardware and software continue to improve its reach will only continue to grow.
+Machine learning systems are starting to become a key component of many companies business model.
 Since certain machine learning techniques are great at prediction, machine learning has been widely used
 for content discovery by companies such as Google and Pinterest.
 Other business applications include the use of chatbots as a part of customer service, self-driving cars
@@ -31,9 +31,9 @@ and even in the field of medical diagnostics.
 
 \section{Reinforcement Learning}\label{sec:reinforcementLearning}
 The early research for this project yielded reinforcement learning as the most suitable machine learning
-paradigm for the problem of texas hold'em.
+paradigm for the problem of Texas hold'em.
 However, in order to understand both reinforcement learning and how it would apply to the chosen problem,
-in depth research was required.
+in-depth research was required.
 This research included a Udemy course\citep{udemy2018rlpython} as well as reading in part the book
 Reinforcement Learning: An Introduction\citep{sutton1998reinforcement}.
 
@@ -45,14 +45,13 @@ Reinforcement Learning: An Introduction\citep{sutton1998reinforcement}.
 As mentioned in the introduction, reinforcement learning is a method of programming agents by reward and
 punishment without needing to specify how the task is to be achieved.
 As such the primary components of a reinforcement learning problem are an agent which exists in an environment.
-From a simplified perspective we can think of the environment as a set of states, actions and rewards.
+From a simplified perspective, we can think of the environment as a set of states, actions, and rewards.
 The interaction of the agent and the environment using these three components is shown in figure 2.1.
 The objective for the agent is to maximise cumulative reward.
 This is done by developing a policy that will dictate which actions should be taken in each state.
 
 \subsection{Explore-Exploit Dilemma}\label{subsec:exploreExploit}
-When it comes to reinforcement learning one of the first questions that should be asked is
-how the state space be explored.
+When it comes to reinforcement learning one of the first questions that should be asked is how the state space should be explored.
 An example that is often used to conceptualize this problem is the multi-armed bandit problem.
 Let's say an agent is in a room with a number of gambling machines.
 Each of these machines has an arm that, when pulled will return a reward of 0 or 1 based on some underlying
@@ -74,7 +73,7 @@ methods will now be briefly discussed.
 The first approach is the $\epsilon$-greedy strategy.
 This approach was first proposed in\citep{watkins1989learning} and is a very simple and widely used method.
 The $\epsilon$-greedy strategy involves choosing a random lever some proportion $\epsilon$ of the time, and
-choosing the lever that has been established to give the highest reward the rest of the time.
+choosing the lever that has been established to give the highest reward for the rest of the time.
 
 There are a number of variations of this method, the first being the $\epsilon$-first strategy.
 With this strategy all random choices are taken first, thus evaluating the best bandit,
@@ -90,18 +89,18 @@ $\epsilon_t = \frac{\epsilon_0}{t}$.
 
 \subsubsection{Upper Confidence Bounds}
 Another approach that can be used is called the upper confidence bound(UCB) method.
-With this method an initial optimistic estimate of the reward of each bandit is assigned.
+With this method, an initial optimistic estimate of the reward of each bandit is assigned.
 After which a greedy approach is taken.
-Less explored bandits will have a artificially higher reward estimate and thus they will be greedily chosen,
+Less explored bandits will have an artificially higher reward estimate and thus they will be greedily chosen,
 thus allowing us to evaluate each of the bandits.
 
 In the context of reinforcement learning, state space exploration through the $\epsilon$-greedy approach is
 generally sufficient.
 
 \subsection{Markov Decision Processes}\label{subsec:mdp}
-In the last section some methods that can be used to explore environments have been established.
+In the last section, some methods that can be used to explore environments have been established.
 The next step is to discuss in more detail how reinforcement learning environments, and their interaction
-with reinforcement learning agents, are modelled.
+with reinforcement learning agents, are modeled.
 Generally finite Markov decision processes (finite MDPs) are used.
 Markov decision processes provide a formal mathematical framework for sequential decision making,
 where actions influence immediate rewards as well as subsequent situations\citep{sutton1998reinforcement}.
@@ -115,7 +114,7 @@ Markov decision processes can be looked at in a similar way.
 However, there are a number of additional factors that must be considered in order to paint a complete picture.
 
 The problem can be thought of as consisting of a set of discrete time steps.
-At each time step the environment supplies the agent some information about the state, $S_t$.
+At each time step, the environment supplies the agent some information about the state, $S_t$.
 Using this information the agent chooses an action, $A_t$.
 Then, as a result of the action, the environment will supply the agent with a reward, $R_t$, as well as a new state.
 As such the process of interaction between the agent and the environment can be seen as a trajectory of states,
@@ -124,14 +123,14 @@ actions and rewards\citep{sutton1998reinforcement}:
     S_0,A_0,R_1,S_1,A_1,R_2,S_2\dots
 \end{align}
 
-Thus far it has been stated that states, actions and rewards are related, however questions still exist as to
+Thus far it has been stated that states, actions, and rewards are related, however questions still exist as to
 the exact workings of this relationship.
 The answer is that finite MDPs contain a discrete probability distribution that determines the likelihood that we
 will reach the state $s'$ and receive reward $r$ at time $t$ based on the previous action $a$ and state $s$:
 \begin{align}
     p(s',r|s,a) \doteq \Pr\{S_t=s',R_t=r|S_{t-1}=s,A_{t-1}=a\}
 \end{align}
-In simplified terms this means that for a given state-action pair $(s,a)$, the probability of us reaching some
+In simplified terms, this means that for a given state-action pair $(s,a)$, the probability of us reaching some
 new state $s'$ and receiving reward $r$ is determined by the MDPs probability function $\Pr$.
 
 This four argument probability function completely characterizes the dynamics of the MDP and from it any other
@@ -151,28 +150,28 @@ However, in other cases continuous tasks are modelled.
 The problem here is that, if the same method of calculating $G_t$ is used then in this case $G_t$
 will always eventually sum to infinity, regardless of whether good or bad actions are being selected.
 As such a concept called discounting must be introduced.
-With this approach the aim is to maximise the sum of future discounted rewards.
+With this approach, the aim is to maximise the sum of future discounted rewards.
 Thus $\gamma$, a parameter with a value between 0 and 1, is utilised.
-As such, for continuous tasks modelled as MDPs our cumulative reward is as follows:
+As such, for continuous tasks modeled as MDPs our cumulative reward is as follows:
 \begin{align}
     G_t = R_{t+1}+\gamma R_{t+2}+\gamma^{2}R_{t+3}+\dots
 \end{align}
 
 Based on our specified value of $\gamma$ the weighting of future rewards can be adjusted.
-For example if a low value for $\gamma$ (eg .5) is used then the value of rewards more than a
+For example, if a low value for $\gamma$ (eg .5) is used then the value of rewards more than a
 few time steps in the future will be very low.
 
 \subsubsection{Partially Observable Markov Decision Processes}
-A partially observable Markov decision Process (POMDP) is used to model environments that are not
+A Partially Observable Markov Decision Process (POMDP) is used to model environments that are not
 fully observable\citep{kaelbling1996reinforcement}.
 POMDPs extend MDPs by including a set of observations, $O$.
 There is also an observation function, $P(O_t=o|S_t=s)$, that determines the probability of making a certain observation
 in a certain state.
-Hold'em can be modelled as a POMDP due to the fact that is an imperfect information game.
+Hold'em can be modeled as a POMDP due to the fact that is an imperfect information game.
 
 However, it is possible that an agent in a POMDP environment can remember the sequence of observations
 and actions that lead to the current state.
-This is a sufficient statistic of it's experience and can thus define a complete information
+This is a sufficient statistic of its experience and can thus define a complete information
 state\citep{heinrich2017reinforcement}.
 As such a POMDP can be reduced to it's underlying MDP by using these full history information
 states and also extending the relevant transition and reward functions.
@@ -185,13 +184,13 @@ There are two primary problems that must be solved in order to do so.
 
 The first is called the prediction problem, or policy evaluation.
 This involves computing the values of states given some arbitrary policy\citep{sutton1998reinforcement}.
-For example a state would have a high value if the reward for reaching that state was high.
+For example, a state would have a high value if the reward for reaching that state was high.
 A state would also have a high value if the current state was only one action away,
 according to the supplied policy, from a state that renders a high reward.
-However a state would have a low value if, according to the policy, there was no path to a state that
+However, a state would have a low value if, according to the policy, there was no path to a state that
 would return a positive reward in the foreseeable future.
 
-The second problem is known as the control problem, or policy improvement.
+The second problem is known as the control problem or policy improvement.
 This involves changing the policy in order to improve our cumulative reward.
 The policy improvement process can only occur when policy evaluation has been performed.
 Let's say, after our evaluation step, the value of some state $s$ is known.
@@ -200,7 +199,7 @@ But, if some other action $a'$ is taken, would this render a higher value for $s
 If the answer is yes then the policy is updated.
 
 These two operations can be seen as the core of reinforcement learning.
-In the next section different reinforcement learning methodologies will be discussed.
+In the next section, different reinforcement learning methodologies will be discussed.
 Some of the main differences are in how method each approaches the prediction and control problems.
 
 \subsection{Dynamic Programming}\label{subsec:dp}
@@ -208,7 +207,7 @@ Dynamic programming (DP) refers to a collection of algorithms that can be used t
 perfect model of the environment as a Markov decision process\citep{sutton1998reinforcement}.
 DP is not widely used in practical reinforcement learning applications due to its assumption
 of a perfect MDP and it's high computational requirements.
-Despite this it is very important from a theoretical standpoint as it serves as an introduction to a number
+Despite this, it is very important from a theoretical standpoint as it serves as an introduction to a number
 of important reinforcement learning concepts.
 Furthermore, it provides a basis for many algorithms that are used in practical reinforcement learning applications.
 
@@ -216,7 +215,7 @@ Furthermore, it provides a basis for many algorithms that are used in practical 
 When discussing policy evaluation a state-value function or a value function is referred to.
 This is simply the mapping of states to their corresponding values and is denoted by $v$.
 
-Since the environments's dynamics are completely known, an iterative solution to finding
+Since the environments' dynamics are completely known, an iterative solution to finding
 the value function can be applied.
 If a series of approximate value functions $v_0, v_1, v_2,..$ are considered.
 The initial value function, $v_0$ is chosen arbitrarily and each successive generation is obtained by
@@ -253,10 +252,10 @@ The new greedy policy $\pi'$ can be denoted as:
 Essentially here the value of each available action in the current state is determined using the same operation
 as outlined in the policy evaluation phase.
 Then the argmax function will select the action with the highest value.
-Finally, this action is assigned to be the one that will be choosen in state s, according to the new policy $\pi'$.
+Finally, this action is assigned to be the one that will be chosen in state s, according to the new policy $\pi'$.
 
 Note that in this section an algorithm has been outlined with respect to deterministic policies,
-however a lot of times in reinforcement learning deals with stochastic policies.
+however, a lot of times in reinforcement learning deals with stochastic policies.
 This means that actions are taken in states according to some probability distribution rather than always choosing
 the same action in a particular state.
 This is not a problem as the ideas mentioned apply equally well to stochastic policies.
@@ -284,7 +283,7 @@ This means that action values are only updated after an episode has completed.
 \subsubsection{Monte Carlo Policy Evaluation}
 In Monte Carlo methods a fundamentally different approach to policy evaluation is taken.
 As mentioned this method is focused on using episodic experience.
-In order to evaluate a state the rewards returned after visiting that state are averaged.
+In order to evaluate a state, the rewards returned after visiting that state are averaged.
 As more returns are observed the average will converge to the actual expected value of the state.
 
 It is worth noting that a state $s$ could be visited more than once in an episode.
@@ -297,7 +296,7 @@ In Monte Carlo methods, the lack of a model means that state values are insuffic
 obtain a policy.
 Rather state-action pairs are generally evaluated.
 This mapping of state-action pairs to values is referred to as the $q$ function or the action value function.
-In this case the evaluation problem for action values is to estimate $q_\pi(s, a)$, the expected return when
+In this case, the evaluation problem for action values is to estimate $q_\pi(s, a)$, the expected return when
 starting in state s, taking action a, and thereafter following policy $\pi$\citep{sutton1998reinforcement}.
 
 The method for policy evaluation using state-action pairs is almost identical to that outlined above.
@@ -306,7 +305,7 @@ rewards for each action taken when a state is visited are averaged.
 There is one problem with this approach in the context of deterministic policies.
 The problem being that in following a deterministic policy rewards will only be returned
 for a single action, thus only one action value estimate will be improved.
-In order to negate this problem it can be specified that every episode begin in a state-action pair,
+In order to negate this problem, it can be specified that every episode begin in a state-action pair,
 with the probability of starting in each state-action pair being non-zero.
 This is called the \textit{exploring-starts} method.
 Another approach would be to ensure that a stochastic policy is used with
@@ -326,7 +325,7 @@ However, as mentioned, in the case of Monte Carlo a $Q$ function is used as show
 \subsection{Temporal Difference Learning}\label{subsec:td}
 The final reinforcement learning method that will be discussed is the Temporal Difference(TD) learning method.
 TD learning combines dynamic programming(DP) and and Monte Carlo(MC) ideas\citep{sutton1998reinforcement}.
-Like MC, learing occurs directly from experience, without a model of the environment's dynamics.
+Like MC, learning occurs directly from experience, without a model of the environment's dynamics.
 However, like DP state value estimates are updated based on other learned estimates, without needing to wait for an
 episode to complete and the return of some final outcome.
 
@@ -355,7 +354,7 @@ learning rate.
 This rule is applied for each state visited in an episode and for each episode.
 
 \subsubsection{TD Learning Policy Improvement - SARSA}
-At this point it is worth noting that there are two distinct methods of handling policy improvement.
+At this point, it is worth noting that there are two distinct methods of handling policy improvement.
 The first is on-policy and the second is off-policy.
 On-policy reinforcement learning is when the policy being evaluated or improved is the same policy that is used
 to make decisions.
@@ -377,7 +376,7 @@ name SARSA originates.
 \subsubsection{TD Learning Policy Improvement - Q-Learning}
 Q-Learning is an off-policy control algorithm.
 This was one of the early breakthroughs in reinforcement learning as it allows the direct approximation of
-the optimal action value function independent of the policy being followed.
+the optimal action-value function independent of the policy being followed.
 The update rule is as follows:
 \begin{align}
     Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \lbrack R_{t+1} + \gamma maxQ(S_{t+1}, a) - Q(S_t, A_t) \rbrack.
@@ -411,37 +410,37 @@ When the tree has been exited the rollout policy is used in
 order to provide default behavior outside of the tree and ultimately reach a
 terminal node from which a reward can be obtained.
 The final step is \textbf{backpropagation}.
-This step is uses the reward obtained to update the values of the tree nodes that were visited
+This step  uses the reward obtained to update the values of the tree nodes that were visited
 during the episode.
 
-In summary this algorithm uses the simulation step in order to efficiently sample rewards which
+In summary, this algorithm uses the simulation step in order to efficiently sample rewards which
 are then propagated back to nodes of the tree.
-In later iterations the tree policy selects which areas of the tree to
+In later iterations, the tree policy selects which areas of the tree to
 explore based on these propagated values.
 In section 2.4 a method for applying MCTS to imperfect information games such as poker will be outlined.
 
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
 clear that a pure reinforcement learning approach would not be feasible.
-The main reason for this was the fact that texas hold'em is an imperfect information game.
+The main reason for this was the fact that Texas hold'em is an imperfect information game.
 As outlined by\citep{dahl2001reinforcement}:
 \begin{quotation}
-Note that the concept of game state values, which is the key to solving perfect information games,
-does not apply to imperfect information games, because the players do not know from  which game states they
-are choosing.
+    Note that the concept of game state values, which is the key to solving perfect information games,
+    does not apply to imperfect information games, because the players do not know from  which game states they
+    are choosing.
 \end{quotation}
 As such it became apparent that some other techniques would have to be incorporated in order to create a competent
 texas hold'em agent.
 After discovering the following two key papers\citep{heinrich2016deep} and\citep{heinrich2017reinforcement},
 the initial goal was to utilise the Neural Fictitious Self-Play(NFSP) method as a basis for our agent.
-Eventually, instead it was decided that MCTS would be used as the basis for our agent implementation.
+Eventually, instead, it was decided that MCTS would be used as the basis for our agent implementation.
 NFSP is based heavily on the game theoretic concepts that are outlined in this section, however,
 the MCTS implementation that is discussed later will rely on a number of these concepts.
 
 \subsection{Modelling Games}\label{subsec:modellingGames}
-When an attempt is made to solve a game, the way in which the game is modelled must first be understood.
+When an attempt is made to solve a game, the way in which the game is modeled must first be understood.
 It is also important to carefully consider how a form or structure of the model is defined\citep{myerson2013game}.
-In this section three important forms that games can take will be discussed.
+In this section, three important forms that games can take will be discussed.
 The varying utility of each of the different scenarios will also be outlined.
 
 \subsubsection{Extensive Form Games}
@@ -491,14 +490,14 @@ The sequence form is an efficient method of representing extensive form games\ci
 This representation is described as a linear-sized strategic description of the game.
 It decomposes players strategies into sequences of actions and probabilities of realizing those sequences.
 
-In sequence form games, for every player $i\in N$, each of their information states $u^i\in U^i$
+In sequence form games, for every player, $i\in N$, each of their information states $u^i\in U^i$
 uniquely define a \textbf{sequence} $\sigma_{u^i}$ of actions that a player must take in order to reach
 that information state.
 These sequences are then mapped to realization probabilities through what is called a realization plan,
 denoted by $x$.
 When two or more strategies have the same realization plan these strategies are considered to be
 realization equivalent\citep{von1996efficient}.
-This can apply across different types of strategies for example extensive-form, behavioral strategies
+This can apply across different types of strategies, for example, extensive-form, behavioral strategies
 and normal-form, mixed strategies\citep{kuhn2016extensive}.
 
 \subsection{Nash Equilibria}\label{subsec:nashEquilibria}
@@ -518,41 +517,41 @@ $\pi^i \in BR^i_\varepsilon (\pi^{-i})$ for all $i\in N$.
 
 \subsection{Fictitious Play}\label{subsec:fictitiousPlay}
 Fictitious play(FP) is a game-theoretic model of learning through self-play.
-At each iteration players choose the best responses to their opponents average
+At each iteration, players choose the best responses to their opponents average
 strategies\citep{heinrich2017reinforcement}.
-These strategies converge to Nash equilibria in certain classes of games, including two-player, zero sum games.
+These strategies converge to Nash equilibria in certain classes of games, including two-player, zero-sum games.
 
 Generalised weakened fictitious self-play (GWFSP) is a method that is built on FP but allows for approximations
 in players strategies\citep{leslie2006generalised}.
 Thus it is more suitable for machine learning.
 GWFSP allows for a certain error at each iteration of the algorithm and relies on the fact that this
 error rate will tend towards zero as time progresses.
-In the the research done by Leslie and Collins normal form games were studied.
-There has also been research done into the applicability of FP to extensive form games however,
+In the research done by Leslie and Collins normal form games were studied.
+There has also been research done into the applicability of FP to extensive form games, however,
 before\citep{heinrich2016deep} there was no method shown to converge for imperfect information games such as poker.
-In later sections we will discuss how Heinrich utilised GWFSP as a basis for neural fictitious self-ply,
+In later sections, we will discuss how Heinrich utilised GWFSP as a basis for neural fictitious self-ply,
 a method that has shown success in games of imperfect information.
 
 \section{Texas Hold'em}\label{sec:thIntro}
-Although it was decided that a full scale implementation for Texas hold'em would be beyond the
+Although it was decided that a full-scale implementation for Texas hold'em would be beyond the
 scope of this project, this was the target game at the inception of the project.
 As such the mechanics of this game will now be discussed.
 The reader may choose to skip to section 2.3.4 in order to only learn about the game of Leduc Hold'em.
 
 Texas hold'em is one variant in a family of games called poker.
-Poker is a group of card games that combine gambling, strategy and skill.
+Poker is a group of card games that combine gambling, strategy, and skill.
 All poker variants have three core similarities.
 There is betting involved, there is imperfect information (ie cards remain hidden until the end of a hand)
 and the winner is determined by combinations of cards.
 
 \subsection{Game Structure}\label{subsec:bettingRounds}
 Texas hold'em consists of four betting rounds.
-Initially each player is dealt two private cards.
+Initially, each player is dealt two private cards.
 These remain face down and only the person who received these cards may view them.
-In the next three rounds five public cards are dealt face up on the table.
+In the next three rounds, five public cards are dealt face up on the table.
 The second round of dealing is called the flop, where three public cards are dealt.
 The third round is called the turn where one additional public card is dealt.
-Finally in the fourth round another public card is dealt which is called the river.
+Finally, in the fourth round, another public card is dealt which is called the river.
 
 At each round, after the cards are dealt, the players are given the opportunity to take a number of betting
 related actions.
@@ -563,13 +562,13 @@ Blinds are a mandatory bet that must be posted by two of the players present at 
 These two bets are called the big blind and the small blind, the big blind being twice that of the small blind.
 As hands are played the big and small blinds are posted by different players in order to distribute the cost fairly.
 
-The big and small blind are the first two bets that contribute to what's called the pot.
+The big and small blinds are the first two bets that contribute to what's called the pot.
 The pot is the collection of all of the current chips bet by the players.
 When a player wins a hand then what they receive in return is the pot.
 
 The final structural component of the game is player stacks.
 Each player will start the game with a certain amount of chips.
-If a player wins a pot then all of the chips in the pot are transferred to the winners stack.
+If a player wins a pot then all of the chips in the pot are transferred to the winner's stack.
 
 \subsection{Actions}\label{subsec:actions}
 As mentioned in the previous section, after cards are dealt players are permitted to take a number of actions.
@@ -581,7 +580,7 @@ Players can go back and forth with bets until they run out of chips in which cas
 considered to be "all in".
 
 \subsection{Hand Values}\label{subsec:handValues}
-In poker the best 5 cards available to the player can be played.
+In poker, the best 5 cards available to the player can be played.
 This means any combination of his own private cards and the public cards can be used.
 There are 10 major poker hands.
 These are listed below in ascending order of value:
@@ -601,15 +600,15 @@ These are listed below in ascending order of value:
 Leduc Hold'em is a simplified version of Hold'em that was first introduced in\citep{southey2012bayes}.
 In Leduc Hold'em the deck is reduced to six cards with two suits and three ranks in each suit.
 Rather than four rounds there are only two.
-In the first round a single private card is dealt to each player.
-In the second round a single board card is revealed.
-In the first round both players have a mandatory bet of one and a raise of two is allowed.
-In the second round players can raise by four.
+In the first round, a single private card is dealt to each player.
+In the second round, a single board card is revealed.
+In the first round, both players have a mandatory bet of one and a raise of two is allowed.
+In the second round, players can raise by four.
 Each round allows for at most two bets.
 
 
 \section{Variations of MCTS Applied to Poker}\label{sec:mctsPoker}
-As mentioned in section 2.1.7 MCTS has been shown to be a very powerful method for solving large
+As mentioned in section 2.1.7, MCTS has been shown to be a very powerful method for solving large
 perfect-information games such as Go.
 However if this algorithm is to be applied to a imperfect information game like poker then
 a number of modifications must be applied.
@@ -618,10 +617,10 @@ MCTS called smooth UCT was implemented to tackle both leduc hold'em and limit ho
 
 \subsection{Extensive Form MCTS}\label{subsec:extensiveMCTS}
 One of the subtleties of poker is that player information is asymmetric.
-In other words each player has access to their own private card 
-information but not to their opponents private cards.
+In other words, each player has access to their own private card
+information but not to their opponent's private cards.
 This means that the search tree cannot be a single, collective
-entity\citep{heinrich2017reinforcement}, rather two search trees must be available 
+entity\citep{heinrich2017reinforcement}, rather two search trees must be available
 to accommodate self-play.
 The method that can be used to accomplish this goal is the creation of
 an information function $I^i(s)$, a concept from game theory(see section 2.2.1).
@@ -629,14 +628,15 @@ This function will return the information state $u^i$ of the current player ($i$
 the current state $s$ from the full game tree.
 Note that the full game tree will have separate nodes for any variation
 in either player's cards.
-However, player 1's game tree will not have separate nodes where the only 
-differentiating factor is player 2's private cards\citep{johanson2011accelerating} 
+However, player 1's game tree will not have separate nodes where the only
+differentiating factor is player 2's private cards\citep{johanson2011accelerating}
 due to the fact that this information is not available.
-For example let's say that state $s$ is in the full game tree and contains the information
+For example, let's say that state $s$ is in the full game tree and contains the information
 that player 1 has an ace, player 2 has a king and there has been a single bet so far in the game.
 If this state is passed to player 1's information function the returned information
 state,$u^i$, will only contain the information that player 1 has an ace and there has been a single bet thus far.
 Algorithm 1 shows Heinrich's extensive form MCTS .
+
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
@@ -681,13 +681,13 @@ Algorithm 1 shows Heinrich's extensive form MCTS .
 \end{algorithm}
 
 Aside from the differences mentioned, extensive form MCTS remains essentially the same as generic MCTS .
-On lines 6 to 9 the rollout function is listed.
+On lines 6 to 9, the rollout function is listed.
 Here an action is sampled using the rollout policy which is then used to generate a subsequent
 state through invocation of the state transition function $G$.
 
 The SIMULATE function is the core recursive driver behind the MCTS algorithm.
-Initially, we check if we have reached a terminal state, if so the reward function,
-$R$, is utilised to calculate this reward which is then returned.
+Initially, we check if we have reached a terminal state if so the reward function,
+$R$ is utilised to calculate this reward which is then returned.
 Next, on line 14, the PLAYER function is used to determine which player is next to move.
 Then we check a data structure called OUT-OF-TREE that keeps track of which player has
 left the scope of their search tree in the current episode\citep{heinrich2017reinforcement}.
@@ -698,7 +698,7 @@ In this case, this node is added to the tree using the EXPANDTREE function, and 
 to use the rollout policy to generate behavior.
 On line 24 we have the contrary case in which we continue to use the tree policy by
 invoking the SELECT function.
-On lines 26 to 29 the next state is generated after which the SIMULATE function is recursively
+On lines 26 to 29, the next state is generated after which the SIMULATE function is recursively
 called.
 When this recursion ends, the UPDATE function is called in order to update the
 values and visitation counts of $u^{i}$ and it's child node.
@@ -707,17 +707,17 @@ values and visitation counts of $u^{i}$ and it's child node.
 \subsection{UCT}\label{subsec:UCT}
 In order to understand smooth UCT we must first explain the meaning of UCT .
 The abbreviation UCT refers to upper confidence bound(UCB) applied to trees.
-This means that in the action selection portion of the algorithm a UCB approach 
+This means that in the action selection portion of the algorithm a UCB approach
 is taken, where less explored nodes in the tree are given a positive bias in value.
 This means that unexplored nodes will be explored which ensures that
 the best actions at each position in the tree are discovered.
 The value of an action is denoted as follows:
 
 \begin{align}
-Q(u^i, a) + c \sqrt{\log N(u^i) / N(u^i, a)} 
+    Q(u^i, a) + c \sqrt{\log N(u^i) / N(u^i, a)}
 \end{align}
 
-In this expression the $Q$ function denotes the current value estimates for each action $a$ 
+In this expression the $Q$ function denotes the current value estimates for each action $a$
 in information state $u^i$.
 $N(u^i)$ and $N(u^i, a)$ denote the visitation count of the information state $u^i$
 and the subsequent information state after action $a$ has been taken.
@@ -750,20 +750,20 @@ This extension of the extensive form MCTS algorithm is shown in Algorithm 2.
 Smooth UCT is a modification of UCT that is inspired by fictitious play\citep{heinrich2017reinforcement}.
 As described in the last section the action selection in UCT is purely deterministic.
 Smooth UCT changes this by utilizing the average strategy a certain proportion of the time.
-In order to calculate the average strategy for a particular state we create a 
-probability distribution based on the visitation counts of the actions 
+In order to calculate the average strategy for a particular state, we create a
+probability distribution based on the visitation counts of the actions
 available at that state.
 For example, we could have an information state $u^i$ that has been visited 100 times
 and has three available actions, $a_1, a_2, a_3$.
-Then it would be possible that $a_1$ has been visited 50 times, $a_2$ 35 times 
+Then it would be possible that $a_1$ has been visited 50 times, $a_2$ 35 times
 and $a_3$ 15 times.
-According to the average strategy we would then select $a_1$ 50\% of the time, 
+According to the average strategy we would then select $a_1$ 50\% of the time,
 $a_2$ 35\% of the time and $a_3$ 15\% of the time.
-This process can be seen on line 9 and 10 of Algorithm 3.
+This process can be seen in line 9 and 10 of Algorithm 3.
 Here, for each available action $a$ at information state $u^i$ we set the
 probability of selecting that action to be the visitation count of the child node ($N(u^i,a)$)
 divided by the visitation count of the parent ($N(u^i)$).
-In order to determine when the average strategy should be used compared to the 
+In order to determine when the average strategy should be used compared to the
 UCB approach Heinrich describes a sequence $\eta_k$.
 This sequence decays to 0 as $\lim_{k \to \infty}$ and is expressed as follows:
 
@@ -802,44 +802,44 @@ python code.
 
 \section{Other Approaches}\label{sec:thImplementations}
 Although it has already been stated that there will be a focus on MCTS,
-it's worth discussing some other notable methods for creating poker 
+it's worth discussing some other notable methods for creating poker
 agents before proceeding.
-Currently the premier method for tackling full-scale texas hold'em is counterfactual 
+Currently, the premier method for tackling full-scale texas hold'em is counterfactual
 regret minimization.
-This is the method that has dominated the Annual Computer Poker Competition(ACPC) for the 
-last number of years, however recently some new methods have been outlined 
+This is the method that has dominated the Annual Computer Poker Competition(ACPC) for the
+last number of years, however recently some new methods have been outlined
 which look promising and thus will be discussed as well.
 
 
 \subsection{Counterfactual Regret Minimization}\label{subsec:thCFR}
 Counterfactual regret minimization(CFR) is a method for finding approximate Nash
 equilibria in imperfect information games and was first outlined in\citep{zinkevich2008regret}.
-Regret is a measure of the difference in utility between following some strategy 
+Regret is a measure of the difference in utility between following some strategy
 $\sigma$ compared to another strategy.
-Zinkevich introduced counterfactual regret which is regret applied to a 
+Zinkevich introduced counterfactual regret which is regret applied to a
 single information set ie a single extensive form game state.
 It was found that by calculating and minimizing regret on an individual
-state basis that there were performance benefits as well as an improvement 
+state basis that there were performance benefits as well as an improvement
 in accuracy of the calculated approximate Nash equilibria.
 
 One implementation of CFR is outlined in\citep{jackson2013slumbot}.
-This paper outlines the implementation used for Slumbot, the 2018 ACPC champion 
+This paper outlines the implementation used for Slumbot, the 2018 ACPC champion
 in no-limit hold'em.
 Jackson describes his use of CFR in order to generate a static strategy that approximates
-a Nash's equilibrium.
-At each iteration a strategy would be computed and when the process had ended an 
+a Nash equilibrium.
+At each iteration a strategy would be computed and when the process had ended an
 average of these strategies would be used.
-Jackson also mentions using an abstraction of the game in order to reduce no-limit's 
+Jackson also mentions using an abstraction of the game in order to reduce no-limit's
 massive state space (roughly $10^{164}$ with stack sizes of 100 big blinds)\citep{johanson2013measuring}.
-This is done through techniques like grouping similar hand values into buckets and 
-treating them as strategically equal or splitting the game up into it's individual rounds 
+This is done through techniques like grouping similar hand values into buckets and
+treating them as strategically equal or splitting the game up into its individual rounds
 and solving the rounds separately.
-These techniques allow for a dramatic reduction in state space and if handled correctly, 
+These techniques allow for a dramatic reduction in state space and if handled correctly,
 should allow for a strategy that can transfer to the full version of the game successfully.
 
 
 \subsection{Neural Fictitious Self-Play}\label{subsec:thNFSP}
-As mentioned earlier Fictitious Play(FP) is a game theoretic model that allows learning through self-play.
+As mentioned earlier Fictitious Play(FP) is a game-theoretic model that allows learning through self-play.
 This model was then extended a number of times until generalised weakened fictitious play(GWFP) was developed as a
 method of self-play that was applicable to machine learning techniques.
 Heinrich then utilised this method to develop Fictitious Self-Play(FSP)\cite{heinrich2015fictitious}.
@@ -852,10 +852,10 @@ networks in order to facilitate the larger state spaces of games such as limit t
 This method was outlined in\cite{heinrich2016deep}.
 
 \subsubsection{Algorithm}
-NSFP agents learn through self play ie interaction with other instances of the agent.
+NSFP agents learn through self-play ie interaction with other instances of the agent.
 As this process is happening the agents store experience of their play in two memories
 named $M_{RL}$ and $M_{SL}$.
-These memories are subsequently used to for as data sources for the reinforcement learning and
+These memories are subsequently used as data sources for the reinforcement learning and
 supervised classification portions of the algorithm respectively.
 
 This algorithm trains two neural networks which are in-turn used to generate two strategies.
@@ -885,13 +885,13 @@ This culminates in an approximate Nash equilibrium as players develop better and
 
 \subsubsection{Convergence and Empirical Results}
 This algorithm was applied to both Leduc Hold'em and Limit Texas Hold'em with variation in a number
-of parameters such as number of hidden layers and neurons in the neural networks.
+of parameters such as the number of hidden layers and neurons in the neural networks.
 
 The best results achieved for Leduc Hold'em used a single hidden layer neural network with 128 hidden neurons.
-This instantiation of the algorithm developed a strategy reached exploitability levels of less that .1, with
+This instantiation of the algorithm developed a strategy reached exploitability levels of less than .1, with
 a starting value of 1.5.
 
-The Limit Texas Hold'em instantiation of the algorithm was tested against the top 3 competitors of
+The limit Texas hold'em instantiation of the algorithm was tested against the top 3 competitors of
 the 2014 ACPC using win rate as the evaluation metric in milli big-blinds per hand (mbb/h).
 This saw a trained win rate of between -13 and -52mbb/h against these agents with the initial win rate being
 roughly -700mbb/h.

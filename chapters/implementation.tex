@@ -9,9 +9,9 @@ the development of our prototype game for demonstration purposes.
 
 
 \section{Smooth UCT Algorithm}\label{sec:MCTS}
-The core component of our implementation is the implementation of the smooth UCT algorithm, as
+The core component of our implementation is the smooth UCT algorithm, as
 outlined in section 2.4.
-As such, in this section the code corresponding to this algorithm will be outlined.
+As such, in this section, the code corresponding to this algorithm will be outlined.
 
 \subsection{Tree Representation and Utility Functions}\label{subsec:treeRepresentation}
 This subsection seeks to provide background on the data structures implemented and some
@@ -49,7 +49,7 @@ Below is the list of abbreviations for actions:
 The final component required to represent a history was a prefix.
 The prefix corresponds to the player that is first to play in the game and facilitates the computation of
 the next player to take an action given any history.
-In our case it could be either 1 or -1.
+In our case, it could be either 1 or -1.
 The table below gives a full breakdown of an example history.
 
 \addvbuffer[12pt 12pt]{\begin{tabular}[ht]{ | p{2.5cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} |}
@@ -88,9 +88,9 @@ Specifically, we refer to deterministic and stochastic strategies.
 When referring to deterministic strategies we mean strategies that have a single
 action associated with each state or history.
 This means that whenever that history is reached the same action will be selected each time.
-In the implementation these strategies are derived by analysing the values of nodes in the game tree.
+In the implementation, these strategies are derived by analysing the values of nodes in the game tree.
 The action that is taken at any given history is the action that will lead us to the child whose
-value is highest.
+value is the highest.
 
 Stochastic strategies are strategies that provide a probability distribution across the available actions
 at a given state or history.
@@ -106,7 +106,7 @@ This process is outlined in more detail in section 2.4.3.
 The first utility function is the util.terminal function.
 This function corresponds to the TERMINAL function listed in Algorithm 1 and
 takes a history as an argument returning a boolean value.
-For example if a player has folded then the return will be true.
+For example, if a player has folded then the return will be true.
 
 The second utility function is the util.player function.
 This corresponds to the PLAYER function listed in Algorithm 1, again taking a history as it's sole argument.
@@ -115,7 +115,7 @@ Depending on who is next to act it will return 1(player 1), 0(dealer) or -1(play
 The final utility function that will be discussed is the util.information\_function.
 This function corresponds to the information function, $I$, in Algorithm 1.
 It is parameterised by a player and a full game history.
-The return value is that same history without the opponents private card
+The return value is that same history without the opponent's private card
 embedded in the history.
 For example passing parameters ("1AhQhbc",1) would return "1Ahbc".
 Note that the second card "Qh" has been stripped from the returned history.
@@ -125,7 +125,7 @@ The python implementation for Smooth UCT action selection was a relatively close
 algorithmic SELECT function as discussed in section 2.4.
 The first distinction that should be made is that in section 2.4 states and information
 states were mentioned when discussing the Smooth UCT algorithm.
-In this chapter histories and player histories will be discusses as parallel concepts in the implementation.
+In this chapter histories and player histories will be discussed as parallel concepts in the implementation.
 Another notable difference is that instead of storing the history values and visitation
 counts in separate $Q$ and $N$ functions these functions are embedded within the tree data
 structure.
@@ -177,7 +177,7 @@ def expand(tree, history):
 
 
 \subsection{Simulation}\label{subsec:simulation}
-In this section we will discuss the python equivalents to the ROLLOUT and SIMULATE functions from Algorithm 1.
+In this section, we will discuss the python equivalents to the ROLLOUT and SIMULATE functions from Algorithm 1.
 
 In the python implementation, the rollout policy, $\pi_{rollout}$, is simply a random policy(line 2).
 This means that each action that is available in that state/history has the same probability of being selected.
@@ -185,16 +185,30 @@ Furthermore, the state transition function, $G$, is replaced by line 3 below.
 This is because the child of a history will always be an action appended to that history.
 
 \begin{lstlisting}[style=Python]
-def rollout(history):
+    def rollout(history):
     action = random.choice(util.get_available_actions(history))
     new_history = history + action
     return simulate(new_history)
 \end{lstlisting}
 
-The SIMULATE function, when ported to python code was modified to allow parallel tree expansion(see lines 14 to 19).
+The SIMULATE function, when ported to python code had a number of modifications.
+First, a tree function is introduced.
+This function has the purpose of returning the tree relevant to the current player.
+
+It was also found that an additional condition had to be added for the if statement at line 11.
+This condition ensured that the player history had children.
+If it did not then the else block would be executed and those children would be added.
+During the initial implementation of the algorithm, it was found that the tree would become
+disconnected if this condition was not present, with every second layer of the tree having no children.
+
+The final divergence from Algorithm 1's SIMULATE function is the conditional on line 14.
+In the case of our implementation, the player can be either of the active players or the dealer.
+If the current player is the dealer then we do not want to call the expand function,
+nor set the OUT-OF-TREE property to true.
+
 \begin{lstlisting}[style=Python]
 def simulate(history):
-    if util.terminal(history):
+    if util.is_terminal(history):
         return handle_terminal_state(history)
 
     player = util.player(history)
@@ -202,21 +216,19 @@ def simulate(history):
         return rollout(history)
 
     player_history = util.information_function(history, player)
-    player_tree = get_tree(player)
+    player_tree = tree(player)
     if player_history in player_tree and player_tree[player_history].children:
         action = select(history)
     else:
-        expand(player_one_tree, history, 1)
-        expand(player_two_tree, history, -1)
+        if player != DEALER:
+            expand(player_tree, history, player)
+            out_of_tree[player] = True
         action = random.choice(util.get_available_actions(history))
-        if player != 0:
-            out_of_tree[1] = True
-            out_of_tree[-1] = True
 
     new_history = history + action
-    running_reward = evaluator.calculate_reward(history) + simulate(new_history)
-    update_player_tree(history, action, 1, running_reward)
-    update_player_tree(history, action, -1, running_reward)
+    running_reward = evaluator.calculate_reward_full_info(history) + \
+                         discount_factor * simulate(new_history)
+    update_player_tree(history, action, player, running_reward)
 
     return running_reward
 \end{lstlisting}
@@ -228,7 +240,7 @@ the only difference being that the $Q$ and $N$ are embedded in the game tree.
 The code is listed below.
 
 \begin{lstlisting}[style=Python]
-def update(tree, history, new_history, running_reward):
+    def update(tree, history, new_history, running_reward):
     tree[history].visitation_count += 1
     tree[new_history].visitation_count += 1
     tree[new_history].value += (running_reward - tree[new_history].value) / tree[new_history].visitation_count
@@ -252,16 +264,16 @@ The chance player is the player who is responsible for the chance actions of the
 \subsection{Generating Best Response Tree}\label{subsec:applyMCTS}
 To calculate the exploitability of a strategy the best responses to that strategy must be
 determined.
-In other words the best response strategy must be established.
+In other words, the best response strategy must be established.
 
 There are two steps involved in this process.
 The first step involves generating a full game tree.
-This can be implemented as relatively trivial recursive function in which we begin at the root of the
+This can be implemented as a relatively trivial recursive function in which we begin at the root of the
 tree and at each level add every possible child node until a terminal node is reached.
 It is worth noting that the tree generated is a full game tree.
 This means that all of the game information is represented in the tree.
-As a result if we wish to view the nodes or histories in the tree from either player's perspective we must apply
-the information function in order to remove the opponents private information from view.
+As a result, if we wish to view the nodes or histories in the tree from either player's perspective we must apply
+the information function in order to remove the opponent's private information from view.
 The distinction between the full game tree and the player's information set is illustrated
 in figure 3.1.
 
@@ -292,7 +304,7 @@ The second step in generating the best response tree involves taking the MCTS pl
 selections and inserting them into the full game tree\citep{heinrich2017reinforcement}.
 In other words, wherever the MCTS player must take an action in the game tree, the best action is chosen
 based on their MCTS estimations.
-As such in the resultant tree the MCTS player's decision nodes will have
+As such in the resultant tree, the MCTS player's decision nodes will have
 a single child node.
 This is essentially a pruning process in which the child nodes that the MCTS player has
 not selected in their strategy are removed.
@@ -316,16 +328,16 @@ def apply_mcts_strategy(mcts_tree, best_response_tree, current_history):
 \end{lstlisting}
 
 As shown in the algorithm the function takes the tree that was evaluated
-through execution of the MCTS algorithm, the best response tree and the current history being processed.
-In a recursive manner we traverse down through the tree applying the MCTS player's
+through execution of the MCTS algorithm, the best response tree, and the current history being processed.
+In a recursive manner, we traverse down through the tree applying the MCTS player's
 strategy to each child node until we leave the tree.
 The player function is used to check if a decision node for the MCTS player has been reached.
-If so we first apply the information function to remove the opponents private information from current history.
+If so we first apply the information function to remove the opponent's private information from current history.
 Next, the best action according to the MCTS player is obtained.
 This action is then concatenated with the original history producing our desired child node.
 This child node is then assigned as the single child of the current history being processed.
 Figure 3.2 gives a visual representation of this pruning process.
-In this diagram we assume that in the MCTS tree, betting has a higher associated value than folding.
+In this diagram, we assume that in the MCTS tree, betting has a higher associated value than folding.
 
 \begin{figure}[!ht]
     \includegraphics[scale=1]{images/best_response_tree_vs_full_tree.PNG}
@@ -340,7 +352,7 @@ That is that the BR player should not be allowed to choose different actions bas
 private information of the opponent.
 This problem is avoided by calculating the average value of all histories that are equivalent in
 the eyes of the BR player and applying this value to the terminal node that we are evaluating.
-As an example if the BR player has a king then the MCTS player may have a queen, a king, or an ace.
+As an example, if the BR player has a king then the MCTS player may have a queen, a king, or an ace.
 Each of these possibilities would result in a different value for the terminal.
 Due to the fact that the BR player cannot see this information, they should not be able to vary
 their behavior based on it.
@@ -362,7 +374,7 @@ def evaluate_terminals(best_response_tree, terminals):
 It is worth noting at this stage that although the self-play smooth UCT algorithm is utilising
 stochastic strategies in training, the strategy evaluation step is evaluating a deterministic strategy.
 This can be seen in the "apply\_mcts\_strategy" function listed above, where every
-child aside from the highest valued is being removed from the tree.
+child aside from the highest valued child is being removed from the tree.
 If the MCTS player's strategy was to be treated as a stochastic strategy then all child
 nodes would be retained at this step.
 Probabilities would be associated with each child depending on how often they had been visited during training.
@@ -372,7 +384,7 @@ modification to this step of the algorithm would be made.
 A vector of reach probabilities\citep{johanson2011accelerating} would be calculated and these probabilities would
 be applied across "information equivalent" terminal nodes for the BR player.
 In other words, instead of simply averaging the return of these terminal nodes, they would be weighted.
-For example if $R$ is the reward function $p$ is a vector of reach probabilities and
+For example, if $R$ is the reward function $p$ is a vector of reach probabilities and
 $h^i$ is a vector of information equivalent nodes then the stochastic value would be:
 
 \begin{align}
@@ -416,17 +428,18 @@ root node is our exploitability value.
 \section{Prototype Application}\label{sec:prototypeApp}
 In order to give visual evidence of the work done and the agent developed, a user interface(UI) was created
 that allowed human interaction with the trained bot.
-In order to facilitate the development of this interface in a short period of time the Qt framework was used.
-Qt is a open-source widget toolkit for creating graphical user interfaces and applications.
-Specifically Qt Designer was used in order to generate a UI template.
+In order to facilitate the development of this interface in a short period of time, the Qt framework was used.
+Qt is an open source widget toolkit for creating graphical user interfaces and applications.
+Specifically, Qt Designer was used in order to generate a UI template.
 Qt Designer is a what-you-see-is-what-you-get (WYSIWYG) UI generation tool that accompanies Qt.
 PyQt5 was then used to generate python code from this UI template and connect the functional component of the game.
-In this section the process involved in creating this prototype application will be outlined
+In this section, the process involved in creating this prototype application will be outlined
 and some key code snippets will be highlighted.
 
-In order to elicit requirements for this application I applied brainstorming as well as analysing a number
+In order to elicit requirements for this application, I brainstormed as well as analysing a number
 of online UIs that served a similar purpose to mine.
 This process rendered the following functional requirements:
+
 \begin{itemize}
     \item Display list of available actions.
     \item Allow user to take action.
@@ -472,7 +485,7 @@ functional aspect of the game.
 This was done through the creation of a python class called Controller that extends the QWidget
 class from the PyQt framework.
 
-In order to handle events callback methods were registered with the buttons that required their events to be handled.
+In order to handle events, callback methods were registered with the buttons that required their events to be handled.
 The code listed below demonstrates this process:
 
 \begin{lstlisting}[style=Python]
@@ -489,11 +502,11 @@ This primarily involved calling the setText() method of a number of the screen's
 The third component of our game was the game model.
 This was instantiated through a python class named Model that had the responsibility of feeding
 the correct data to the Controller class at any point in the game.
-Due to the fact there was already significant functionality built around the concept of histories,
+Due to the fact that there was already significant functionality built around the concept of histories,
 it was decided that the state of the game would be tracked through the use of histories.
-From the history the majority of the information about the game could be deciphered.
+From the history, the majority of the information about the game could be deciphered.
 This included the available actions, the cards in play and the pot.
-In order to fully satisfy our functional requirements the Model class also kept track of annotation messages
+In order to fully satisfy our functional requirements, the Model class also kept track of annotation messages
 that were generated based on game events, along with the cumulative winnings of the player over time.
 This data was returned to the Controller class in the
 form of a python dictionary.
@@ -526,7 +539,32 @@ def update_game_state(self, action, player):
 \end{lstlisting}
 
 \subsection{Agent Representation}\label{subsec:agent}
-In the case of this prototype game the agent is merely an instantiation of a pre-defined strategy.
+In the case of this prototype game, the agent is merely an instantiation of a pre-defined strategy.
 As such when we call agent.get\_action(history) in the previous code block we are either probabilistically
-or deterministically selecting an action based the aforementioned strategy.
+or deterministically selecting an action based on the aforementioned strategy.
+Below we have listed the code for the Agent python class.
+Lines 10 to 17 give the code that is executed in order to return an action if our strategy is stochastic.
+Line 19 gives the code to return an action if the strategy is deterministic.
+
+\begin{lstlisting}[style=Python]
+class Agent:
+    def __init__(self, strategy_file):
+        self.strategy = load_strategy(strategy_file)
+
+    def get_action(self, history):
+        player_history = util.information_function(history, 1)
+
+        # Is our strategy stochastic?
+        if isinstance(self.strategy[player_history], dict):
+            candidates = []
+            probabilities = []
+
+            for key, value in self.strategy[player_history].items():
+                candidates.append(key)
+                probabilities.append(value)
+
+            return choice(candidates, p=probabilities)
+        else:
+            return self.strategy[player_history]
+\end{lstlisting}
 

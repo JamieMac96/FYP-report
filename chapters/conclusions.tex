@@ -1,5 +1,5 @@
 \chapter{Conclusions}\label{ch:conclusions}
-In this chapter there will be a review of the work done throughout the course of this project.
+In this chapter, there will be a review of the work done throughout the course of this project.
 A summary of the findings will be given along with a reflection on how the project was conducted.
 Finally, a brief discussion on future work will be given.
 
@@ -7,7 +7,7 @@ Finally, a brief discussion on future work will be given.
 The initial goal of this final year project was to explore the possibility of applying
 reinforcement learning techniques to imperfect information games.
 The initial focus of the project was on the game of Texas hold'em with research being
-done into different RL methods that could be used in order to craeate an agent for the game.
+done into different RL methods that could be used in order to create an agent for the game.
 It was decided that Monte Carlo Tree Search would be the method used and there would be
 an attempt to recreate the results demonstrated in\citep{heinrich2017reinforcement}.
 
@@ -22,7 +22,7 @@ with our agent's exploitability(2.2) being higher than his (.5) after 1,000,000
 iterations of the smooth UCT algorithm.
 
 Despite the fact that exact replication of Heinrich's results was not achieved we can
-think of the improving trend of our results to be a success.
+think of the improving trend of our results to be a sign of success.
 This is especially true when we consider the fact that Heinrich did not provide
 an algorithm for exploitability calculation and thus we cannot be sure that our metrics
 were exactly the same.
@@ -47,22 +47,22 @@ If more time was available for this implementation then through the use of param
 the further development of the exploitability calculation algorithm and additional training
 time would almost certainly result in vastly improved results.
 
-I feel that the use of the python programming language for this project was a good choice,
+I feel that the use of the Python programming language for this project was a good choice,
 its concise syntax, extensive set of support libraries and easy to use data structures
 made the implementation process fast and efficient.
 The same can be said for Qt Designer and PyQt when implementing the prototype game.
-These libraries aided in facilitated the fast and easy development of a user interface despite the fact
+These libraries aided in facilitating the fast and easy development of a user interface despite the fact
 that I had no previous experience in these technologies.
 
 \section{Future Work}\label{sec:futureWork}
 
-After this small step the next large task would be to tackle a more complex version of the game.
-In this second iteration of the project limit texas hold'em would be tackled with the end goal of recreating
+The next large task for this project would be to tackle a more complex version of the game.
+In this second iteration of the project limit Texas hold'em would be tackled with the end goal of recreating
 the results shown by Heinrich in his PhD thesis\citep{heinrich2017reinforcement}.
-In this case we would measure win rate against other texas hold'em agents in order to evaluate
+In this case, we would measure win rate against other texas hold'em agents in order to evaluate
 the success or failure of our product.
 
-The final step of this project would be to attempt to extend the same methods to no-limit texas hold'em.
+The final step of this project would be to attempt to extend the same methods to no-limit Texas hold'em.
 This game has a much larger state space(circa. $10^{164}$) than limit texas hold'em(circa. $10^{17}$).
 This final approach would likely require the introduction of neural networks that would provide accurate
 generalisation between states in order to reduce the complexity of the problem.
