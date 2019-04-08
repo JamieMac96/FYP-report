@@ -663,7 +663,7 @@ Algorithm 1 shows Heinrich's extensive form MCTS .
             $a$ = SELECT($u^i$)
         }
         $s' \sim G(s,a)$\;
-        $r \leftarrow $ SIMULATE($s0$)\;
+        $r \leftarrow $ SIMULATE($s'$)\;
         UPDATE($u^i$,$a$,$r^i$)\;
         \KwRet $r$
     }

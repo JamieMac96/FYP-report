@@ -192,8 +192,7 @@ def simulate(history):
             out_of_tree[-1] = True
 
     new_history = history + action
-    running_reward = evaluator.calculate_reward(history) + \
-                         discount_factor * simulate(new_history)
+    running_reward = evaluator.calculate_reward(history) + simulate(new_history)
     update_player_tree(history, action, 1, running_reward)
     update_player_tree(history, action, -1, running_reward)
 
@@ -305,7 +304,7 @@ In this diagram we assume that in the MCTS tree, betting has a higher associated
 
 \subsection{Terminal Node Evaluation}\label{subsec:terminalNodeEvaluation}
 The next step in this process is to evaluate the terminal nodes in the best response tree.
-This process involves seems trivial on immediate inspection.
+This process seems trivial on immediate inspection.
 However, there is one important factor that must be considered.
 That is that the BR player should not be allowed to choose different actions based on the
 private information of the opponent.
@@ -329,6 +328,32 @@ def evaluate_terminals(best_response_tree, terminals):
             avg = evaluator.average_reward(eq_nodes)
             best_response_tree[history].value = avg
 \end{lstlisting}
+
+It is worth noting at this stage that although the self-play smooth UCT algorithm is utilising
+stochastic strategies in training, the strategy evaluation step is evaluating a deterministic strategy.
+This can be seen in the "apply\_mcts\_strategy" function listed above, where every
+child aside from the highest valued is being removed from the tree.
+If the MCTS player's strategy was to be treated as a stochastic strategy then all child
+nodes would be retained at this step.
+Probabilities would be associated with each child depending on how often they had been visited during training.
+
+When evaluating the exploitability of stochastic strategies one
+modification to this step of the algorithm would be made.
+A vector of reach probabilities\citep{johanson2011accelerating} would be calculated and these probabilities would
+be applied across "information equivalent" terminal nodes for the BR player.
+In other words, instead of simply averaging the return of these terminal nodes, they would be weighted.
+For example if $R$ is the reward function $p$ is a vector of reach probabilities and
+$h^i$ is a vector of information equivalent nodes then the stochastic value would be:
+
+\begin{align}
+    v(h) = p_0*R(h_0) + p_1*R(h_1) + \dots + p_{n-1}*R(h_{n-1})
+\end{align}
+
+In contrast the deterministic evaluation is as follows:
+
+\begin{align}
+    v(h) = \dfrac{R(h_0) + R(h_1) + \dots + R(h_{n-1})}{n}
+\end{align}
 
 \subsection{Propagating Node Values}\label{subsec:propagateTerminals}
 The final step of this process involves the propagation of values back up the tree, with the highest
@@ -384,7 +409,7 @@ This process rendered the following functional requirements:
 
 \subsection{UI Screen}\label{subsec:UiScreen}
 The first step towards achieving these functional requirements was to generate a UI screen.
-This was achieved through Qt designer using drag and drop with the end result being as shown in figure 3.?.
+This was achieved through Qt designer using drag and drop with the end result being as shown in figure 3.1.
 Due to the fact that a number of images had to be displayed for the available cards in the
 game a Qt resource file was also created to store and locate those images.
 
