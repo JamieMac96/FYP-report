@@ -598,7 +598,7 @@ In the second round players can raise by four.
 Each round allows for at most two bets.
 
 
-\section{Variations of MCTS applied to poker}\label{sec:mctsPoker}
+\section{Variations of MCTS Applied to Poker}\label{sec:mctsPoker}
 As mentioned in section 2.1.7 MCTS has been shown to be a very powerful method for solving large
 perfect-information games such as Go.
 However if we wish to apply this algorithm to imperfect information games like poker then 
@@ -676,7 +676,7 @@ Here an action is sampled using the rollout policy which is then used to generat
 state through invocation of the state transition function $G$.
 
 The SIMULATE function is the core recursive driver behind the MCTS algorithm.
-Initially we check if we have reached a terminal state, if so the reward function,
+Initially, we check if we have reached a terminal state, if so the reward function,
 $R$, is utilised to calculate this reward which is then returned.
 Next, on line 14, the PLAYER function is used to determine which player is next to move.
 Then we check a data structure called OUT-OF-TREE that keeps track of which player has
@@ -688,9 +688,10 @@ In this case, this node is added to the tree using the EXPANDTREE function, and 
 to use the rollout policy to generate behavior.
 On line 24 we have the contrary case in which we continue to use the tree policy by
 invoking the SELECT function.
-Finally on lines 26 to 29 the next state is generated, the SIMULATE function is recursively
-called and when this recursion ends the UPDATE function is called in order to update the
-value and visitation count of $u^{i}$ and it's child node.
+On lines 26 to 29 the next state is generated after which the SIMULATE function is recursively
+called.
+When this recursion ends, the UPDATE function is called in order to update the
+values and visitation counts of $u^{i}$ and it's child node.
 
 
 \subsection{UCT}\label{subsec:UCT}
@@ -708,8 +709,10 @@ Q(u^i, a) + c \sqrt{\log N(u^i) / N(u^i, a)}
 
 In this expression the $Q$ function denotes the current value estimates for each action $a$ 
 in information state $u^i$.
-$N(u^i)$ and $N(u^i, a)$ denote the current visitation count of the information state $u^i$
+$N(u^i)$ and $N(u^i, a)$ denote the visitation count of the information state $u^i$
 and the subsequent information state after action $a$ has been taken.
+The visitation count of a state is simply the number of times the algorithm has passed
+through that state.
 Additionally, $c$ is the exploration constant.
 This constant can be used to control the level of exploration during the execution of the algorithm,
 with a value of 0 resulting in a purely greedy approach.
@@ -782,6 +785,10 @@ This is calculated on line 4 of Algorithm 3.
     }
     \caption{Smooth UCT}
 \end{algorithm}
+
+In chapter 3 we will take this abstract algorithm and document how it was translated to
+python code.
+
 
 \section{Other Approaches}\label{sec:thImplementations}
 Although we have already mentioned that we will be focusing on MCTS

@@ -8,72 +8,139 @@ This includes the implementation of the MCTS algorithm, our metric computation a
 the development of our prototype game for demonstration purposes.
 
 
-\section{UCT Algorithm}\label{sec:MCTS}
-The core component of our implementation
-\begin{lstlisting}[style=Python]
+\section{Smooth UCT Algorithm}\label{sec:MCTS}
+The core component of our implementation is the implementation of the smooth UCT algorithm, as
+outlined in section 2.4.
+As such, in this section the code corresponding to this algorithm will be outlined.
 
+\subsection{Tree Representation and Utility Functions}\label{subsec:treeRepresentation}
+This subsection seeks to provide background on the data structures implemented and some
+of the functions heavily utilised in the following chapter.
+These are not core elements of the algorithm and thus \textbf{the reader may choose to skip
+to section 3.1.2}.
+
+\subsubsection{Histories}
+As mentioned in section 2.1.2, when dealing with a POMDP, we must use histories to represent states.
+These histories consist of a sequence of actions and observations\citep{silver2010monte}.
+When practically applied to the game of Leduc Hold'em this means that we must store all of the
+cards dealt and the actions taken as a part of each history.
+In order to store history information in a simple, parsable manner it was decided that strings would be used.
+Their primary components would be cards and actions.
+In order to simplify the data involved abbreviations were used for both cards and actions.
+Below is the list of abbreviations for cards:
+
+\begin{itemize}
+    \item \textbf{Ah} - Ace of Hearts
+    \item \textbf{As} - Ace of Spades
+    \item \textbf{Kh} - King of Hearts
+    \item \textbf{Ks} - King of Spades
+    \item \textbf{Qh} - Queen of Hearts
+    \item \textbf{Qs} - Ace of Spades
+\end{itemize}
+
+Below is the list of abbreviations for actions:
+\begin{itemize}
+    \item \textbf{f} - Fold
+    \item \textbf{c} - Call
+    \item \textbf{b} - Bet
+    \item \textbf{r} - Raise
+\end{itemize}
+
+The final component required to represent a history was a prefix.
+The prefix corresponds to the player that is first to play in the game and facilitates the computation of
+the next player to take an action given any history.
+In our case it could be either 1 or -1.
+The table below gives a full breakdown of an example history.
+
+\addvbuffer[12pt 12pt]{\begin{tabular}[ht]{ | p{2.5cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} |}
+      \hline \textbf{Prefix} & \textbf{Private Cards} & \textbf{Round 1 Actions} & \textbf{Public Cards} & \textbf{Round 2 Actions}\\
+      \hline
+       1 & AhQh & bc & Ks & brc\\
+      \hline
+\end{tabular}}
+
+\subsubsection{Game Tree}
+The tree data structure consists of two primary components: histories and nodes.
+A python dictionary was used with the keys being histories and the values being nodes.
+Nodes were defined as simple data structures that contained a visitation count, a value,
+a parent and a set of children.
+Both the parent and the children were histories that also existed as keys in the
+tree dictionary thus facilitating $\mathcal{O}$(1) lookup time.
+
+\begin{lstlisting}[style=Python]
+class PoNode:
+
+    def __init__(self):
+        self.visitation_count = 1
+        self.value = 0
+        self.parent = ""
+        self.children = set()
+
+# Example instantiation with an empty string as the root node of the tree
+tree = {"": PoNode()}
 \end{lstlisting}
 
-\subsection{Tree Representation}\label{subsec:treeRepresentation}
+\subsubsection{Utility Functions}\label{subsec:utility}
+The first utility function is the util.terminal function.
+This function corresponds to the TERMINAL function listed in Algorithm 1 and
+takes a history as an argument returning a boolean value.
+For example if a player has folded then the return will be true.
+
+The second utility function is the util.player function.
+This corresponds to the PLAYER function listed in Algorithm 1, again taking a history as it's sole argument.
+Depending on who is next to act it will return 1(player 1), 0(dealer) or -1(player 2).
+
+The final utility function that will be discussed is the util.information\_function.
+This function corresponds to the information function, $I$, in Algorithm 1.
+It is parameterised by a player and a full game history.
+The return value is that same history without the opponents private card
+embedded in the history.
+For example passing parameters ("1AhQhbc",1) would return "1Ahbc".
+Note that the second card "Qh" has been stripped from the returned history.
 
 \subsection{Selection}\label{subsec:selection}
+The python implementation for Smooth UCT action selection was a relatively close approximation of the
+algorithmic SELECT function as discussed in section 2.4.
+The first distinction that should be made is that in section 2.4 states and information
+states were mentioned when discussing the Smooth UCT algorithm.
+In this chapter histories and player histories will be discusses as parallel concepts in the implementation.
+Another notable difference is that instead of storing the history values and visitation
+counts in separate $Q$ and $N$ functions these functions are embedded within the tree data
+structure.
+This means that when the functions at line 11 and 13 are called these
+functions directly correspond to lines 7 and 9 in Algorithm 3.
+Due to the fact that these functions are relatively large despite serving a trivial
+purpose they have been omitted for brevity.
 
 \begin{lstlisting}[style=Python]
-def select(self, history):
+def select(history):
     player = util.player(history)
     player_history = util.information_function(history, player)
+    tree = get_tree(player)
 
-    if player in {-1, 1}:
-        tree = get_tree(player)
-        eta_sub_expression = math.pow(1 + .1 * math.sqrt(tree[player_history].visitation_count), -1)
-        eta = max((GAMMA, ETA_ZERO * eta_sub_expression))
-        z = random.uniform(0, 1)
-        if z < eta:
-            return self.get_best_action_ucb(history, player, tree)
-        else:
-            return self.get_best_action_avg_strategy(player_history, tree)
+    eta_sub_expression = math.pow(1 + d * math.sqrt(tree[player_history].visitation_count), -1)
+    eta = max((GAMMA, ETA_ZERO * eta_sub_expression))
+
+    z = random.uniform(0, 1)
+    if z < eta:
+        return get_best_action_ucb(player_history, tree)
     else:
-        return random.choice(util.get_available_actions(history))
+        return get_action_avg_strategy(player_history, tree)
 \end{lstlisting}
 
-
-\begin{lstlisting}[style=Python]
-def get_best_action_avg_strategy(self, player_history, tree):
-    total_child_visits = 0
-    actions = []
-    probabilities = []
-
-    for child in tree[player_history].children:
-        total_child_visits += tree[child].visitation_count
-
-    for child in tree[player_history].children:
-        child_prob = tree[child].visitation_count / total_child_visits
-        actions.append(child.replace(player_history, ""))
-        probabilities.append(child_prob)
-
-    return rand.choice(actions, p=probabilities)
-
-\end{lstlisting}
-
-\begin{lstlisting}[style=Python]
-def get_best_action_ucb(self, history, player, tree):
-    player_history = util.information_function(history, player)
-    best_value = float('-inf')
-    best_action = None
-
-    for action in util.get_available_actions(history):
-        node_val = self.calculate_next_node_value(tree, player_history, action, player)
-        if node_val > best_value:
-            best_action = action
-            best_value = node_val
-
-    return best_action
-\end{lstlisting}
 
 \subsection{Expansion}\label{subsec:expansion}
+Due to the fact that\citep{heinrich2017reinforcement} did not discuss the details of his EXPANDTREE
+function (see Algorithm 1), it was decided that the expansion method detailed
+in\citep{silver2010monte} would be used.
+This was the original paper that outlined the method of applying MCTS to POMDPs so it seemed
+an adequate alternative.
+Silver's method stated that all available child nodes would be appended as children to the node to be expanded.
+The resulting code is listed below.
 
 \begin{lstlisting}[style=Python]
-def expand(tree, history, player):
+def expand(tree, history):
+    player = util.player(history))
     player_history = util.information_function(history, player)
 
     if player_history not in tree:
@@ -88,39 +155,45 @@ def expand(tree, history, player):
 
 
 \subsection{Simulation}\label{subsec:simulation}
+In this section we will discuss the python equivalents to the ROLLOUT and SIMULATE functions from Algorithm 1.
+
+In the python implementation, the rollout policy, $\pi_{rollout}$, is simply a random policy(line 2).
+This means that each action that is available in that state/history has the same probability of being selected.
+Furthermore, the state transition function, $G$, is replaced by line 3 below.
+This is because the child of a history will always be an action appended to that history.
 
 \begin{lstlisting}[style=Python]
-def rollout(self, history):
+def rollout(history):
     action = random.choice(util.get_available_actions(history))
     new_history = history + action
-    return self.simulate(new_history)
+    return simulate(new_history)
 \end{lstlisting}
 
-
+The SIMULATE function, when ported to python code was modified to allow parallel tree expansion(see lines 14 to 19).
 \begin{lstlisting}[style=Python]
-def simulate(self, history):
-    if util.is_terminal(history):
-        return self.handle_terminal_state(history)
+def simulate(history):
+    if util.terminal(history):
+        return handle_terminal_state(history)
 
     player = util.player(history)
-    if self.out_of_tree[player]:
-        return self.rollout(history)
+    if out_of_tree[player]:
+        return rollout(history)
 
     player_history = util.information_function(history, player)
     player_tree = get_tree(player)
     if player_history in player_tree and player_tree[player_history].children:
-        action = self.select(history)
+        action = select(history)
     else:
         expand(player_one_tree, history, 1)
         expand(player_two_tree, history, -1)
         action = random.choice(util.get_available_actions(history))
-    if player != 0:
-        self.out_of_tree[1] = True
-        self.out_of_tree[-1] = True
+        if player != 0:
+            out_of_tree[1] = True
+            out_of_tree[-1] = True
 
     new_history = history + action
-    running_reward = evaluator.calculate_reward_full_info(history) + \
-                         self.discount_factor * self.simulate(new_history)
+    running_reward = evaluator.calculate_reward(history) + \
+                         discount_factor * simulate(new_history)
     update_player_tree(history, action, 1, running_reward)
     update_player_tree(history, action, -1, running_reward)
 
@@ -129,6 +202,9 @@ def simulate(self, history):
 
 
 \subsection{Tree Update}\label{subsec:treeUpdate}
+The tree update function is essentially identical to the function listed in Algorithm 2 with
+the only difference being that the $Q$ and $N$ are embedded in the game tree.
+The code is listed below.
 
 \begin{lstlisting}[style=Python]
 def update(tree, history, new_history, running_reward):
@@ -136,6 +212,7 @@ def update(tree, history, new_history, running_reward):
     tree[new_history].visitation_count += 1
     tree[new_history].value += (running_reward - tree[new_history].value) / tree[new_history].visitation_count
 \end{lstlisting}
+
 
 \section{Exploitability Computation}\label{sec:bestResponseComputation}
 In order to evaluate the performance of our agent exploitability was utilised as the primary metric.
@@ -170,7 +247,7 @@ The code is listed below.
 def build_tree(history, tree):
     tree[history] = potree.PoNode()
 
-    if not util.is_terminal(history):
+    if not util.terminal(history):
         actions = util.get_available_actions(history)
         for action in actions:
             child = history + action
@@ -246,7 +323,7 @@ The code for this step is listed below.
 def evaluate_terminals(best_response_tree, terminals):
     for history in terminals:
         if history.endswith("f"):
-            best_response_tree[history].value = evaluator.calculate_reward_full_info(history)
+            best_response_tree[history].value = gevaluator.calculate_reward(history)
         else:
             eq_nodes = util.get_information_equivalent_nodes(best_response_tree, history, -1)
             avg = evaluator.average_reward(eq_nodes)
@@ -377,9 +454,9 @@ def update_game_state(self, action, player):
     self.display_text += PLAYER_NAMES[player] + ACTION_MESSAGES[action]
 
     # Handle the game being over
-    if util.is_terminal(self.history):
+    if util.terminal(self.history):
         winner = evaluator.get_winner(self.history)
-        winnings = -evaluator.calculate_reward_full_info(self.history)
+        winnings = -evaluator.calculate_reward(self.history)
         self.total_winnings += winnings
         self.display_text += "Game over. " + PLAYER_NAMES[winner] + "won: " + str(abs(winnings))
 
