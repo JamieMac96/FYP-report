@@ -76,7 +76,8 @@ class PoNode:
         self.parent = ""
         self.children = set()
 
-# Example instantiation with an empty string as the root node of the tree
+# Example instantiation.
+# In our implementation the root node was was an empty string.
 tree = {"": PoNode()}
 \end{lstlisting}
 
@@ -93,7 +94,7 @@ value is highest.
 
 Stochastic strategies are strategies that provide a probability distribution across the available actions
 at a given state or history.
-This means that each action may be taken at a particular history but,  there is a different probability
+This means that each action may be taken at a particular history but, there is a different probability
 of taking each action.
 These strategies are derived as a direct result of the average strategy used by the agent.
 In other words, the visitation counts of nodes during the MCTS training.
@@ -315,7 +316,7 @@ If so we first apply the information function to remove the opponents private in
 Next, the best action according to the MCTS player is obtained.
 This action is then concatenated with the original history producing our desired child node.
 This child node is then assigned as the single child of the current history being processed.
-Figure 3.? gives a visual representation of this pruning process.
+Figure 3.1 gives a visual representation of this pruning process.
 In this diagram we assume that in the MCTS tree, betting has a higher associated value than folding.
 
 \begin{figure}
@@ -430,7 +431,7 @@ This process rendered the following functional requirements:
 
 \subsection{UI Screen}\label{subsec:UiScreen}
 The first step towards achieving these functional requirements was to generate a UI screen.
-This was achieved through Qt designer using drag and drop with the end result being as shown in figure 3.1.
+This was achieved through Qt designer using drag and drop with the end result being as shown in figure 3.2.
 Due to the fact that a number of images had to be displayed for the available cards in the
 game a Qt resource file was also created to store and locate those images.
 
@@ -447,7 +448,7 @@ $ pyuic4 -x ui.ui -o screen.py
 $ pyrcc4 -o cards_resource.py cards/cards_resource.qrc
 \end{lstlisting}
 
-In order to create a visible screen the code in figure 3.? was used:
+In order to create a visible screen the code listed below was used:
 \begin{lstlisting}[style=Python]
 def setup_screen(self):
     self.main_window = QMainWindow()
@@ -464,7 +465,7 @@ This was done through the creation of a python class called Controller that exte
 class from the PyQt framework.
 
 In order to handle events callback methods were registered with the buttons that required their events to be handled.
-The code in figure 3.? demonstrates this process:
+The code listed below demonstrates this process:
 
 \begin{lstlisting}[style=Python]
 def setup_event_handlers(self):
@@ -492,7 +493,7 @@ form of a python dictionary.
 The most significant method in this class was the update\_game\_state method.
 This method handled the player taking actions, the agent responding to those actions and the state being
 updated.
-In figure 3.? the code for this method is listed.
+The code for this method is listed below.
 
 \begin{lstlisting}[style=Python]
 def update_game_state(self, action, player):
@@ -518,6 +519,6 @@ def update_game_state(self, action, player):
 
 \subsection{Agent Representation}\label{subsec:agent}
 In the case of this prototype game the agent is merely an instantiation of a pre-defined strategy.
-As such when we call agent.get\_action(history) in the previous code block we are either stochastically
+As such when we call agent.get\_action(history) in the previous code block we are either probabilistically
 or deterministically selecting an action based the aforementioned strategy.
 

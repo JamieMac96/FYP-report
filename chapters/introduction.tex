@@ -12,18 +12,28 @@ Today we see these techniques starting to permeate complex industry domains such
 automation\citep{desjardins2011cooperative}.
 The ability to contribute to this great history was a large motivator when it came to choosing this project.
 
-Although this report will, to an extent, discuss ML and how it applies to games in general, the primary
-focus will be on ML techniques when applied to texas hold'em, or variations of it.
+The game that was initially selected for this project was Texas Hold'em which is a popular
+variant of poker.
+In chapters 1 and 2 we will primarily refer to Texas hold'em due to the
+fact that the majority of the literature is concerned with solving this version of poker.
+In chapters 3 and 4 we implement and analyse a solution for a simplified version of Texas
+hold'em named Leduc hold'em.
+As such we primarily refer to Leduc Hold'em in these chapters.
+
+Although this report will, discuss ML and how it applies to games in general, the primary
+focus will be on ML techniques when applied to Texas hold'em, or variations of it.
 For the past number of years, a method called Counterfactual Regret Minimization (CFR) has dominated the
 top spots in the Annual Computer Poker Competition(ACPC).
-CFR is an algorithm that allows computation of a strategy through self-play.
-When applied to large imperfect information games such as Texas hold'em CFR generally relies on the creation of abstractions of the game.
-These abstractions are used to reduce the size of the state space of the game.
-CFR is then applied to these abstractions in order to learn a strategy for the game.
+For example, the 2018 heads-up champion, named slumbot utilised these methods\citep{jackson2013slumbot}
+CFR is an algorithm that allows computation of a strategy through self-play\citep{zinkevich2008regret}.
+When applied to large imperfect information games such as Texas hold'em CFR generally relies on the
+creation of abstractions of the game.
+These abstractions are used to reduce the size of the game's state space.
+CFR is then applied to these abstractions in order to learn a strategy.
 It is thus critically important that these abstractions accurately represent the full game's mechanics.
 This requires a high degree of knowledge of the game in order to create an accurate abstraction.
 
-There have also been attempts to tackle texas hold'em using a ML paradigm called reinforcement
+There have also been attempts to tackle Texas hold'em using a ML paradigm called reinforcement
 learning (RL).
 The great appeal of these approaches is that they do not require us to generate custom abstractions of the game.
 As a result of this, it was decided that this project would utilise RL techniques to tackle the problem.
@@ -55,7 +65,7 @@ the world\citep{silver2016mastering}.
 Secondly, this approach had shown the best results of any of Heinrich's documented approaches
 with the developed agent placing second in the 2014 ACPC .
 Finally, the lead researcher of the AlphaGo project, David Silver had collaborated on Heinrich's
-research thus adding significant weight to the research.
+work thus adding significant weight to the research.
 
 
 \section{Objectives}\label{sec:objectives}

@@ -36,8 +36,8 @@ We set an initial goal of using a random player as our benchmark opponent in ord
 this algorithm could exploit such a player's strategic inefficiencies.
 
 \subsection{Objective}\label{subsec:objective1}
-The goal of this experiment is to implement MCTS for Leduc Hold'em.
-The MCTS agent will play against a random player and learn a strategy to exploit this player for
+The goal of this experiment is to implement UCT for Leduc Hold'em.
+The UCT agent will play against a random player and learn a strategy to exploit this player for
 maximal reward.
 Although we are interested in the results gained from playing against the random player we treat the
 outcome of this experiment as a baseline for our subsequent results.
@@ -73,17 +73,17 @@ In figure 4.1 we see the reward over time increasing.
 In order to obtain these results the algorithm was run for 10,000 iterations and this process was repeated 100 times.
 Our cumulative rewards were then averaged at each iteration across these 100 repetitions to give the graph shown.
 Figure 4.2 shows the rate of increase of cumulative reward, or the average reward over time.
-In the case of figure 4.2 we applied the MCTS algorithm for 500,000 iterations and
+In the case of figure 4.2 we applied the UCT algorithm for 500,000 iterations and
 repeated this process 20 times, averaging the results.
 
 \begin{figure}[ht]
     \includegraphics[scale=.8]{images/cumulative_reward_mcts_vs_random.png}
-    \caption{MCTS cumulative reward over time vs random player - 10000 Iterations}
+    \caption{UCT cumulative reward over time vs random player - 10000 Iterations}
 \end{figure}
 
 \begin{figure}[ht]
     \includegraphics[scale=.7]{images/avg_reward_500000__20_random.png}
-    \caption{MCTS slope average reward over time vs random player - 500000 Iterations}
+    \caption{UCT slope average reward over time vs random player - 500000 Iterations}
 \end{figure}
 
 The second metric used to produce results was exploitability.
@@ -94,7 +94,7 @@ initial dip followed by a divergence towards 4.9.
 
 \begin{figure}[ht]
     \includegraphics[scale=.7]{images/exploitability_500000_20_random.png}
-    \caption{MCTS exploitability over time vs random player - 500000 Iterations}
+    \caption{UCT exploitability over time vs random player - 500000 Iterations}
 \end{figure}
 
 \subsection{Analysis}\label{subsec:analysis1}
@@ -109,7 +109,7 @@ the random play has been established.
 This hypothesis is further supported by figure 4.2 as we see a dramatic upswing
 in the rate of increase of cumulative reward followed by a levelling of the graph.
 
-As mentioned the exploitability value throughout this graph is relatively poor with an initial dip followed
+As mentioned the exploitability value throughout this figure 4.3 is relatively poor with an initial dip followed
 by a divergence.
 This is most likely explained by the fact that we are not playing against a rational player.
 As such our strategy is strong when it comes to maximally exploiting an irrational, random player
@@ -140,7 +140,7 @@ Below are listed the key parameters of the experiment
 In the case of self-play both agents develop intelligent strategies.
 This means that we do not see any significant trends in cumulative reward or average reward over time
 due to the fact that neither player has an advantage.
-This is shown by figure 3.?.
+This is shown by figure 4.4.
 \begin{figure}[ht]
     \includegraphics[scale=.7]{images/avg_winnings_self-play.png}
     \caption{MCTS average reward over time - self-play - 500000 Iterations}
@@ -149,7 +149,7 @@ As such these metrics were disregarded and exploitability became the sole metric
 Once again we applied the algorithm for 500,000 iterations, repeating this process 10 times
 and averaging the results.
 
-In figure 4.4 it can be seen that there is a notable improvement in exploitability, with lows of 3.5 initially
+In figure 4.5 it can be seen that there is a notable improvement in exploitability, with lows of 3.5 initially
 but over time the values begin to diverge once again back towards 4.6.
 
 \begin{figure}[ht]
@@ -210,7 +210,7 @@ Below are listed the key parameters of the experiment:
 \subsection{Results}\label{subsec:results3}
 For this experiment exploitability was once again the sole metric used.
 In this case the algorithm was run for 1,000,000 iterations and 10 repetitions with the results averaged.
-The results of the experiment are shown in figure 3.?.
+The results of the experiment are shown in figure 4.6.
 \begin{figure}[!ht]
     \includegraphics[scale=.7]{images/exploitability_self-play_stochastic_1000000.png}
     \caption{Smooth UCT exploitability over time - self play - 1000000 Iterations}
@@ -232,7 +232,7 @@ chance to break out of such a feedback loop as all possible actions will be samp
 Although Heinrich's benchmark was not met, there are a number extenuating factors that must be
 considered in order to contextualize these results.
 Firstly, the starting exploitability value is significantly higher than Heinrich's (3.8 vs 2).
-This may indicate that the general methodology for exploitability computation differed accross these
+This may indicate that the general methodology for exploitability computation differed across these
 two implementations.
 Second, due to the scope of the project there extensive parameter tuning was not possible.
 It's most likely that these results could be significantly improved if the optimal parameter
@@ -240,3 +240,5 @@ combination was found for this implementation.
 Third, as mentioned, only exploitability calculation for deterministic strategies was performed.
 If this had been implemented for stochastic strategies then the exploitability values would
 likely have been lower due to the fact that it is harder to best respond to such a strategy if well formed.
+Finally, the computational resources available for this project were limited and as we could not
+fully replicate Heinrich's experiments.

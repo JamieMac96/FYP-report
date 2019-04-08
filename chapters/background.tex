@@ -39,13 +39,14 @@ Reinforcement Learning: An Introduction\citep{sutton1998reinforcement}.
 
 \begin{figure}[ht]
     \includegraphics[scale=.5]{images/RL_illustration.png}
-    \caption{Reinforcement Learning}
+    \caption{Reinforcement Learning - adapted from\citep{weng2018longpeek}}
 \end{figure}
 
 As mentioned in the introduction, reinforcement learning is a method of programming agents by reward and
 punishment without needing to specify how the task is to be achieved.
 As such the primary components of a reinforcement learning problem are an agent which exists in an environment.
 From a simplified perspective we can think of the environment as a set of states, actions and rewards.
+The interaction of the agent and the environment using these three components is shown in figure 2.1.
 The objective for the agent is to maximise cumulative reward.
 This is done by developing a policy that will dictate which actions should be taken in each state.
 
@@ -55,7 +56,7 @@ the state space.
 An example that is often used to conceptualize this problem is the multi armed bandit problem.
 Let's say an agent is in a room with a number of gambling machines.
 Each of these machines has an arm that, when pulled will return a reward of 0 or 1 based on some underlying
-probability\citep{kaelbling1996reinforcement}.
+probability\citep{kaelbling1996reinforcement} see figure 2.2.
 The agent has a limited number of total pulls.
 So the question becomes how do we distributed these pulls in order to maximise return?
 Well, first we have to ensure that we explore enough that we find the machine with the best reward probability
@@ -63,7 +64,7 @@ and second, we must then exploit this machine to the best of our abilities.
 
 \begin{figure}[ht]
     \includegraphics[scale=.25]{images/bandit.png}
-    \caption{Multi Armed Bandit}
+    \caption{Multi Armed Bandit - adapted from\citep{weng2018multiarm}}
 \end{figure}
 
 There are a number of approaches that can be taken to solve this problem, we will now briefly discuss two of these
@@ -317,9 +318,10 @@ In Monte Carlo methods, the overall policy improvement algorithm is the same as 
 programming section.
 That is, we alternate between modifying the value function to more closely approximate the current policy,
 and using the value function to improve the policy.
+However, as mentioned, in the case of Monte Carlo a $Q$ function is used as shown in figure 2.3.
 \begin{figure}[ht]
     \includegraphics[scale=.5]{images/MC_control.png}
-    \caption{Monte Carlo Policy Improvement}
+    \caption{Monte Carlo Policy Improvement - adapted from\citep{lee2005mccontrol}}
 \end{figure}
 
 \subsection{Temporal Difference Learning}\label{subsec:td}
@@ -331,7 +333,7 @@ episode to complete and the return of some final outcome.
 
 The selective use of different aspects of these reinforcement learning methodologies by TD learning has
 a number of advantages.
-Obviously the fact that a model of the environment is not needed makes it easier to implement TD methods
+The fact that a model of the environment is not needed makes it easier to implement TD methods
 compared to DP .
 TD methods are also conducive to solving problems with long episodes or even continuous tasks with no
 episodes at all due to the fully online nature of this learning algorithm.
@@ -393,10 +395,11 @@ first computer program to beat a highly ranked Go champion.
 
 \begin{figure}[!ht]
     \includegraphics[scale=.8]{images/MCTS.png}
-    \caption{MCTS adapted from\citep{lim2016field}}
+    \caption{MCTS - adapted from\citep{lim2016field}}
 \end{figure}
 
-MCTS is an episodic process and there are four key steps involved in each of these episodes.
+MCTS is an episodic process.
+As shown in figure 2.4, there are four key steps involved in each of these episodes.
 The first step is \textbf{selection}.
 We begin at the root of the tree and use the tree policy, based on action values associated with the edges
 of the tree, in order to select a child node at each level\citep{sutton1998reinforcement}.
@@ -534,6 +537,7 @@ Although it was decided that a full scale implementation for Texas hold'em would
 scope of this project, this was the target game at the inception of the project.
 As such we will now discuss the mechanics of this game.
 The reader may choose to skip to section 2.3.4 in order to only learn about the game of Leduc Hold'em.
+
 Texas hold'em is one variant in a family of games called poker.
 Poker is a group of card games that combine gambling, strategy and skill.
 All poker variants have three core similarities.
@@ -867,7 +871,7 @@ and the average strategy $\pi=\Pi$.
     \caption{Neural Fictitious Self-Play\citep{heinrich2016deep}}
 \end{figure}
 
-As shown in figure 2.7 at each iteration the policy is selected first.
+As shown in figure 2.5 at each iteration the policy is selected first.
 Next an action $a_t$ is sampled from that policy and by taking that action we generate a reward
 and subsequent state.
 This information is stored in $M_{RL}$ and conditionally in $M_{SL}$ based on the policy selected.
