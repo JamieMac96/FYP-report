@@ -21,7 +21,7 @@ In the table below we have listed the template that we will follow when conducti
     Objective & This section will contain an explanation of the purpose of the experiment along with
     how it was carried out \\
     \hline
-    Parameters & This section list the parameters of the experiment. \\
+    Experimental Parameters & This section outlines how we parameterised the experiment. \\
     \hline
     Results & This section will detail the results acquired from the experiments conducted \\
     \hline
@@ -56,8 +56,14 @@ Rather, it will simply know how to beat a 'dumb' random player.
 This will give us a platform to build a more sophisticated agent through different mechanisms such as
 self-play in the subsequent experiments.
 
-\subsection{Parameters}\label{subsec:algAndCoding1}
-Below are listed the key parameters for this experiment:
+\subsection{Experimental Parameters}\label{subsec:algAndCoding1}
+For each experiment we will list the parameters that were used to instantiate the agent.
+These parameters either refer to the execution time of the algorithm or are a part of
+the group of parameters that were outlined in Algorithms 1, 2 and 3.
+In the case of each experiment we replicate values outlined in\citep{heinrich2017reinforcement}.
+If there is a deviation from these values the reasoning behind it will be explained.
+
+Below are listed the key parameters for the first experiment:
 \begin{itemize}
     \item \textbf{Iterations} - 500,000
     \item \textbf{Repetitions} - 20
@@ -78,12 +84,12 @@ repeated this process 20 times, averaging the results.
 
 \begin{figure}[ht]
     \includegraphics[scale=.8]{images/cumulative_reward_mcts_vs_random.png}
-    \caption{UCT cumulative reward over time vs random player - 10000 Iterations}
+    \caption{UCT cumulative reward vs random player - 10000 Iterations}
 \end{figure}
 
 \begin{figure}[ht]
     \includegraphics[scale=.7]{images/avg_reward_500000__20_random.png}
-    \caption{UCT slope average reward over time vs random player - 500000 Iterations}
+    \caption{UCT average reward vs random player - 500000 Iterations}
 \end{figure}
 
 The second metric used to produce results was exploitability.
@@ -94,7 +100,7 @@ initial dip followed by a divergence towards 4.9.
 
 \begin{figure}[ht]
     \includegraphics[scale=.7]{images/exploitability_500000_20_random.png}
-    \caption{UCT exploitability over time vs random player - 500000 Iterations}
+    \caption{UCT exploitability vs random player - 500000 Iterations}
 \end{figure}
 
 \subsection{Analysis}\label{subsec:analysis1}
@@ -128,7 +134,7 @@ This was due to the fact that the opposing agent is rational, in that it learns
 through experience.
 
 
-\subsection{Parameters}\label{subsec:algAndCoding2}
+\subsection{Experimental Parameters}\label{subsec:algAndCoding2}
 Below are listed the key parameters of the experiment
 \begin{itemize}
     \item \textbf{Iterations} - 500,000
@@ -143,7 +149,7 @@ due to the fact that neither player has an advantage.
 This is shown by figure 4.4.
 \begin{figure}[ht]
     \includegraphics[scale=.7]{images/avg_winnings_self-play.png}
-    \caption{MCTS average reward over time - self-play - 500000 Iterations}
+    \caption{UCT average reward over time - self-play - 500000 Iterations}
 \end{figure}
 As such these metrics were disregarded and exploitability became the sole metric.
 Once again we applied the algorithm for 500,000 iterations, repeating this process 10 times
@@ -154,7 +160,7 @@ but over time the values begin to diverge once again back towards 4.6.
 
 \begin{figure}[ht]
     \includegraphics[scale=.7]{images/exploitability_self-play_deterministic_500000.png}
-    \caption{MCTS exploitability over time - self play - 500000 Iterations}
+    \caption{UCT exploitability - self play - 500000 Iterations}
 \end{figure}
 
 \subsection{Analysis}\label{subsec:analysis2}
@@ -197,7 +203,13 @@ This goal was set with the caveat that, as mentioned in section 3.2.2 only deter
 could be evaluated for exploitability at this stage of development.
 As such the exploitability values produced may be higher than expected.
 
-\subsection{Parameters}\label{subsec:algAndCoding3}
+\subsection{Experimental Parameters}\label{subsec:algAndCoding3}
+Note that in the case of smooth UCT the $d$ parameter has been modified, with Heinrich's
+original value being .002.
+It was found through experimentation that this value did not provide a significant
+over experiment 2's results.
+However, when increased to .1 we saw our best exploitability results.
+
 Below are listed the key parameters of the experiment:
 \begin{itemize}
     \item \textbf{Iterations} - 1,000,000
@@ -207,13 +219,14 @@ Below are listed the key parameters of the experiment:
     \item \textbf{$\eta_0$} - .9
     \item \textbf{$d$} - .1
 \end{itemize}
+
 \subsection{Results}\label{subsec:results3}
 For this experiment exploitability was once again the sole metric used.
 In this case the algorithm was run for 1,000,000 iterations and 10 repetitions with the results averaged.
 The results of the experiment are shown in figure 4.6.
 \begin{figure}[!ht]
     \includegraphics[scale=.7]{images/exploitability_self-play_stochastic_1000000.png}
-    \caption{Smooth UCT exploitability over time - self play - 1000000 Iterations}
+    \caption{Smooth UCT exploitability - self play - 1000000 Iterations}
 \end{figure}
 
 Here we see a a significant improvement compared to the last experiment in which deterministic strategies were used.

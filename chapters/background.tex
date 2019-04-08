@@ -51,48 +51,47 @@ The objective for the agent is to maximise cumulative reward.
 This is done by developing a policy that will dictate which actions should be taken in each state.
 
 \subsection{Explore-Exploit Dilemma}\label{subsec:exploreExploit}
-When it comes to reinforcement learning one of the first questions that we have to ask is how we explore
-the state space.
-An example that is often used to conceptualize this problem is the multi armed bandit problem.
+When it comes to reinforcement learning one of the first questions that should be asked is
+how the state space be explored.
+An example that is often used to conceptualize this problem is the multi-armed bandit problem.
 Let's say an agent is in a room with a number of gambling machines.
 Each of these machines has an arm that, when pulled will return a reward of 0 or 1 based on some underlying
-probability\citep{kaelbling1996reinforcement} see figure 2.2.
+probability\citep{kaelbling1996reinforcement} (see figure 2.2).
 The agent has a limited number of total pulls.
-So the question becomes how do we distributed these pulls in order to maximise return?
-Well, first we have to ensure that we explore enough that we find the machine with the best reward probability
-and second, we must then exploit this machine to the best of our abilities.
+So the question becomes how should these pulls be distributed in order to maximise return?
+Well, first, enough exploration must be performed such that the machine with the best reward probability is found
+and second, this machine must be maximally exploited.
 
 \begin{figure}[ht]
     \includegraphics[scale=.25]{images/bandit.png}
     \caption{Multi Armed Bandit - adapted from\citep{weng2018multiarm}}
 \end{figure}
 
-There are a number of approaches that can be taken to solve this problem, we will now briefly discuss two of these
-methods.
+There are a number of approaches that can be taken to solve this problem, two of these
+methods will now be briefly discussed.
 
 \subsubsection{$\epsilon$-Greedy Solutions}\label{subsec:eGreedy}
-The first approach that we will discuss is the $\epsilon$-greedy strategy.
+The first approach is the $\epsilon$-greedy strategy.
 This approach was first proposed in\citep{watkins1989learning} and is a very simple and widely used method.
 The $\epsilon$-greedy strategy involves choosing a random lever some proportion $\epsilon$ of the time, and
 choosing the lever that has been established to give the highest reward the rest of the time.
 
 There are a number of variations of this method, the first being the $\epsilon$-first strategy.
-With this strategy we take all of our random choices first, allowing us to establish the best bandit,
-after which we exploit this bandit.
+With this strategy all random choices are taken first, thus evaluating the best bandit,
+after which this bandit is exploited.
 However, as stated in\citep{vermorel2005multi} this simple approach is sub-optimal because asymptotically,
 the constant factor prevents the strategy from getting arbitrarily close to
 the optimal lever.
 
 This is where the $\epsilon$-decreasing strategy becomes useful.
 Here, the proportion of random lever pulls decreases with time.
-Generally if our initial epsilon value is $\epsilon_0$ then our epsilon value at time $t$ will be
+Generally, if the initial epsilon value is $\epsilon_0$ then the epsilon value at time $t$ will be
 $\epsilon_t = \frac{\epsilon_0}{t}$.
 
 \subsubsection{Upper Confidence Bounds}
 Another approach that can be used is called the upper confidence bound(UCB) method.
-With this method we initially give an optimistic estimate of the reward to each bandit within a certain
-confidence interval.
-Then we simply take a greedy approach to our exploration.
+With this method an initial optimistic estimate of the reward of each bandit is assigned.
+After which a greedy approach is taken.
 Less explored bandits will have a artificially higher reward estimate and thus they will be greedily chosen,
 thus allowing us to evaluate each of the bandits.
 
@@ -100,22 +99,22 @@ In the context of reinforcement learning, state space exploration through the $\
 generally sufficient.
 
 \subsection{Markov Decision Processes}\label{subsec:mdp}
-In the last section we have established some methods that can be used to explore environments.
-We will now discuss in more detail how reinforcement learning environments, and their interaction
+In the last section some methods that can be used to explore environments have been established.
+The next step is to discuss in more detail how reinforcement learning environments, and their interaction
 with reinforcement learning agents, are modelled.
 Generally finite Markov decision processes (finite MDPs) are used.
 Markov decision processes provide a formal mathematical framework for sequential decision making,
 where actions influence immediate rewards as well as subsequent situations\citep{sutton1998reinforcement}.
-MDPs allow us to create an idealized model of reinforcement learning problems and thus we can make precise
-theoretical statements.
+MDPs allow us to create an idealized model of reinforcement learning problems and thus precise
+theoretical statements can be made.
 
 \subsubsection{MDP Dynamics}
 
 As mentioned earlier, reinforcement learning problems consist of an agent and an environment interacting.
 Markov decision processes can be looked at in a similar way.
-However, there are a number of additional factors that we must consider in order to paint a complete picture.
+However, there are a number of additional factors that must be considered in order to paint a complete picture.
 
-We can think of the problem as consisting of a set of discrete time steps.
+The problem can be thought of as consisting of a set of discrete time steps.
 At each time step the environment supplies the agent some information about the state, $S_t$.
 Using this information the agent chooses an action, $A_t$.
 Then, as a result of the action, the environment will supply the agent with a reward, $R_t$, as well as a new state.
@@ -125,7 +124,7 @@ actions and rewards\citep{sutton1998reinforcement}:
     S_0,A_0,R_1,S_1,A_1,R_2,S_2\dots
 \end{align}
 
-Thus far we understand that states, actions and rewards are related, however questions still exist as to
+Thus far it has been stated that states, actions and rewards are related, however questions still exist as to
 the exact workings of this relationship.
 The answer is that finite MDPs contain a discrete probability distribution that determines the likelihood that we
 will reach the state $s'$ and receive reward $r$ at time $t$ based on the previous action $a$ and state $s$:
@@ -135,33 +134,32 @@ will reach the state $s'$ and receive reward $r$ at time $t$ based on the previo
 In simplified terms this means that for a given state-action pair $(s,a)$, the probability of us reaching some
 new state $s'$ and receiving reward $r$ is determined by the MDPs probability function $\Pr$.
 
-This four argument probability function completely characterizes the dynamics of the MDP and from it anything
-else we want to know about the environment\citep{sutton1998reinforcement}.
+This four argument probability function completely characterizes the dynamics of the MDP and from it any other
+information about the environment can be obtained\citep{sutton1998reinforcement}.
 
 \subsubsection{MDPs and Learning}
 The goal of the agent in an MDP is to learn how to maximise the cumulative reward received when traversing
 the environment.
-In some cases we will traverse the MDP until we reach some terminal state, $T$.
+In some cases the MDP will be traversed until a terminal state, $T$, is reached.
 This type of MDP reflects episodic tasks that will always terminate.
-In this case we can calculate the cumulative reward,$G_t$ as follows:
+In this case cumulative reward,$G_t$ can be calculated as follows:
 \begin{align}
     G_t = R_{t+1}+R_{t+2}+R_{t+3}+\dots+R_T
 \end{align}
 
-However, in other cases we will model continuous tasks.
-The problem here is that, if we use the same method of calculating $G_t$ as we do for
-episodic tasks then in this case $G_t$ will always eventually sum to infinity, regardless
-of whether we are taking good or bad actions.
-As such we must introduce the a new concept called discounting.
+However, in other cases continuous tasks are modelled.
+The problem here is that, if the same method of calculating $G_t$ is used then in this case $G_t$
+will always eventually sum to infinity, regardless of whether good or bad actions are being selected.
+As such a concept called discounting must be introduced.
 With this approach the aim is to maximise the sum of future discounted rewards.
-Thus $\gamma$, a parameter with a value between 0 and 1, is introduced.
+Thus $\gamma$, a parameter with a value between 0 and 1, is utilised.
 As such, for continuous tasks modelled as MDPs our cumulative reward is as follows:
 \begin{align}
     G_t = R_{t+1}+\gamma R_{t+2}+\gamma^{2}R_{t+3}+\dots
 \end{align}
 
-Based on our specified value of $\gamma$ we can alter the weighting of future rewards.
-For example if we have a low value for $\gamma$ (eg .5) then the value of rewards more than a
+Based on our specified value of $\gamma$ the weighting of future rewards can be adjusted.
+For example if a low value for $\gamma$ (eg .5) is used then the value of rewards more than a
 few time steps in the future will be very low.
 
 \subsubsection{Partially Observable Markov Decision Processes}
@@ -176,33 +174,33 @@ However, it is possible that an agent in a POMDP environment can remember the se
 and actions that lead to the current state.
 This is a sufficient statistic of it's experience and can thus define a complete information
 state\citep{heinrich2017reinforcement}.
-As such we can reduce the POMDP to it's underlying MDP by using these full history information
+As such a POMDP can be reduced to it's underlying MDP by using these full history information
 states and also extending the relevant transition and reward functions.
 
 
 \subsection{Policy Evaluation and Policy Improvement}\label{subsec:policyEvalPolicyImp}
 As mentioned above the primary focus of reinforcement learning is to find a policy (denoted by $\pi$) that allows
 the agent to take actions in states that lead to the maximum possible reward.
-There are two primary problems that we must solve in order to do so.
+There are two primary problems that must be solved in order to do so.
 
 The first is called the prediction problem, or policy evaluation.
 This involves computing the values of states given some arbitrary policy\citep{sutton1998reinforcement}.
 For example a state would have a high value if the reward for reaching that state was high.
-A state would also have a high value if we were only one action away, according to the supplied policy,
-from a state that renders a high reward.
+A state would also have a high value if the current state was only one action away,
+according to the supplied policy, from a state that renders a high reward.
 However a state would have a low value if, according to the policy, there was no path to a state that
 would return a positive reward in the foreseeable future.
 
 The second problem is known as the control problem, or policy improvement.
 This involves changing the policy in order to improve our cumulative reward.
-The policy improvement process can only occur when the we have performed policy evaluation.
-Let's say, after our evaluation step, we know the value of some state $s$.
-Note that this value is calculated with the condition that we take some action $a$ in state $s$.
-But, if we take some other action $a'$ would this render a higher value for $s$?
-If the answer is yes then we update the policy.
+The policy improvement process can only occur when policy evaluation has been performed.
+Let's say, after our evaluation step, the value of some state $s$ is known.
+Note that this value is calculated with the condition that some action $a$ is taken in state $s$.
+But, if some other action $a'$ is taken, would this render a higher value for $s$?
+If the answer is yes then the policy is updated.
 
 These two operations can be seen as the core of reinforcement learning.
-In the next section we will discuss different reinforcement learning methodologies.
+In the next section different reinforcement learning methodologies will be discussed.
 Some of the main differences are in how method each approaches the prediction and control problems.
 
 \subsection{Dynamic Programming}\label{subsec:dp}
@@ -215,12 +213,12 @@ of important reinforcement learning concepts.
 Furthermore, it provides a basis for many algorithms that are used in practical reinforcement learning applications.
 
 \subsubsection{Policy Evaluation in Dynamic Programming}
-When discussion policy evaluation we talk about a state-value function or a value function.
+When discussing policy evaluation a state-value function or a value function is referred to.
 This is simply the mapping of states to their corresponding values and is denoted by $v$.
 
-Since the environments's dynamics are completely known we can apply an iterative solution to finding
-the value function.
-If we consider a series of approximate value functions $v_0, v_1, v_2,..$.
+Since the environments's dynamics are completely known, an iterative solution to finding
+the value function can be applied.
+If a series of approximate value functions $v_0, v_1, v_2,..$ are considered.
 The initial value function, $v_0$ is chosen arbitrarily and each successive generation is obtained by
 using the Bellman equation for $v_\pi$ as an update rule\citep{sutton1998reinforcement}:
 
@@ -228,73 +226,74 @@ using the Bellman equation for $v_\pi$ as an update rule\citep{sutton1998reinfor
     v_{k+1}(s) &= \EX_{\pi}\lbrack R_{t+1} + \gamma v_k(S_{t+1}) | S_t = s \rbrack
 \end{align}
 
-In order to produce each successive approximation of $v_{k+1}$ from $v_k$ we apply the operation outlined to each
-state $s$.
-As shown above our new value for $s$ is based on a combination of the expected immediate rewards($R_{t+1}$),
-and the expected values of each of the states that we can transition to($S_{t+1}$) given policy $\pi$.
+In order to produce each successive approximation of $v_{k+1}$ from $v_k$ the operation outlined to each
+state $s$ is applied.
+As shown above the new value for $s$ is based on a combination of the expected immediate rewards($R_{t+1}$),
+and the expected values of each of the states that can be transitioned to($S_{t+1}$) given policy $\pi$.
 It can be shown that as $k\rightarrow\infty$ $v_k$ will converge to $v_\pi$, the correct value function for policy
 $\pi$.
 This algorithm is called \textit{iterative policy evaluation}\citep{sutton1998reinforcement}.
 
 \subsubsection{Policy Improvement in Dynamic Programming}
-Since we have now determined how good it is to follow $v_\pi$ we can use this information to determine how
-we should modify this policy in order to improve it's value.
-If we assume that $\pi$ is a deterministic policy then $\pi(s)$ will return some action that we must take.
-Now the question becomes what if we take some other action $a \neq \pi(s)$?
-Well we must consider whether or not choosing this action, and then continuing to use the existing policy will
+Since the value of following $v_\pi$ is known, this information can be used to determine how
+this policy should be modified in order to improve its value.
+Assume that $\pi$ is a deterministic policy.
+This means that $\pi(s)$ will return some action that must be taken.
+Now the question becomes what if some other action $a \neq \pi(s)$ is taken?
+This depends on whether or not choosing this action, and then continuing to use the existing policy will
 improve the value of the policy.
-If it does then we will choose this new action.
+If it does then this new action will be chosen.
 
 The logical extension of this approach is to apply it to each state and each possible action.
-As such we will select what appears to be the best action at each state.
-We can thus denote our new greedy policy $\pi'$ as:
+As a result, what appears to be the best action at each state will be selected.
+The new greedy policy $\pi'$ can be denoted as:
 \begin{align}
     \pi'(s) = argmax\EX_{\pi}\lbrack R_{t+1} + \gamma v_k(S_{t+1}) | S_t = s, A_t = a\rbrack
 \end{align}
-Essentially here we are determining the value of each available action in the current state, using the same operation
+Essentially here the value of each available action in the current state is determined using the same operation
 as outlined in the policy evaluation phase.
 Then the argmax function will select the action with the highest value.
-Finally we assign this action to be the one we will choose in state s, according to the new policy $\pi'$.
+Finally, this action is assigned to be the one that will be choosen in state s, according to the new policy $\pi'$.
 
-Note that in this section we have outlined an algorithm with respect to deterministic policies,
-however a lot of times in reinforcement learning we deal with stochastic policies.
-This means that we take actions in states according to some probability distribution rather than always choosing
+Note that in this section an algorithm has been outlined with respect to deterministic policies,
+however a lot of times in reinforcement learning deals with stochastic policies.
+This means that actions are taken in states according to some probability distribution rather than always choosing
 the same action in a particular state.
 This is not a problem as the ideas mentioned apply equally well to stochastic policies.
 
 \subsection{Monte Carlo}\label{subsec:mc}
 Monte Carlo(MC) methods are a wide range of algorithms that rely on random sampling in order to obtain results.
-We could apply such a method in the case of having an array of 1 trillion elements that could be
+Such a method could be applied in the case of having an array of 1 trillion elements that could be
 either 1 or 0.
-If we wished to calculate the number of 1s in such an array through iterating the array it would
-be very computationally costly.
-However, we could randomly generate indices and maintain a count of both the number of 1s found
-and the number of indices generated.
+In order to calculate the number of 1s in such an array iteration could be used.
+However, this would be extremely computationally costly.
+Instead, random indices could be generated to sample the array.
+A count of both the number of 1s found and the number of indices generated would be maintained.
 Based on these figures it would be possible to estimate the total number of 1s in the array.
-Over time as we sampled more and more our estimate would converge towards the true value.
+Over time as more samples are taken the estimate would converge towards the true value.
 
 Monte Carlo based reinforcement learning techniques apply this method in the policy evaluation step.
-In Monte Carlo, unlike dynamic programming, we do not assume complete knowledge of the environment.
+In Monte Carlo, unlike dynamic programming, there is no assumption of complete knowledge of the environment.
 Monte Carlo methods require only experience.
-We sample sequences of states, actions, and rewards from interaction with the
+Sequences of states, actions, and rewards are sampled from interaction with the
 environment\citep{sutton1998reinforcement}.
 These sequences are called episodes.
-Monte carlo evaluation is an episodic process this means that we only update our action values after an episode
-has completed.
+Monte carlo evaluation is an episodic process.
+This means that action values are only updated after an episode has completed.
 
 \subsubsection{Monte Carlo Policy Evaluation}
-In Monte Carlo methods we take a fundamentally different approach to policy evaluation.
+In Monte Carlo methods a fundamentally different approach to policy evaluation is taken.
 As mentioned this method is focused on using episodic experience.
-In order to evaluate a state we can simply average the rewards returned after visiting that state.
-As we observe more returns the average will converge to the actual expected value of the state.
+In order to evaluate a state the rewards returned after visiting that state are averaged.
+As more returns are observed the average will converge to the actual expected value of the state.
 
 It is worth noting that a state $s$ could be visited more than once in an episode.
-As such we can either average the returns following the first visit to $s$ or we could average the returns
+As such, the returns can either be averaged following the first visit to $s$ or averaged
 after each visit to $s$.
 These two methods are called \textit{first-visit} and \textit{every-visit} respectively.
 
 \subsubsection{Monte Carlo Action Values}
-In Monte Carlo methods, the lack of a model means that we cannot use only state values in order to
+In Monte Carlo methods, the lack of a model means that state values are insufficient in order to
 obtain a policy.
 Rather state-action pairs are generally evaluated.
 This mapping of state-action pairs to values is referred to as the $q$ function or the action value function.
@@ -302,21 +301,21 @@ In this case the evaluation problem for action values is to estimate $q_\pi(s, a
 starting in state s, taking action a, and thereafter following policy $\pi$\citep{sutton1998reinforcement}.
 
 The method for policy evaluation using state-action pairs is almost identical to that outlined above.
-The only difference being that instead of averaging rewards for each state, we average
-rewards for each action taken when a state is visited.
+The only difference being that instead of averaging rewards for each state,
+rewards for each action taken when a state is visited are averaged.
 There is one problem with this approach in the context of deterministic policies.
-The problem being that in following a deterministic policy we will only receive returns
+The problem being that in following a deterministic policy rewards will only be returned
 for a single action, thus only one action value estimate will be improved.
-In order to negate this problem we can specify that every episode begin in a state-action pair,
+In order to negate this problem it can be specified that every episode begin in a state-action pair,
 with the probability of starting in each state-action pair being non-zero.
 This is called the \textit{exploring-starts} method.
-Another approach would be to ensure that we are using a stochastic policy with
+Another approach would be to ensure that a stochastic policy is used with
 the probability of selecting each action being non-zero.
 
 \subsubsection{Monte Carlo Policy Improvement}
 In Monte Carlo methods, the overall policy improvement algorithm is the same as outlined in the dynamic
 programming section.
-That is, we alternate between modifying the value function to more closely approximate the current policy,
+That is, it alternates between modifying the value function to more closely approximate the current policy,
 and using the value function to improve the policy.
 However, as mentioned, in the case of Monte Carlo a $Q$ function is used as shown in figure 2.3.
 \begin{figure}[ht]
@@ -325,10 +324,10 @@ However, as mentioned, in the case of Monte Carlo a $Q$ function is used as show
 \end{figure}
 
 \subsection{Temporal Difference Learning}\label{subsec:td}
-The final reinforcement learning method we will discuss is the Temporal Difference(TD) learning method.
+The final reinforcement learning method that will be discussed is the Temporal Difference(TD) learning method.
 TD learning combines dynamic programming(DP) and and Monte Carlo(MC) ideas\citep{sutton1998reinforcement}.
-Like MC, we can learn directly from experience, without a model of the environment's dynamics.
-However, like DP we update state value estimates based on other learned estimates, without needing to wait for an
+Like MC, learing occurs directly from experience, without a model of the environment's dynamics.
+However, like DP state value estimates are updated based on other learned estimates, without needing to wait for an
 episode to complete and the return of some final outcome.
 
 The selective use of different aspects of these reinforcement learning methodologies by TD learning has
@@ -339,9 +338,9 @@ TD methods are also conducive to solving problems with long episodes or even con
 episodes at all due to the fully online nature of this learning algorithm.
 
 \subsubsection{TD Learning Policy Evaluation}
-Unlike MC, with TD learning we need only wait until the next time step in order to update the value function.
-This is exemplified by the \textit{TD(0)} or \textit{one-step TD} method in which we make the
-update immediately on transition from state $S_t$ to state $S_{t+1}$.
+Unlike MC, with TD learning the value function can be updated at every time step.
+This is exemplified by the \textit{TD(0)} or \textit{one-step TD} method in which the
+update is made immediately on transition from state $S_t$ to state $S_{t+1}$.
 The more general case of this method is the \textit{TD($\lambda$)} or \textit{n-step TD}.
 With \textit{TD(0)} the update rule is as follows:
 \begin{align}
@@ -365,7 +364,7 @@ being evaluated or improved.
 
 SARSA is an example of an on-policy algorithm.
 The policy improvement mechanism is the same here as outlined in the previous sections.
-With SARSA, like in Monte Carlo we utilise the action-value function($q_{\pi}(s, a)$) rather
+With SARSA, like in Monte Carlo the action-value function($q_{\pi}(s, a)$) is utilised rather
 than the state-value function.
 Thus the policy evaluation step is slightly modified as follows:
 \begin{align}
@@ -383,11 +382,11 @@ The update rule is as follows:
 \begin{align}
     Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \lbrack R_{t+1} + \gamma maxQ(S_{t+1}, a) - Q(S_t, A_t) \rbrack.
 \end{align}
-Here our update rule is similar to that of SARSA apart from the fact that we use the value of the best
-action available ($maxQ(S_{t+1}, a)$) when updating our action value.
+Here our update rule is similar to that of SARSA apart from the fact that the value of the best
+action available ($maxQ(S_{t+1}, a)$) is used when updating our action value.
 
 \subsection{Monte Carlo Tree Search}\label{subsec:mcts}
-In this section we will discuss Monte Carlo Tree Search(MCTS), a decision time planning algorithm.
+In this section Monte Carlo Tree Search(MCTS), a decision time planning algorithm will be discussed.
 This iterative algorithm uses tree search combined with value estimations from MC simulations in order to
 efficiently solve very large MDPs.
 One application of this algorithm was in DeepMind's AlphaGo\citep{silver2016mastering} which became the
@@ -401,15 +400,16 @@ first computer program to beat a highly ranked Go champion.
 MCTS is an episodic process.
 As shown in figure 2.4, there are four key steps involved in each of these episodes.
 The first step is \textbf{selection}.
-We begin at the root of the tree and use the tree policy, based on action values associated with the edges
-of the tree, in order to select a child node at each level\citep{sutton1998reinforcement}.
+From the root of the tree, the tree policy is used.
+This policy is based on action values associated with the edges of the tree, in order
+to select a child node at each level\citep{sutton1998reinforcement}.
 The second step is \textbf{expansion}.
-When we reach a leaf node in the tree we may add one or more child nodes based on
+When a leaf node is reached in the tree, one or more child nodes may be added based on
 the actions available at that point.
 The third step is \textbf{simulation}.
-When the tree has been exited then we switch to using the rollout policy in
+When the tree has been exited the rollout policy is used in
 order to provide default behavior outside of the tree and ultimately reach a
-terminal node from which we can obtain a reward.
+terminal node from which a reward can be obtained.
 The final step is \textbf{backpropagation}.
 This step is uses the reward obtained to update the values of the tree nodes that were visited
 during the episode.
@@ -418,7 +418,7 @@ In summary this algorithm uses the simulation step in order to efficiently sampl
 are then propagated back to nodes of the tree.
 In later iterations the tree policy selects which areas of the tree to
 explore based on these propagated values.
-In section 2.4 we will discuss how this method can be applied to imperfect information games such as poker.
+In section 2.4 a method for applying MCTS to imperfect information games such as poker will be outlined.
 
 \section{Game Theory}\label{sec:gameTheory}
 After taking a deep dive on reinforcement learning and the papers surrounding RL in texas hold'em it became
@@ -439,10 +439,10 @@ NFSP is based heavily on the game theoretic concepts that are outlined in this s
 the MCTS implementation that is discussed later will rely on a number of these concepts.
 
 \subsection{Modelling Games}\label{subsec:modellingGames}
-When we attempt to solve a game, we must first understand how we are to model that game.
-We must also carefully consider how we define a form or structure of the model\citep{myerson2013game}.
-In this section we will discuss three important forms that games can take and the varying utility
-of each in different scenarios.
+When an attempt is made to solve a game, the way in which the game is modelled must first be understood.
+It is also important to carefully consider how a form or structure of the model is defined\citep{myerson2013game}.
+In this section three important forms that games can take will be discussed.
+The varying utility of each of the different scenarios will also be outlined.
 
 \subsubsection{Extensive Form Games}
 Extensive form games are a model of players sequential interaction, with explicit representation of a
@@ -462,12 +462,13 @@ Extensive form games allow us to richly describe game situations.
 This allows us to uncover characteristic differences between games and the structural features which
 determine these differences\citep{kuhn2016extensive}.
 
-We can also define behavioral strategies for players, which consist of a probability distribution over actions
+Behavioral strategies for players can also be defined.
+These consist of a probability distribution over actions
 given information states\citep{heinrich2017reinforcement}.
 This is denoted by $\pi^i(a|u^i)$.
-If we have a collection of strategies for all players in the game then this is called a strategy profile, $\pi$.
+If there exists a collection of strategies for all players in the game then this is called a strategy profile, $\pi$.
 $\pi^{-i}$ is the set of strategies in $\pi$ not including $\pi^i$.
-This will be discussed later when we discuss Heinrich's implementation in more depth.
+This will be discussed later when Heinrich's implementation is discussed in more depth.
 
 \subsubsection{Normal Form Games}
 Normal form games are represented by way of a matrix.
@@ -478,13 +479,13 @@ An extensive-form game can induce an equivalent normal form of the same game.
 This can be done through the generation of a set of deterministic behavioral strategies for each player
 called pure strategies.
 Each pure strategy is a full game plan that will determine an action for each situation the player may encounter.
-We can also create mixed strategies which define a probability distribution over the players pure strategies.
-We can denote a mixed strategy for player $i$ as $\Pi^i$.
-When we restrict the extensive-form return function to normal-form we yield an expected return function.
+Mixed strategies can also be created which define a probability distribution over the players pure strategies.
+A mixed strategy for player $i$ is denoted as $\Pi^i$.
+When the extensive-form return function is restricted to normal-form the yield is an expected return function.
 The expected return function for some mixed strategy profile $\Pi$ is $R^i(\Pi)$\citep{heinrich2017reinforcement}.
 
 \subsubsection{Sequence Form Games}
-In order to compute a Nash equilibrium for an extensive form game we can convert the game to a normal form,
+In order to compute a Nash equilibrium for an extensive form game the game can be converted to a normal form,
 however normal forms tend to produce very large game trees.
 The sequence form is an efficient method of representing extensive form games\citep{koller1996efficient}.
 This representation is described as a linear-sized strategic description of the game.
@@ -495,7 +496,7 @@ uniquely define a \textbf{sequence} $\sigma_{u^i}$ of actions that a player must
 that information state.
 These sequences are then mapped to realization probabilities through what is called a realization plan,
 denoted by $x$.
-When two or more strategies have the same realization plan we consider these strategies to be
+When two or more strategies have the same realization plan these strategies are considered to be
 realization equivalent\citep{von1996efficient}.
 This can apply across different types of strategies for example extensive-form, behavioral strategies
 and normal-form, mixed strategies\citep{kuhn2016extensive}.
@@ -503,16 +504,16 @@ and normal-form, mixed strategies\citep{kuhn2016extensive}.
 \subsection{Nash Equilibria}\label{subsec:nashEquilibria}
 A Nash's equilibrium is a state in which each player in a game has chosen a strategy and
 none of the players can benefit from changing their strategies, if the other player's strategies remain unchanged.
-As such, if we reach a strategy that induces a Nash's equilibrium our strategy can no longer be exploited.
+As such, if a strategy is developed that induces a Nash's equilibrium our strategy can no longer be exploited.
 
 In the context of extensive form games the concept of best responses is related to that of Nash's equilibria.
 If the opponent's strategies are denoted by $\pi^{-i}$ then the set of best responses are denoted by
 $BR^i(\pi^{-i})$.
-Note that if we have a strategy profile $\pi$ such that $\pi^i\in BR^i(\pi^{-i})$ for every $i\in N$ (i.e
+Note that for a strategy profile $\pi$ such that $\pi^i\in BR^i(\pi^{-i})$ for every $i\in N$ (i.e
 for every player) then that game constitutes a Nash equilibrium\citep{heinrich2017reinforcement}.
 Heinrich also discusses the concept of $\varepsilon$-best responses.
 This is the set of strategies that are within a certain tolerance $\varepsilon$ of the best responses.
-As such we can define an $\varepsilon$-Nash equilibrium as a strategy profile $\pi$ such that
+As such an $\varepsilon$-Nash equilibrium can be defined as a strategy profile $\pi$ such that
 $\pi^i \in BR^i_\varepsilon (\pi^{-i})$ for all $i\in N$.
 
 \subsection{Fictitious Play}\label{subsec:fictitiousPlay}
@@ -535,7 +536,7 @@ a method that has shown success in games of imperfect information.
 \section{Texas Hold'em}\label{sec:thIntro}
 Although it was decided that a full scale implementation for Texas hold'em would be beyond the
 scope of this project, this was the target game at the inception of the project.
-As such we will now discuss the mechanics of this game.
+As such the mechanics of this game will now be discussed.
 The reader may choose to skip to section 2.3.4 in order to only learn about the game of Leduc Hold'em.
 
 Texas hold'em is one variant in a family of games called poker.
@@ -555,7 +556,7 @@ Finally in the fourth round another public card is dealt which is called the riv
 
 At each round, after the cards are dealt, the players are given the opportunity to take a number of betting
 related actions.
-We will discuss the permitted actions in the next section.
+The next section outlines the permitted actions.
 
 In order for players to be incentivized to continue playing in a wider array of situations, blinds are required.
 Blinds are a mandatory bet that must be posted by two of the players present at the game.
@@ -610,7 +611,7 @@ Each round allows for at most two bets.
 \section{Variations of MCTS Applied to Poker}\label{sec:mctsPoker}
 As mentioned in section 2.1.7 MCTS has been shown to be a very powerful method for solving large
 perfect-information games such as Go.
-However if we wish to apply this algorithm to imperfect information games like poker then 
+However if this algorithm is to be applied to a imperfect information game like poker then
 a number of modifications must be applied.
 Such an approach was outlined in\citep{heinrich2017reinforcement} in which a variation of
 MCTS called smooth UCT was implemented to tackle both leduc hold'em and limit hold'em.
@@ -619,7 +620,7 @@ MCTS called smooth UCT was implemented to tackle both leduc hold'em and limit ho
 One of the subtleties of poker is that player information is asymmetric.
 In other words each player has access to their own private card 
 information but not to their opponents private cards.
-This means that we cannot represent the search tree as a single, collective 
+This means that the search tree cannot be a single, collective
 entity\citep{heinrich2017reinforcement}, rather two search trees must be available 
 to accommodate self-play.
 The method that can be used to accomplish this goal is the creation of
@@ -680,7 +681,7 @@ Algorithm 1 shows Heinrich's extensive form MCTS .
 \end{algorithm}
 
 Aside from the differences mentioned, extensive form MCTS remains essentially the same as generic MCTS .
-On lines 6 to 9 we see the rollout function.
+On lines 6 to 9 the rollout function is listed.
 Here an action is sampled using the rollout policy which is then used to generate a subsequent
 state through invocation of the state transition function $G$.
 
@@ -800,14 +801,14 @@ python code.
 
 
 \section{Other Approaches}\label{sec:thImplementations}
-Although we have already mentioned that we will be focusing on MCTS
+Although it has already been stated that there will be a focus on MCTS,
 it's worth discussing some other notable methods for creating poker 
-agents before we continue.
+agents before proceeding.
 Currently the premier method for tackling full-scale texas hold'em is counterfactual 
 regret minimization.
 This is the method that has dominated the Annual Computer Poker Competition(ACPC) for the 
 last number of years, however recently some new methods have been outlined 
-which look promising and thus we will discuss these methods as well.
+which look promising and thus will be discussed as well.
 
 
 \subsection{Counterfactual Regret Minimization}\label{subsec:thCFR}
