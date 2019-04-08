@@ -12,13 +12,12 @@ Today we see these techniques starting to permeate complex industry domains such
 automation\citep{desjardins2011cooperative}.
 The ability to contribute to this great history was a large motivator when it came to choosing this project.
 
-Although this report will, to an extent, discuss ML and how it applies to games in general, the
-primary focus will be on ML techniques when applied to texas hold'em, or variations of it.
+Although this report will, to an extent, discuss ML and how it applies to games in general, the primary
+focus will be on ML techniques when applied to texas hold'em, or variations of it.
 For the past number of years, a method called Counterfactual Regret Minimization (CFR) has dominated the
 top spots in the Annual Computer Poker Competition(ACPC).
 CFR is an algorithm that allows computation of a strategy through self-play.
-When applied to large imperfect information games such as texas hold'em CFR generally relies on the
-creation of abstractions of the game.
+When applied to large imperfect information games such as Texas hold'em CFR generally relies on the creation of abstractions of the game.
 These abstractions are used to reduce the size of the state space of the game.
 CFR is then applied to these abstractions in order to learn a strategy for the game.
 It is thus critically important that these abstractions accurately represent the full game's mechanics.
@@ -31,8 +30,8 @@ As a result of this, it was decided that this project would utilise RL technique
 
 RL is a way of programming agents by reward and punishment without needing to specify how the
 task is to be achieved\citep{kaelbling1996reinforcement}.
-On a surface level RL seems like a perfectly reasonable methodology for solving games such as texas hold'em.
-However, texas hold'em is an imperfect information game.
+On a surface level, RL seems like a perfectly reasonable methodology for solving games such as Texas hold'em.
+However, Texas hold'em is an imperfect information game.
 This means that we do not know the entirety of the state information at any given time
 i.e we do not know the values of the opponent's cards.
 Thus, from a RL perspective, we do not know the actual state from which we are choosing actions.
@@ -41,7 +40,7 @@ This makes pure reinforcement learning strategies impractical for these types of
 However, there has been some success when more custom reinforcement learning methods have been implemented.
 In one case linear programming techniques and RL were used in order to tackle a
 simplified version of the game\citep{dahl2001reinforcement}.
-In another case RL was combined with supervised learning and game theoretic
+In another case, RL was combined with supervised learning and game theoretic
 techniques\citep{heinrich2016deep} to develop an algorithm called Neural Fictitious Self-Play(NFSP).
 This method became the focus of the project for a period of time before a decision was made
 that the broad range of techniques involved would add too much risk to the project.
@@ -49,10 +48,10 @@ When it was discovered that the same researcher, Johannes Heinrich had applied a
 algorithm called Monte Carlo Tree Search (MCTS) to a number of variations of poker\citep{heinrich2015smooth}
 this algorithm became the primary focus of the project.
 This algorithm was of great interest for a number of reasons.
-Firstly, this relatively new technique had been the basis for the tremendous improvement
-in performance of computer Go programs over the last decade.
-The culmination of which was the AlphaGo project that defeated the highest ranked human Go player
-in the world\citep{silver2016mastering}.
+Firstly, this relatively new technique had been the basis for the tremendous improvement in the
+performance of computer Go programs over the last decade.
+The culmination of which was the AlphaGo project that defeated the highest ranked human Go player in
+the world\citep{silver2016mastering}.
 Secondly, this approach had shown the best results of any of Heinrich's documented approaches
 with the developed agent placing second in the 2014 ACPC .
 Finally, the lead researcher of the AlphaGo project, David Silver had collaborated on Heinrich's
@@ -62,25 +61,26 @@ research thus adding significant weight to the research.
 \section{Objectives}\label{sec:objectives}
 \subsection{Primary Objectives}\label{subsec:primaryObjectives}
 
-Although this project will be largely research based, the initial goal is to create a texas hold'em
+Although this project will be largely research-based, the initial goal is to create a Texas hold'em
 playing agent.
-Due to the fact that texas hold'em has an extremely large state space, combined with the fact that it
+Due to the fact that Texas hold'em has an extremely large state space, combined with the fact that it
 is an imperfect information game, the initial goal will be to tackle a simplified version of the game.
-Specifically Leduc Hold'em will be used for this project.
-This version of hold'em consists usually of a six card deck and only one private card, compared to two in texas hold'em.
+Specifically, Leduc Hold'em will be used for this project.
+This version of hold'em consists usually of a six card deck and only one private card, compared to two in Texas hold'em.
 
 In\citep{heinrich2015smooth} a metric called exploitability was used.
 This is a measure of how the agent's strategy fares against the best responses to that strategy.
 In other words, if the opponent knows our strategy, and can take the best possible action
-in every state in order to maximise their potential gain in reward, exploitability is the
-average amount that they would gain from doing so.
-For Leduc Hold'em, with a 6 card deck and 500,000,000 iterations the initial exploitability was 2 and converged
+in every state in order to maximise their potential gain in reward, exploitability is the average amount
+that they would gain from doing so.
+For Leduc Hold'em, with a 6 card deck and 500,000,000 iterations, the initial exploitability was 2 and converged
 to .0223.
 As such the success criteria for our initial iteration of the game is to replicate these results, with an
 allowance for hardware differences that may impact computational speed.
 
 It is also my goal to create a product that will be fun and useful for the general public.
-As such another objective will be to create an application that will allow users to play heads-up against the final product.
+As such another objective will be to create an application that will allow users to play heads-up
+against the final product.
 
 \subsection{Secondary Objectives}\label{subsec:secondaryObjectives}
 As this project is very specific and academic, one of the larger challenges will be to gain a strong knowledge
@@ -101,12 +101,12 @@ The methodology for this project can be summarised as follows:
 
 \begin{enumerate}
     \item \textbf{Identify Research Objectives}: The first step of this project was to define research goals.
-    Although it was established that an agent for a variation of poker would be created early
-    in the project we did not yet know what variation we would be tackling nor the method that would
+    Although it was established that an agent for a variation of poker would be created early in the project,
+    \item we did not yet know what variation we would be tackling nor the method that would
     be applied to do so.
     Identifying exactly what would be done and how was the first big step in this project.
-    \item \textbf{Approximation of Systematic Literature Review}: As a result of the scope
-    of the project a full scale systematic literature review was not required.
+    \item \textbf{Approximation of Systematic Literature Review}: As a result of the scope of the project a
+    \item full-scale systematic literature review was not required.
     However, it was still important to gain a strong understanding of the relevant literature.
     This was achieved by utilising various search terms and in Google Scholar, saving
     any relevant papers and reviewing their contents.
@@ -137,8 +137,8 @@ and relates to the abstract algorithms discussed in chapter 2.
 The empirical studies chapter then discusses the empirical results gleaned from the work in chapter 3.
 The metrics that were used to evaluate our poker agent are discussed, the parameters used for the algorithm
 in each experiment are outlined and analysis of the results is given.
-Finally conclusions chapter gives a retrospective look at the project.
-With an overview of how the project met it's goals, and a discussion of how the project could be
+Finally, the conclusions chapter gives a retrospective look at the project.
+With an overview of how the project met its goals, and a discussion of how the project could be
 expanded in the future to add further value.
 
 \section{Contribution}\label{sec:contribution}
@@ -153,13 +153,13 @@ upon in order to piece together our implementation, thus we feel having our code
 open source and available to the world may aid future researchers in the same area.
 
 \section{Motivation}\label{sec:Motivation}
-For the last number of years I have played poker recreationally with friends or online.
+For the last number of years, I have played poker recreationally with friends or online.
 It became more of an interest of mine as I started to explore the mathematical basis for the game and how
-players could use their knowledge, intelligence and temperament in order to gain an advantage in a game that,
+players could use their knowledge, intelligence, and temperament in order to gain an advantage in a game that,
 on the face of it, seemed to be largely based on chance.
 I spent some of my free time researching different aspects of the game.
 This included gaining some basic knowledge like the probability of making drawing hands as well as learning more
-technical aspects of the game such as how to calculate expected value of hands,
+technical aspects of the game such as how to calculate the expected value of hands,
 or how to narrow down one's opponent's range of possible hands.
 
 Concurrent with the development of this interest I was also becoming more and more interested in the area
@@ -169,7 +169,7 @@ of computer science.
 However, this is probably for good reason because there is something intrinsically interesting
 about machines that can learn to solve a problem on their own, without direct instructions from a human.
 The fact that ML has made so many strides in recent years was another cause of interest in
-this area of computer science, especially as the practical viability of ML as means of tackling a wide array
+this area of computer science, especially as the practical viability of ML as a means of tackling a wide array
 of problems in industry continues to increase.
 
-As a result the merging of these two interests as the basis for my final year project seemed like an obvious choice.
+As a result, the merging of these two interests as the basis for my final year project seemed like an obvious choice.
